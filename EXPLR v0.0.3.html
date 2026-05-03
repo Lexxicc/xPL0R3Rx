@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>EXPLR v0.0.2</title>
+    <title>EXPLR v0.0.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -670,7 +670,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#45b28b] opacity-60 text-center py-3 border-t border-[#001a2a]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.2</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#45b28b] opacity-60 text-center py-3 border-t border-[#001a2a]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.3</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -970,7 +970,7 @@
                         </div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#001a2a] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">EXPLR v0.0.2</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">EXPLR v0.0.3</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -2444,6 +2444,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.3', title: 'Fix broken main menu', date: '2026-05-03', sections: [{ heading: 'Fixes', items: ['Removed stray unclosed IIFE that wrapped startGame, loop, and window.onload — caused a JS syntax error preventing all menu buttons from firing.'] }] },
             { version: 'v0.0.2', title: 'Debug pass', date: '2026-05-03', sections: [{ heading: 'Fixes', items: ['Crit chance now uses class stat (Warrior 5%, Mage 10%, Rogue 20%) instead of hardcoded 20%.', 'Fixed header branding — now reads EXPLR.', 'Updated How to Play text to reference EXPLR.'] }] },
             { version: 'v0.0.1', title: 'Forked from Dungeon Swingers', date: '2026-05-03', sections: [{ heading: 'Origin', items: ['Forked from Dungeon Swingers v0.0.956 — clean slate for EXPLR adventure layer.'] }] },
         ];
@@ -2679,7 +2680,6 @@
         function showMenuTab(tab) { ['audio','visuals','controls'].forEach(t=>{ document.getElementById('menu-panel-'+t).classList.toggle('hidden',t!==tab); document.getElementById('menu-tab-'+t).classList.toggle('opacity-50',t!==tab); }); }
         function syncMenuSettings() { const vp=Math.round(gameState._volume*714); const vs=document.getElementById('ig-vol-slider'); if(vs) vs.value=vp; const vv=document.getElementById('ig-vol-val'); if(vv) vv.innerText=vp+'%'; const mp=Math.round(gameState._musicVolume*1000); const ms=document.getElementById('ig-music-vol-slider'); if(ms) ms.value=mp; const mv=document.getElementById('ig-music-vol-val'); if(mv) mv.innerText=mp+'%'; const bs=document.getElementById('brightness-slider'); const ibs=document.getElementById('ig-brightness-slider'); if(bs&&ibs){ibs.value=bs.value; const bv=document.getElementById('ig-brightness-val'); if(bv) bv.innerText=bs.value+'%';} ['sfx-toggle','ig-sfx-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.sfxEnabled?'ON':'OFF';}); ['music-toggle','ig-music-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.musicEnabled?'ON':'OFF';}); ['handed-toggle','ig-handed-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.leftHanded?'ON':'OFF';}); }
         (function(){ if(localStorage.getItem('exp_leftHanded')==='1'){ gameState.leftHanded=true; const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.add('left-handed'); ['handed-toggle','ig-handed-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText='ON';}); } })();
-        (function(){
         (function(){ var k='exp_wipe_v1'; if(localStorage.getItem(k)!=='1'){ localStorage.removeItem('exp_highscores'); localStorage.removeItem('exp_last_journey'); localStorage.setItem(k,'1'); } })();
 
         function startGame(replaySeed=null) { history.pushState({panel:'game'},''); initAudio(); cancelAnimationFrame(_rafId); const p=gameState.player; const _ch=loadCharacter(); const _chHp=_ch?_ch.maxHp:100; const _chAtk=_ch?(_ch.attack-1.0):0; const _chDef=_ch?Math.max(0,(_ch.defense-1.0)*5):0; const _chWpn=_ch&&_ch.gear&&_ch.gear.weapon; const _chArm=_ch&&_ch.gear&&_ch.gear.armour; const _gearAtkFlat=_chWpn?(_chWpn.atkBonus||0):0; const _gearDefBonus=_chArm?(_chArm.defBonus||0):0; const _gearHpBonus=_chArm?(_chArm.hpBonus||0):0; const _hubPotions=_ch?(_ch.potions||0):0; if(_ch&&_ch.potions){_ch.potions=0;saveCharacter(_ch);} p.hp=p.maxHp=_chHp+_gearHpBonus; p.potions=_hubPotions; p.armourPotions=0; p.armor=Math.round(_chDef+_gearDefBonus); p.score=0; p.exp=0; p.kills=0; p.gold=0; p.steps=0; p.level=1; p.animTimer=0; p.damagePots=0; p.damageBonusPct=_chAtk; p.gearAtkFlat=_gearAtkFlat; p._critChance=_ch?(_ch.crit||0.2):0.2; p.luckyStrike=false; p.killScore=0; p.floorBonus=0; p.chaliceBonus=0; p.hitFlash=0; p.armourFlash=0; p.dmgDir=null; p.dmgDirTimer=0; gameState._runXpGained=0; gameState._runGoldGained=0; gameState._runNewLevel=0; gameState._runPotionsUsed=0; gameState._pendingLootDrop=null; gameState.timeLeft=300; gameState.isGameOver=false; gameState.menuOpen=false; gameState.shopOpen=false; gameState.isTransitioning=false; gameState.isLevelingUp=false; gameState.hasChalice=false; gameState.hasKey=false; gameState.seen=new Set(); gameState.journeyFloors=[]; gameState.currentFloor=null; gameState.lastJourney=null; gameState.lastKillTime=0; gameState.comboCount=0; gameState.floatNums=[]; gameState.timeWarnPlayed=false; gameState.lastDamageTime=0; gameState.hiddenRooms=[]; gameState.actionLog=[]; const _seed=replaySeed!=null?replaySeed:gameState.challengeSeed; if(_seed!=null){gameState.runStartIndex=_seed;gameState.runFloor=1;loadFloor(_seed);}else{gameState.challengeSeed=null;generateLevel();} const go=get('game-over'); if(go) go.classList.add('hidden'); const mc=get('mobile-controls'); if(mc) mc.classList.remove('hidden'); gameState.gameStarted=true; get('start-overlay').classList.add('hidden'); lastT=performance.now(); startDungeonMusic(); _rafId=requestAnimationFrame(loop); }
