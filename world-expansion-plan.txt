@@ -1,0 +1,123 @@
+EXPLR — WORLD EXPANSION PLAN
+Above-Ground Starter Settlement
+================================
+This document outlines the steps to evolve the current menu-based hub into
+a real above-ground world the player can explore between dungeon runs. Each
+existing hub button maps to a physical building in the starter settlement.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CURRENT HUB → BUILDING MAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Hub button         →  Building name        Role in the world
+  -----------------------------------------------------------------
+  Dungeon Gate       →  THE GATE             Stone archway at the
+  (dungeonselect)       (south edge)         south edge of the map.
+                                             Interacting opens dungeon
+                                             select. Gate is locked
+                                             until character is created.
+
+  The Armory         →  THE ARMORY           Squat stone building,
+  (charsheet)           (west of gate)       barrels outside. Walk in
+                                             to view character sheet,
+                                             stats, and gear.
+
+  The Merchant       →  THE MERCHANT'S HUT   Small wooden stall with
+  (shop)                (east of gate)       a striped awning. Walk up
+                                             to browse and spend gold.
+
+  Quest Board        →  THE TAVERN           Central building.
+  (quests)              (town centre)        Quest board is pinned to
+                                             the front wall. Entering
+                                             opens the quests panel.
+
+  The Chronicler     →  THE SCRIBE'S TOWER   Tall narrow tower,
+  (patchnotes)          (north corner)       bookshelf visible through
+                                             window. Interacting opens
+                                             patch notes / lore log.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTLEMENT LAYOUT (top-down grid, ~11×15 tiles)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [ Scribe's Tower ]   [ open land ]
+  [     path       ]   [   path    ]
+  [  Armory  ] [ Tavern ] [ Merchant ]
+  [           path / town square    ]
+  [        THE GATE (dungeon)       ]
+                 ↓
+           (dungeon entrance)
+
+  Player spawns at a fixed start tile (e.g. centre of town square)
+  after character creation or on return from a run.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPLEMENTATION STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1 — Define tile map data
+  • Replace #start-hub panel with a canvas (or DOM grid) renderer.
+  • Define a 2D array of tile types: grass, path, wall, water, etc.
+  • Define building footprints as rectangles within the grid.
+  • Store the map as a JS constant (WORLD_MAP) — no external files.
+
+STEP 2 — Render the settlement
+  • Draw tiles on a <canvas> using coloured rects or emoji/unicode
+    characters (fits the existing VT323/pixel aesthetic).
+  • Draw building sprites as simple coloured blocks with a label,
+    or small SVG icons matching the current art style.
+  • Keep the viewport fixed to the canvas size (no scrolling yet).
+    Scale canvas to fill the menu-scroll container.
+
+STEP 3 — Player character on the map
+  • Add a player object: { x, y } in tile coordinates.
+  • Render the player as a small sprite/icon on the canvas.
+  • Re-use the existing D-pad input (already in-game) to move the
+    player around the settlement when the hub is active.
+  • Collision: block movement into wall/building tiles.
+
+STEP 4 — Building interaction
+  • Each building tile has an interaction zone (1 tile in front of
+    the entrance).
+  • When the player steps onto an interaction zone, show a prompt
+    (e.g. "▶ Enter [Building Name]").
+  • Tapping the centre D-pad button (or a dedicated "Enter" button)
+    opens the existing panel for that building (same showStartPanel()
+    calls as today — no logic changes needed at this stage).
+  • Closing a panel returns the player to the world map.
+
+STEP 5 — Remove the old hub button grid
+  • Once step 4 works, delete the current #start-hub button layout.
+  • The world map IS the hub. All navigation happens by walking.
+  • Keep the hero HUD strip (name / class / level / gold) above the
+    canvas as a persistent header.
+
+STEP 6 — Event log → world feed
+  • Move the hub-event-log to a thin strip below the canvas.
+  • Log world-flavour events as well as game events:
+    e.g. "A merchant arrived at the gate.", "Dungeon fog thickens."
+
+STEP 7 — Settlement progression (future / post-MVP)
+  • Buildings start locked/ruined and are unlocked as the player
+    levels up or completes quests.
+  • New buildings can be added to expand the settlement over time:
+    - Blacksmith (upgrade weapons)
+    - Inn (rest / restore buffs)
+    - Stable (fast travel, later)
+    - Training Grounds (class abilities)
+  • Each new building = a new hub panel added alongside world update.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• All existing panel logic (shop, charsheet, quests, patchnotes,
+  dungeonselect) stays untouched — only the hub entry point changes.
+• The game remains a single HTML file — no assets folder, no imports.
+• D-pad re-use: the in-dungeon D-pad is already wired; use the same
+  element and swap its callback depending on game state
+  (STATE.WORLD vs STATE.DUNGEON).
+• Mobile-first: canvas must be responsive. Use CSS to fill the
+  menu-scroll container; read clientWidth/clientHeight on resize.
+• Keep tile size large enough for fat-finger tapping on mobile
+  (~40–48px per tile at minimum).
