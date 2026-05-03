@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>EXPLR v0.0.3</title>
+    <title>xPL0R3Rx v0.0.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -681,7 +681,7 @@
                         <div class="p-5 text-[12px] space-y-4">
                             <div style="border:2px solid #45b28b;padding:10px 12px;margin-bottom:4px;background:rgba(0,20,30,0.6)">
                                 <p class="text-[#63c7a4] uppercase font-bold text-[11px] tracking-widest mb-1">RPG Adventure Dungeon Crawler</p>
-                                <p class="text-[#d1d5db] leading-relaxed">Three floors. Five minutes. One shot at the leaderboard. EXPLR is a score-attack crawler with a persistent RPG layer — create a character, level up between runs, equip gear, and tackle harder dungeons as you grow. Surviving is just the entry fee. Every kill, every step, every second left on the clock feeds into your final score. Play clean, play fast, play aggressive.</p>
+                                <p class="text-[#d1d5db] leading-relaxed">Three floors. Five minutes. One shot at the leaderboard. xPL0R3Rx is a score-attack crawler with a persistent RPG layer — create a character, level up between runs, equip gear, and tackle harder dungeons as you grow. Surviving is just the entry fee. Every kill, every step, every second left on the clock feeds into your final score. Play clean, play fast, play aggressive.</p>
                             </div>
                             <div>
                                 <h3 class="text-[#63c7a4] uppercase font-bold border-b border-[#001a2a] pb-1 mb-2">The Run</h3>
@@ -928,49 +928,15 @@
                                 <div id="hub-hero-gold" style="font-family:'VT323',monospace;font-size:1.4rem;color:#eab308;line-height:1.1">0g</div>
                             </div>
                         </div>
-                        <!-- Zone grid -->
-                        <div class="p-4 space-y-3">
-                            <button onclick="showStartPanel('dungeonselect')"
-                                class="w-full text-left border-4 border-[#63c7a4] px-5 py-4"
-                                style="background:rgba(69,178,139,0.10);cursor:pointer">
-                                <div style="font-family:'VT323',monospace;font-size:1.8rem;color:#63c7a4;text-transform:uppercase;letter-spacing:0.04em">&#9658; Dungeon Gate</div>
-                                <div style="font-family:'VT323',monospace;font-size:1rem;color:#8ab8a4">Three floors. Choose your fate.</div>
-                            </button>
-                            <div class="grid grid-cols-2 gap-3">
-                                <button onclick="showStartPanel('charsheet')"
-                                    class="text-left border-4 border-[#45b28b] px-4 py-3"
-                                    style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                    <div style="font-family:'VT323',monospace;font-size:1.4rem;color:#63c7a4;text-transform:uppercase">The Armory</div>
-                                    <div style="font-family:'VT323',monospace;font-size:0.9rem;color:#45b28b">Stats &amp; gear</div>
-                                </button>
-                                <button onclick="showStartPanel('shop')"
-                                    class="text-left border-4 border-[#45b28b] px-4 py-3"
-                                    style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                    <div style="font-family:'VT323',monospace;font-size:1.4rem;color:#63c7a4;text-transform:uppercase">The Merchant</div>
-                                    <div style="font-family:'VT323',monospace;font-size:0.9rem;color:#45b28b">Spend your gold</div>
-                                </button>
-                                <button onclick="showStartPanel('quests')"
-                                    class="text-left border-4 border-[#45b28b] px-4 py-3"
-                                    style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                    <div style="font-family:'VT323',monospace;font-size:1.4rem;color:#63c7a4;text-transform:uppercase">Quest Board</div>
-                                    <div style="font-family:'VT323',monospace;font-size:0.9rem;color:#45b28b">Active quests</div>
-                                </button>
-                                <button onclick="showStartPanel('patchnotes')"
-                                    class="text-left border-4 border-[#45b28b] px-4 py-3"
-                                    style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                    <div style="font-family:'VT323',monospace;font-size:1.4rem;color:#63c7a4;text-transform:uppercase">The Chronicler</div>
-                                    <div style="font-family:'VT323',monospace;font-size:0.9rem;color:#45b28b">Patch notes</div>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Event log -->
-                        <div class="px-4 pb-2 pt-3">
-                            <div style="font-family:'VT323',monospace;font-size:10px;color:#45b28b;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:4px">Recent Activity</div>
-                            <div id="hub-event-log" style="background:#000d18;border:2px solid #001a2a;max-height:90px;overflow-y:auto;padding:5px 7px;font-family:'VT323',monospace;font-size:0.85rem;color:#45b28b;line-height:1.4"></div>
-                        </div>
+                        <!-- World map canvas -->
+                        <canvas id="world-canvas" style="display:block;width:100%;image-rendering:pixelated;"></canvas>
+                        <!-- Interaction prompt -->
+                        <div id="hub-interact-prompt" style="display:none;font-family:'VT323',monospace;font-size:1.3rem;color:#63c7a4;text-align:center;padding:5px 10px;background:#001218;border-top:2px solid #001a2a;letter-spacing:0.06em"></div>
+                        <!-- Event log strip -->
+                        <div id="hub-event-log" style="background:#000d18;border-top:2px solid #001a2a;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#45b28b;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#001a2a] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">EXPLR v0.0.3</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">xPL0R3Rx v0.0.3</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1155,7 +1121,7 @@
                 <!-- Endgame screen (boss dungeon clear) -->
                 <div id="endgame-overlay" class="modal-overlay hidden flex-col text-center" style="justify-content:center;align-items:center;gap:10px;overflow-y:auto;padding:24px;background:rgba(0,5,12,0.98)">
                     <div style="font-family:'VT323',monospace;font-size:10px;color:#fde047;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:2px">Tacticon Realm</div>
-                    <h2 style="font-size:clamp(2rem,8vw,3.5rem);color:#fde047;font-weight:bold;text-transform:uppercase;font-style:italic;margin:0;text-shadow:0 0 18px rgba(253,224,71,0.5)">REALM CONQUERED</h2>
+                    <h2 id="eg-title" style="font-size:clamp(2rem,8vw,3.5rem);color:#fde047;font-weight:bold;text-transform:uppercase;font-style:italic;margin:0;text-shadow:0 0 18px rgba(253,224,71,0.5)">REALM CONQUERED</h2>
                     <div id="eg-sub" style="font-family:'VT323',monospace;font-size:clamp(0.9rem,4vw,1.3rem);color:#a8d8c0;margin:0 0 4px"></div>
                     <div style="border:2px solid #fde047;background:#000d18;padding:12px 18px;width:100%;max-width:360px;font-family:'VT323',monospace;box-sizing:border-box">
                         <div style="font-size:10px;color:#fde047;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px">Run Stats</div>
@@ -1220,6 +1186,7 @@
                 </div>
                 </div><!-- /canvas-wrap -->
                 <div id="game-log" class="md:hidden w-full px-2 py-1 text-[11px] leading-snug" style="font-family:'VT323',monospace;background:var(--color-panel);border-top:4px solid var(--color-primary);overflow-y:auto;min-height:0;color:#a8d8c0"></div>
+                <div id="quest-tracker" style="display:none;background:#000d18;border-bottom:2px solid #001a2a;padding:3px 8px;font-family:'VT323',monospace;font-size:0.8rem;color:#45b28b;width:100%;box-sizing:border-box"></div>
                 <div id="mobile-controls">
                     <div id="mob-left-col">
                     <div id="mob-bars">
@@ -1256,7 +1223,7 @@
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(0,-1);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(0,-1)">▲</button>
                         <div></div>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(-1,0);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(-1,0)">◀</button>
-                        <button class="dpad-btn dpad-center-btn" ontouchstart="swingFlail();return false;" onclick="swingFlail()"><svg viewBox="0 0 40 40" width="48" height="48" fill="none"><line x1="6" y1="35" x2="16" y2="25" stroke="#1e1008" stroke-width="5.5" stroke-linecap="round"/><line x1="6" y1="35" x2="16" y2="25" stroke="#3a1e0c" stroke-width="3.5" stroke-linecap="round"/><line x1="8" y1="32" x2="10.5" y2="29.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="29" x2="13.5" y2="26.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="19.5" cy="22.5" rx="3" ry="1.8" transform="rotate(-45 19.5 22.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="23.5" cy="18.5" rx="3" ry="1.8" transform="rotate(-45 23.5 18.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="27.5" cy="14.5" rx="3" ry="1.8" transform="rotate(-45 27.5 14.5)" fill="none" stroke="#5a6878" stroke-width="2"/><circle cx="32" cy="10" r="15" fill="#45b28b" opacity="0.14"/><circle cx="32" cy="10" r="11" fill="#63c7a4" opacity="0.09"/><circle cx="32" cy="10" r="8" fill="#0a2018"/><circle cx="32" cy="10" r="7" fill="#226644"/><circle cx="32" cy="10" r="6" fill="#2e9060"/><circle cx="32" cy="10" r="5" fill="#38a870"/><ellipse cx="29.5" cy="7.5" rx="2.8" ry="1.8" fill="#7ae8b8" opacity="0.78"/><polygon points="32,2 33.5,5 30.5,5" fill="#111"/><polygon points="32,18 33.5,15 30.5,15" fill="#111"/><polygon points="24,10 27,8.5 27,11.5" fill="#111"/><polygon points="40,10 37,8.5 37,11.5" fill="#111"/><polygon points="32,2 32.5,3.5 31.5,3.5" fill="#333" opacity="0.85"/></svg></button>
+                        <button class="dpad-btn dpad-center-btn" ontouchstart="centerBtnAction();return false;" onclick="centerBtnAction()"><svg viewBox="0 0 40 40" width="48" height="48" fill="none"><line x1="6" y1="35" x2="16" y2="25" stroke="#1e1008" stroke-width="5.5" stroke-linecap="round"/><line x1="6" y1="35" x2="16" y2="25" stroke="#3a1e0c" stroke-width="3.5" stroke-linecap="round"/><line x1="8" y1="32" x2="10.5" y2="29.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="29" x2="13.5" y2="26.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="19.5" cy="22.5" rx="3" ry="1.8" transform="rotate(-45 19.5 22.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="23.5" cy="18.5" rx="3" ry="1.8" transform="rotate(-45 23.5 18.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="27.5" cy="14.5" rx="3" ry="1.8" transform="rotate(-45 27.5 14.5)" fill="none" stroke="#5a6878" stroke-width="2"/><circle cx="32" cy="10" r="15" fill="#45b28b" opacity="0.14"/><circle cx="32" cy="10" r="11" fill="#63c7a4" opacity="0.09"/><circle cx="32" cy="10" r="8" fill="#0a2018"/><circle cx="32" cy="10" r="7" fill="#226644"/><circle cx="32" cy="10" r="6" fill="#2e9060"/><circle cx="32" cy="10" r="5" fill="#38a870"/><ellipse cx="29.5" cy="7.5" rx="2.8" ry="1.8" fill="#7ae8b8" opacity="0.78"/><polygon points="32,2 33.5,5 30.5,5" fill="#111"/><polygon points="32,18 33.5,15 30.5,15" fill="#111"/><polygon points="24,10 27,8.5 27,11.5" fill="#111"/><polygon points="40,10 37,8.5 37,11.5" fill="#111"/><polygon points="32,2 32.5,3.5 31.5,3.5" fill="#333" opacity="0.85"/></svg></button>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(1,0);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(1,0)">▶</button>
                         <div></div>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(0,1);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(0,1)">▼</button>
@@ -1345,13 +1312,65 @@
         const TILE_SIZE = 32, VIEW_WIDTH = 25, VIEW_HEIGHT = 22;
         canvas.width = VIEW_WIDTH * TILE_SIZE; canvas.height = VIEW_HEIGHT * TILE_SIZE;
         const TILES = { FLOOR: 0, WALL: 1, WATER: 2, LAVA: 3, PLANT: 4, CRACKED: 5 };
-        const SPRITES = { SLIME: 'S', SKELETON: 'K', GHOST: 'G', GOLD: 'G', POTION: 'P', SHIELD: 'S', CHALICE: 'C', STAIRS: 'H', BOSS: '', KEY: 'K', CHEST: 'C', DAMAGEBUFF: 'D', MERCHANT: 'M' };
+        const SPRITES = { SLIME: 'S', SKELETON: 'K', GHOST: 'G', GOLEM: 'O', LICH: 'L', GOLD: 'G', POTION: 'P', SHIELD: 'S', CHALICE: 'C', STAIRS: 'H', BOSS: '', KEY: 'K', CHEST: 'C', DAMAGEBUFF: 'D', MERCHANT: 'M' };
+
+        const WORLD_MAP = [
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,7,7,0,0,0,0,0,0,0,0],
+          [0,7,7,0,0,0,0,0,0,0,0],
+          [0,7,7,0,0,0,0,0,0,0,0],
+          [0,7,7,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,5,5,5,0,0,0,0],
+          [0,4,4,4,5,5,5,6,6,6,0],
+          [0,4,4,4,5,5,5,6,6,6,0],
+          [0,4,4,4,5,5,5,6,6,6,0],
+          [1,1,1,1,1,1,1,1,1,1,1],
+          [1,1,1,1,1,1,1,1,1,1,1],
+          [1,1,1,1,1,1,1,1,1,1,1],
+          [0,0,0,0,3,3,3,0,0,0,0]
+        ];
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#001018',3:'#63c7a4',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a'};
+        const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
+        const INTERACTION_ZONES = {
+          '13,5':{name:'THE GATE',panel:'dungeonselect'},
+          '11,2':{name:'THE ARMORY',panel:'charsheet'},
+          '11,5':{name:'THE TAVERN',panel:'quests'},
+          '11,8':{name:'THE MERCHANT',panel:'shop'},
+          '5,1':{name:"SCRIBE'S TOWER",panel:'patchnotes'}
+        };
+        const WORLD_FLAVOUR_LINES = [
+          'Fog rolls in from the dungeon gate.',
+          "A crow lands on the Scribe's Tower.",
+          'The merchant adjusts their awning.',
+          'Distant sounds echo from below.',
+          'The armory smith hammers quietly.',
+          'Torchlight flickers near the gate.',
+          'A traveller passes through without stopping.',
+          'Rain clouds gather over the tower.',
+          'The tavern keeper waves from the window.',
+          'Something growls beneath the gate.',
+          'Dust rises from the dungeon entrance.',
+          'A quest parchment falls from the board.'
+        ];
+        let worldPlayer = {x:5, y:12};
+        const SHRINE_TILES = [
+          {row:3,col:5,revealed:false,used:false},
+          {row:6,col:8,revealed:false,used:false},
+          {row:10,col:0,revealed:false,used:false}
+        ];
 
         function createRng(seed) { let s=seed; return function(){ let t=s+=0x6D2B79F5; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }; }
 
         let audioCtx = null, mainGain = null, musicGain = null, musicNodes = [], musicArpTimeout = null, arpStepIndex = 0, bossHeartbeatTimeout = null, arpDelay = null, arpFeedback = null;
         function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); mainGain = audioCtx.createGain(); mainGain.gain.value = 0.14; mainGain.connect(audioCtx.destination); musicGain = audioCtx.createGain(); musicGain.gain.value = gameState._musicVolume; musicGain.connect(audioCtx.destination); }
         function playSynth(f, t, d, v=0.1, dec=true) { if (!audioCtx || !gameState.sfxEnabled) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=t; o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.setValueAtTime(v, audioCtx.currentTime); if(dec) g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+d); o.connect(g); g.connect(mainGain); o.start(); o.stop(audioCtx.currentTime+d); }
+        let hubAmbienceOsc = null, hubAmbienceGain = null, hubAmbienceRunning = false;
+        function startHubAmbience() { if (hubAmbienceRunning) return; if (!audioCtx) initAudio(); if (!audioCtx) return; hubAmbienceOsc = audioCtx.createOscillator(); hubAmbienceGain = audioCtx.createGain(); hubAmbienceOsc.type = 'triangle'; hubAmbienceOsc.frequency.value = 60; hubAmbienceGain.gain.value = 0.018; hubAmbienceOsc.connect(hubAmbienceGain); hubAmbienceGain.connect(mainGain); hubAmbienceOsc.start(); hubAmbienceRunning = true; }
+        function stopHubAmbience() { if (!hubAmbienceRunning) return; try { hubAmbienceOsc.stop(); hubAmbienceOsc.disconnect(); hubAmbienceGain.disconnect(); } catch(e){} hubAmbienceOsc = null; hubAmbienceGain = null; hubAmbienceRunning = false; }
+        function playFootstep() { if (!audioCtx || !gameState.sfxEnabled) return; playSynth(110,'triangle',0.06,0.022,true); }
+        function playGateRumble() { if (!audioCtx || !gameState.sfxEnabled) return; playSynth(55,'sawtooth',0.35,0.055); playSynth(80,'triangle',0.25,0.12); }
 
         let gameState = {
             player: { x: 0, y: 0, hp: 100, maxHp: 100, potions: 0, armourPotions: 0, armor: 0, score: 0, exp: 0, kills: 0, gold: 0, steps: 0, level: 1, animTimer: 0, damagePots: 0, damageBonusPct: 0, luckyStrike: false, killScore: 0, floorBonus: 0, chaliceBonus: 0, hitFlash: 0, armourFlash: 0, dmgDir: null, dmgDirTimer: 0 },
@@ -1360,7 +1379,7 @@
             journeyFloors: [], currentFloor: null, lastJourney: null,
             lastKillTime: 0, comboCount: 0, floatNums: [], timeWarnPlayed: false, floorCleared: false, lastDamageTime: 0, hiddenRooms: [],
             actionLog: [], challengeMode: false, challengerData: null, challengeSeed: null,
-            _lastBreakdown: null, _lastTotal: null, _lastTiming: null, _difficulty: 'normal', _isBossDungeon: false
+            _lastBreakdown: null, _lastTotal: null, _lastTiming: null, _difficulty: 'normal', _isBossDungeon: false, _isLichDungeon: false
         };
 
         // --- Challenge / anti-bot system ---
@@ -1680,6 +1699,34 @@
             const _diffHp=gameState._difficulty==='elite'?1.60:gameState._difficulty==='hard'?1.25:1;
             const _diffDmg=gameState._difficulty==='elite'?1.90:gameState._difficulty==='hard'?1.40:1;
             gameState.enemies = lv.enemies.map(e=>{ const hp=Math.round(e.hp*fm*_diffHp); return {...e,hp,maxHp:hp,dmg:Math.round(e.dmg*fm*_diffDmg)}; });
+            if (gameState.runFloor > 3) {
+                const deepMult = Math.pow(1.15, gameState.runFloor - 3);
+                if (gameState.runFloor >= 5) {
+                    gameState.enemies = gameState.enemies.map(e => {
+                        const isLich = Math.random() < 0.5;
+                        const base = isLich ? {n:'Lich',s:SPRITES.LICH,h:28,d:18,sc:4,chaseRange:7,moveChance:1.0,speed:2,colour:'#a78bfa',goldMin:8,goldMax:14} : {n:'Golem',s:SPRITES.GOLEM,h:38,d:14,sc:3,chaseRange:4,moveChance:0.7,speed:3,colour:'#6b7280',goldMin:10,goldMax:18};
+                        const hp = Math.round(base.h*fm*_diffHp*deepMult); const dmg = Math.round(base.d*fm*_diffDmg*deepMult);
+                        return {x:e.x,y:e.y,name:base.n,hp,maxHp:hp,dmg,sprite:base.s,score:base.sc,chaseRange:base.chaseRange,moveChance:base.moveChance,speed:base.speed,colour:base.colour,goldMin:base.goldMin,goldMax:base.goldMax,dropChance:0,attackFlash:0};
+                    });
+                } else {
+                    gameState.enemies = gameState.enemies.map(e => { const hp=Math.round(e.hp*deepMult); const dmg=Math.round(e.dmg*deepMult); return {...e,hp,maxHp:hp,dmg}; });
+                }
+                const extraCount = (gameState.runFloor - 3) * 2;
+                for (let i = 0; i < extraCount; i++) {
+                    let ex=-1, ey=-1;
+                    for (let attempt=0; attempt<200; attempt++) { const tx=1+Math.floor(Math.random()*58),ty=1+Math.floor(Math.random()*58); if(gameState.world[ty][tx]===TILES.FLOOR&&Math.abs(tx-lv.startX)+Math.abs(ty-lv.startY)>8&&!gameState.enemies.some(en=>en.x===tx&&en.y===ty)){ex=tx;ey=ty;break;} }
+                    if (ex<0) continue;
+                    if (gameState.runFloor >= 5) {
+                        const isLich=i%2===1; const base=isLich?{n:'Lich',s:SPRITES.LICH,h:28,d:18,sc:4,chaseRange:7,moveChance:1.0,speed:2,colour:'#a78bfa',goldMin:8,goldMax:14}:{n:'Golem',s:SPRITES.GOLEM,h:38,d:14,sc:3,chaseRange:4,moveChance:0.7,speed:3,colour:'#6b7280',goldMin:10,goldMax:18};
+                        const hp=Math.round(base.h*fm*_diffHp*deepMult); const dmg=Math.round(base.d*fm*_diffDmg*deepMult);
+                        gameState.enemies.push({x:ex,y:ey,name:base.n,hp,maxHp:hp,dmg,sprite:base.s,score:base.sc,chaseRange:base.chaseRange,moveChance:base.moveChance,speed:base.speed,colour:base.colour,goldMin:base.goldMin,goldMax:base.goldMax,dropChance:0,attackFlash:0});
+                    } else {
+                        const hp=Math.round(30*fm*_diffHp*deepMult); const dmg=Math.round(9*fm*_diffDmg*deepMult);
+                        gameState.enemies.push({x:ex,y:ey,name:'Ghost',hp,maxHp:hp,dmg,sprite:SPRITES.GHOST,score:3,chaseRange:7,moveChance:1.0,speed:2,dropChance:0.04,attackFlash:0});
+                    }
+                }
+                gameState.timeLeft = Math.max(180, gameState.timeLeft - 15);
+            }
             gameState.items = lv.items.map(i=>({...i}));
             gameState.hiddenRooms = lv.hiddenRooms ? lv.hiddenRooms.map(r=>({...r,tiles:r.tiles.map(t=>({...t})),loot:r.loot.map(l=>({...l}))})) : [];
             if(gameState.runFloor>=2){ const extraChance=gameState.runFloor===3?0.38:0.18; const W2=gameState.world; const pts=['POTION','SHIELDPOT','DAMAGEBUFF','LUCKYCHARM']; const _floorRng=createRng((levelIndex+1)*0x5C3A9D1B^(gameState.runFloor*0x1F2E3D4C)); for(let ey=1;ey<59;ey++) for(let ex=1;ex<59;ex++){ if(W2[ey][ex]===TILES.CRACKED&&_floorRng()<extraChance){ const dirs=[[-1,0],[1,0],[0,-1],[0,1]]; const adj=dirs.find(([dx,dy])=>W2[ey+dy]&&W2[ey+dy][ex+dx]===TILES.FLOOR); if(!adj)continue; const[fdx,fdy]=adj,rcx=ex-fdx*2,rcy=ey-fdy*2; let ok=true; for(let dy=-1;dy<=1&&ok;dy++) for(let dx=-1;dx<=1&&ok;dx++){const tx=rcx+dx,ty=rcy+dy;if(tx<1||tx>58||ty<1||ty>58||W2[ty][tx]!==TILES.WALL)ok=false;} if(!ok)continue; const tiles=[]; for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) tiles.push({x:rcx+dx,y:rcy+dy}); for(let i=tiles.length-1;i>0;i--){const j=Math.floor(_floorRng()*(i+1));[tiles[i],tiles[j]]=[tiles[j],tiles[i]];} const loot=[]; {const t=tiles[0];if(!gameState.hiddenRooms.some(r=>r.wallX===ex&&r.wallY===ey))loot.push({x:t.x,y:t.y,type:pts[Math.floor(_floorRng()*pts.length)]});} if(!gameState.hiddenRooms.some(r=>r.wallX===ex&&r.wallY===ey)) gameState.hiddenRooms.push({wallX:ex,wallY:ey,tiles,loot}); } } }
@@ -1699,6 +1746,23 @@
                 gameState.enemies.push({x:rbX,y:rbY,name:'Realm Boss',hp:600,maxHp:600,dmg:36,sprite:SPRITES.BOSS,score:0,isBoss:true,isRealmBoss:true,attackFlash:0,windUpTimer:0,chargeWindUp:0});
                 gameState.currentFloor.world = gameState.world.map(r=>[...r]);
                 gameState.currentFloor.spawnX = gameState.player.x; gameState.currentFloor.spawnY = gameState.player.y;
+                gameState.currentFloor.path.add(`${gameState.player.x},${gameState.player.y}`);
+                return;
+            }
+            if(gameState._isLichDungeon){
+                gameState.enemies=[];
+                const _wlk=gameState.world;
+                let lkX=lv.exitX,lkY=lv.exitY;
+                if(_wlk[lkY][lkX]!==TILES.FLOOR&&_wlk[lkY][lkX]!==TILES.PLANT){
+                    outer_lk: for(let r=1;r<=14;r++) for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+                        if(Math.max(Math.abs(dx),Math.abs(dy))!==r) continue;
+                        const tx=lv.exitX+dx,ty=lv.exitY+dy;
+                        if(tx>=0&&tx<60&&ty>=0&&ty<60&&(_wlk[ty][tx]===TILES.FLOOR||_wlk[ty][tx]===TILES.PLANT)){lkX=tx;lkY=ty;break outer_lk;}
+                    }
+                }
+                gameState.enemies.push({x:lkX,y:lkY,name:'Lich King',hp:180,maxHp:180,dmg:22,sprite:'Ψ',colour:'#c084fc',score:0,isBoss:true,isLichKing:true,attackFlash:0,windUpTimer:0,chargeWindUp:0,_moveCooldown:0,_phase2:false});
+                gameState.currentFloor.world=gameState.world.map(r=>[...r]);
+                gameState.currentFloor.spawnX=gameState.player.x; gameState.currentFloor.spawnY=gameState.player.y;
                 gameState.currentFloor.path.add(`${gameState.player.x},${gameState.player.y}`);
                 return;
             }
@@ -1733,8 +1797,10 @@
             } else {
                 gameState.runStartIndex = Math.floor(Math.random() * 100);
             }
-            gameState.runFloor = 1;
-            loadFloor(gameState.runStartIndex);
+            const _deepStart = gameState._deepFloorStart || 1;
+            gameState._deepFloorStart = null;
+            gameState.runFloor = _deepStart;
+            loadFloor(gameState.runStartIndex + _deepStart - 1);
         }
 
         function drawTile(type, x, y, wx, wy) {
@@ -2143,14 +2209,14 @@
             let cx=Math.floor(gameState.player.x-VIEW_WIDTH/2), cy=Math.floor(gameState.player.y-VIEW_HEIGHT/2);
             for(let vy=0; vy<VIEW_HEIGHT; vy++) for(let vx=0; vx<VIEW_WIDTH; vx++){ let wx=cx+vx, wy=cy+vy; if(wx>=0&&wx<60&&wy>=0&&wy<60) drawTile(gameState.world[wy][wx], vx*32, vy*32, wx, wy); }
             gameState.items.forEach(i=>{ let vx=i.x-cx, vy=i.y-cy; if(vx>=0&&vx<VIEW_WIDTH&&vy>=0&&vy<VIEW_HEIGHT){ /* SILVER DISABLED: if(i.type==='GOLD'){ drawSilverPile(ctx,vx*32,vy*32); } else */ if(i.type==='CHEST'){ drawChest(ctx,vx*32,vy*32); } else if(i.type==='DAMAGEBUFF'){ drawDamagePot(ctx,vx*32,vy*32); } else if(i.type==='SHIELDPOT'){ drawArmourPot(ctx,vx*32,vy*32); } else if(i.type==='POTION'){ drawHealthPot(ctx,vx*32,vy*32); } else if(i.type==='KEY'){ drawKey(ctx,vx*32,vy*32); } else if(i.type==='LUCKYCHARM'){ drawLuckyCharm(ctx,vx*32,vy*32); } else if(i.type==='STAIRS'){ drawHole(ctx,vx*32,vy*32); } else if(i.type==='CHALICE'){ drawChalice(ctx,vx*32,vy*32,gameState.player.animTimer); } else { ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillStyle='#63c7a4'; ctx.fillText(SPRITES[i.type], vx*32+16, vy*32+22); } } });
-            gameState.enemies.forEach(e=>{ let vx=e.x-cx, vy=e.y-cy; if(vx>=0&&vx<VIEW_WIDTH&&vy>=0&&vy<VIEW_HEIGHT){ if(e.isBoss){ drawBossSprite(ctx,vx*32,vy*32); { let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32,vy*32-7,64,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32,vy*32-7,Math.ceil(64*p),5); } } else if(e.isMerchant){ ctx.save(); ctx.globalAlpha=0.18+0.08*Math.sin(gameState.player.animTimer*0.15); ctx.fillStyle='#63c7a4'; ctx.beginPath(); ctx.arc(vx*32+16,vy*32+16,16,0,Math.PI*2); ctx.fill(); ctx.restore(); ctx.font='22px VT323'; ctx.textAlign='center'; ctx.fillText(e.sprite,vx*32+16,vy*32+22); ctx.font='9px monospace'; ctx.fillStyle='#63c7a4'; ctx.fillText('SHOP',vx*32+16,vy*32+5); } else {
+            gameState.enemies.forEach(e=>{ let vx=e.x-cx, vy=e.y-cy; if(vx>=0&&vx<VIEW_WIDTH&&vy>=0&&vy<VIEW_HEIGHT){ if(e.isLichKing){ ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillStyle='#c084fc'; ctx.fillText('Ψ',vx*32+16,vy*32+22); { let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32,vy*32-7,32,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32,vy*32-7,Math.ceil(32*p),5); } } else if(e.isBoss){ drawBossSprite(ctx,vx*32,vy*32); { let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32,vy*32-7,64,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32,vy*32-7,Math.ceil(64*p),5); } } else if(e.isMerchant){ ctx.save(); ctx.globalAlpha=0.18+0.08*Math.sin(gameState.player.animTimer*0.15); ctx.fillStyle='#63c7a4'; ctx.beginPath(); ctx.arc(vx*32+16,vy*32+16,16,0,Math.PI*2); ctx.fill(); ctx.restore(); ctx.font='22px VT323'; ctx.textAlign='center'; ctx.fillText(e.sprite,vx*32+16,vy*32+22); ctx.font='9px monospace'; ctx.fillStyle='#63c7a4'; ctx.fillText('SHOP',vx*32+16,vy*32+5); } else {
                     if(e.name==='Slime') drawSlime(ctx,vx*32,vy*32,gameState.player.animTimer);
                     else if(e.name==='Skeleton') drawSkeleton(ctx,vx*32,vy*32,gameState.player.animTimer);
                     else if(e.name==='Ghost') drawGhost(ctx,vx*32,vy*32,gameState.player.animTimer);
-                    else { ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillText(e.sprite,vx*32+16,vy*32+22); }
+                    else { ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillStyle=e.colour||'#ffffff'; ctx.fillText(e.sprite,vx*32+16,vy*32+22); }
                     if(gameState.player.steps<=(e.hpBarUntil||0)){ let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32+2,vy*32,28,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32+2,vy*32,Math.ceil(28*p),5); }
-                } if(e.attackFlash>0){ ctx.save(); ctx.globalAlpha=e.attackFlash/7*0.55; ctx.fillStyle=(e.isBoss&&(e.windUpTimer>0||e.chargeWindUp>0))?'#f97316':'#ef4444'; ctx.fillRect(vx*32,vy*32,e.isBoss?64:32,e.isBoss?64:32); ctx.restore(); e.attackFlash--; }
-                if((e.hitFlash??0)>0){ ctx.save(); ctx.globalAlpha=e.hitFlash/5*0.6; ctx.fillStyle='#ffffff'; ctx.fillRect(vx*32,vy*32,e.isBoss?64:32,e.isBoss?64:32); ctx.restore(); e.hitFlash--; } } });
+                } if(e.attackFlash>0){ ctx.save(); ctx.globalAlpha=e.attackFlash/7*0.55; ctx.fillStyle=(e.isBoss&&!e.isLichKing&&(e.windUpTimer>0||e.chargeWindUp>0))?'#f97316':'#ef4444'; const _fs=(e.isBoss&&!e.isLichKing)?64:32; ctx.fillRect(vx*32,vy*32,_fs,_fs); ctx.restore(); e.attackFlash--; }
+                if((e.hitFlash??0)>0){ ctx.save(); ctx.globalAlpha=e.hitFlash/5*0.6; ctx.fillStyle='#ffffff'; const _hs=(e.isBoss&&!e.isLichKing)?64:32; ctx.fillRect(vx*32,vy*32,_hs,_hs); ctx.restore(); e.hitFlash--; } } });
             const ppx=(gameState.player.x-cx)*32, ppy=(gameState.player.y-cy)*32;
             drawPlayer(ppx, ppy);
             const hpPct=Math.max(0,gameState.player.hp/gameState.player.maxHp);
@@ -2180,8 +2246,8 @@
             const ddd=get('dmg-count-desk'); if(ddd) ddd.innerText=gameState.player.damagePots;
             let m=Math.floor(gameState.timeLeft/60), s=Math.floor(gameState.timeLeft%60); if(t) t.innerText=m.toString().padStart(2,'0')+':'+s.toString().padStart(2,'0');
             const pc=get('pot-count'); if(pc) pc.innerText=gameState.player.potions;
-            const fd=get('floor-display'); if(fd) fd.innerText=gameState._isBossDungeon?'BOSS FLOOR':gameState.runFloor+' / 3';
-            const mfd=get('mob-floor-row'); if(mfd) mfd.innerText=gameState._isBossDungeon?'BOSS FLOOR':'Floor '+gameState.runFloor+' / 3';
+            const fd=get('floor-display'); if(fd) fd.innerText=gameState._isBossDungeon?'BOSS FLOOR':gameState.runFloor+' / '+(gameState._runMaxFloor||3);
+            const mfd=get('mob-floor-row'); if(mfd) mfd.innerText=gameState._isBossDungeon?'BOSS FLOOR':'Floor '+gameState.runFloor+' / '+(gameState._runMaxFloor||3);
             const mhf=get('mob-hp-fill'); if(mhf) mhf.style.width=Math.max(0,Math.min(100,gameState.player.hp/gameState.player.maxHp*100))+'%';
             const mhv=get('mob-hp-val'); if(mhv) mhv.innerText=Math.max(0,Math.floor(gameState.player.hp));
             const maf=get('mob-arm-fill'); if(maf) maf.style.width=Math.min(100,gameState.player.armor)+'%';
@@ -2270,7 +2336,7 @@
         }
         function usePotion(){ if(!gameState.gameStarted||gameState.isGameOver||gameState.menuOpen) return; if(gameState.player.potions>0){ logAction('potion'); gameState.player.potions--; gameState._runPotionsUsed=(gameState._runPotionsUsed||0)+1; gameState.player.hp=Math.min(gameState.player.hp+25,gameState.player.maxHp); playSynth(300,'sine',0.3,0.1); addLog('Health Restored +25 HP.','text-red-300'); updateUI(); moveEnemies(); } }
         function useArmourPotion(){ if(!gameState.gameStarted||gameState.isGameOver||gameState.menuOpen) return; if(gameState.player.armourPotions>0){ logAction('armour'); if(gameState.player.armor>=100){ addLog('Armour is at MAX — potion saved.','text-blue-400'); gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-1,val:'ARMOUR MAX',timer:40,color:'#3b82f6',yOff:0}); playSynth(180,'sine',0.08,0.06); return; } gameState.player.armourPotions--; gameState.player.armor=Math.min(100,gameState.player.armor+50); playSynth(450,'triangle',0.25,0.08); addLog('Armour Potion: +50 Armour absorbed.', 'text-blue-400'); updateUI(); moveEnemies(); } }
-        function mobileMove(dx,dy){ if(!gameState.gameStarted||gameState.isGameOver||gameState.menuOpen||gameState.isTransitioning||gameState.shopOpen) return; initAudio(); movePlayer(dx,dy); draw(); }
+        function mobileMove(dx,dy){ if(!document.getElementById('start-hub').classList.contains('hidden')){ worldPlayerMove(dx,dy); return; } if(!gameState.gameStarted||gameState.isGameOver||gameState.menuOpen||gameState.isTransitioning||gameState.shopOpen) return; initAudio(); movePlayer(dx,dy); draw(); }
         let _holdT=null,_holdI=null;
         function mobileHoldStart(dx,dy){ mobileHoldEnd(); mobileMove(dx,dy); _holdT=setTimeout(()=>{ _holdI=setInterval(()=>mobileMove(dx,dy),110); },210); }
         function mobileHoldEnd(){ clearTimeout(_holdT); clearInterval(_holdI); _holdT=null; _holdI=null; }
@@ -2286,7 +2352,7 @@
         function scheduleArpNote(){ if(!audioCtx||!gameState.gameStarted||gameState.isGameOver) return; const floor=Math.min(3,gameState.runFloor); const cfg=FLOOR_MUSIC[floor]; const freq=cfg.phrase[arpStepIndex%cfg.phrase.length]; arpStepIndex++; const osc=audioCtx.createOscillator(),g=audioCtx.createGain(); osc.type='triangle'; osc.frequency.value=freq; g.gain.setValueAtTime(cfg.arpGain,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+cfg.arpDecay); osc.connect(g); g.connect(musicGain); if(arpDelay) g.connect(arpDelay); osc.start(); osc.stop(audioCtx.currentTime+cfg.arpDecay); const inCombat=performance.now()-gameState.lastDamageTime<5000; const minI=inCombat?Math.floor(cfg.minMs*0.5):cfg.minMs; const maxI=inCombat?Math.floor(cfg.maxMs*0.5):cfg.maxMs; musicArpTimeout=setTimeout(scheduleArpNote,minI+Math.random()*(maxI-minI)); }
 
         function useDamagePot(){ if(!gameState.gameStarted||gameState.isGameOver||gameState.menuOpen||gameState.shopOpen) return; if(gameState.player.damagePots>0){ logAction('damage'); gameState.player.damagePots--; gameState.player.damageBonusPct+=0.10; const pct=Math.round(gameState.player.damageBonusPct*100); playSynth(600,'sawtooth',0.2,0.1); addLog(`Damage Potion: +10% permanent damage (total: +${pct}%)`, 'text-purple-400'); moveEnemies(); } }
-        function attackEnemy(idx){ let e=gameState.enemies[idx]; if(!e) return; if(gameState.player.luckyStrike&&!e.isBoss){ gameState.player.luckyStrike=false; e.hp=0; gameState.player.score+=e.score; gameState.player.killScore+=e.score; gameState.player.exp+=e.score*50; gameState.player.kills++; checkLevelUp(); addLog(`LUCKY STRIKE! ${e.name} felled in one blow!`,'text-yellow-400'); if(gameState.currentFloor) gameState.currentFloor.kills.add(`${gameState.player.x},${gameState.player.y}`); gameState.enemies.splice(idx,1); if(!e.isBoss&&(e.dropChance??0)>0&&Math.random()<e.dropChance){ gameState.items.push({x:e.x,y:e.y,type:'POTION'}); addLog(`${e.name} dropped a Health Potion!`,'text-blue-300'); } if(!gameState.floorCleared&&gameState.runFloor<3&&gameState.enemies.filter(en=>!en.isMerchant).length===0){gameState.floorCleared=true;gameState.player.score+=25;gameState.player.floorBonus+=25;addLog('Floor Cleared! All enemies defeated. +25 bonus.','text-yellow-400');gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:'FLOOR CLEARED!',timer:80,color:'#fde047',yOff:0,isFloorClear:true});showFloorClearToast();} return; } if(gameState.player.luckyStrike&&e.isBoss){ gameState.player.luckyStrike=false; addLog('Lucky Strike fizzled — the Dungeon Master is immune!','text-red-400'); } let d=18+Math.floor((gameState.player.level-1)*3)+(gameState.player.gearAtkFlat||0); if(gameState.player.damageBonusPct>0){d=Math.floor(d*(1+gameState.player.damageBonusPct));} const isCrit=Math.random()<(gameState.player._critChance||0.2); if(isCrit) d=Math.floor(d*1.5); e.hp-=d; e.hitFlash=5; e.hpBarUntil=(gameState.player.steps||0)+6; gameState.floatNums.push({wx:e.x,wy:e.y,val:(isCrit?'★ -':'-')+d,timer:35,color:isCrit?'#fde047':'#4ade80',yOff:0}); playSynth(isCrit?320:200,'sawtooth',0.1,0.1); if(e.hp<=0){ const now=performance.now(); if(now-gameState.lastKillTime<3000&&!e.isBoss){ gameState.comboCount++; } else { gameState.comboCount=1; } gameState.lastKillTime=now; const comboBonus=gameState.comboCount>1?Math.floor(e.score*(gameState.comboCount-1)):0; gameState.player.score+=e.score+comboBonus; gameState.player.killScore+=e.score+comboBonus; gameState.player.exp+=e.score*50; gameState.player.kills++; checkLevelUp(); if(comboBonus>0){ addLog(`COMBO x${gameState.comboCount}! +${comboBonus} bonus!`,'text-yellow-300'); gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-1,val:`COMBO x${gameState.comboCount}!`,timer:55,color:'#fbbf24',yOff:0,isCombo:true}); const _streakLabel=gameState.comboCount>=5?'On a Rampage!':gameState.comboCount===3?'Triple Kill!':gameState.comboCount===2?'Double Kill!':null; if(_streakLabel) gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:_streakLabel,timer:70,color:'#f97316',yOff:0,isCombo:true}); } if(gameState.currentFloor) gameState.currentFloor.kills.add(`${gameState.player.x},${gameState.player.y}`); if(e.isBoss){ if(e.isRealmBoss){ addLog('REALM BOSS SLAIN! A Legendary relic materialises!','text-yellow-300 font-bold'); gameState.items.push({x:e.x,y:e.y,type:'CHALICE'}); playSynth(880,'triangle',0.6,0.15); clearTimeout(bossHeartbeatTimeout); bossHeartbeatTimeout=null; const _legd=generateLegendaryDrop(); if(_legd){ gameState._pendingLootDrop=_legd; addLog('The Realm Boss left behind: '+_legd.name+' [Legendary]!','text-yellow-300'); } _explrCheckAchievement('boss_clear','Realm Boss Slain!'); } else { addLog('DUNGEON MASTER DOMINATED! The Chalice appears!','text-[#63c7a4] font-bold'); gameState.items.push({x:e.x,y:e.y,type:'CHALICE'}); playSynth(880,'triangle',0.6,0.15); clearTimeout(bossHeartbeatTimeout); bossHeartbeatTimeout=null; if(!gameState._pendingLootDrop){ const _bw=gameState._difficulty==='elite'?[['Rare',1.0]]:gameState._difficulty==='hard'?[['Common',0.10],['Uncommon',0.55],['Rare',0.35]]:[['Common',0.25],['Uncommon',0.50],['Rare',0.25]]; const r=rollLootRarity(_bw); const drop=generateGearDrop(r); if(drop){ gameState._pendingLootDrop=drop; addLog('The Dungeon Master dropped '+drop.rarity+' gear!','text-purple-300'); } } } } else { addLog(`Enemy Slain: ${e.name}. +${e.score*50} EXP`,'text-yellow-400'); } gameState.enemies.splice(idx,1); if(!e.isBoss&&(e.dropChance??0)>0&&Math.random()<e.dropChance){ gameState.items.push({x:e.x,y:e.y,type:'POTION'}); addLog(`${e.name} dropped a Health Potion!`,'text-blue-300'); } if(!e.isBoss&&!gameState.floorCleared&&gameState.runFloor<3&&gameState.enemies.filter(en=>!en.isMerchant).length===0){gameState.floorCleared=true;gameState.player.score+=25;gameState.player.floorBonus+=25;addLog('Floor Cleared! All enemies defeated. +25 bonus.','text-yellow-400');gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:'FLOOR CLEARED!',timer:80,color:'#fde047',yOff:0,isFloorClear:true});showFloorClearToast();} } else { damagePlayer(e.dmg,e.x,e.y); playSynth(180,'triangle',0.18,0.06); if(gameState.player.hp<=0) endGame(false); } }
+        function attackEnemy(idx){ let e=gameState.enemies[idx]; if(!e) return; if(gameState.player.luckyStrike&&!e.isBoss){ gameState.player.luckyStrike=false; e.hp=0; gameState.player.score+=e.score; gameState.player.killScore+=e.score; gameState.player.exp+=e.score*50; gameState.player.kills++; checkLevelUp(); addLog(`LUCKY STRIKE! ${e.name} felled in one blow!`,'text-yellow-400'); if(gameState.currentFloor) gameState.currentFloor.kills.add(`${gameState.player.x},${gameState.player.y}`); gameState.enemies.splice(idx,1); if(!e.isBoss&&(e.dropChance??0)>0&&Math.random()<e.dropChance){ gameState.items.push({x:e.x,y:e.y,type:'POTION'}); addLog(`${e.name} dropped a Health Potion!`,'text-blue-300'); } if(!e.isBoss&&(e.goldMin||0)>0){ const _g=Math.floor(Math.random()*(e.goldMax-e.goldMin+1))+e.goldMin; gameState.player.gold+=_g; addLog(`${e.name} dropped ${_g} gold!`,'text-yellow-300'); } if(!gameState.floorCleared&&gameState.runFloor<(gameState._runMaxFloor||3)&&gameState.enemies.filter(en=>!en.isMerchant).length===0){gameState.floorCleared=true;gameState.player.score+=25;gameState.player.floorBonus+=25;addLog('Floor Cleared! All enemies defeated. +25 bonus.','text-yellow-400');gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:'FLOOR CLEARED!',timer:80,color:'#fde047',yOff:0,isFloorClear:true});showFloorClearToast();} return; } if(gameState.player.luckyStrike&&e.isBoss){ gameState.player.luckyStrike=false; addLog('Lucky Strike fizzled — this foe is immune!','text-red-400'); } let d=18+Math.floor((gameState.player.level-1)*3)+(gameState.player.gearAtkFlat||0); if(gameState.player.damageBonusPct>0){d=Math.floor(d*(1+gameState.player.damageBonusPct));} const isCrit=Math.random()<(gameState.player._critChance||0.2); if(isCrit) d=Math.floor(d*1.5); e.hp-=d; e.hitFlash=5; e.hpBarUntil=(gameState.player.steps||0)+6; gameState.floatNums.push({wx:e.x,wy:e.y,val:(isCrit?'★ -':'-')+d,timer:35,color:isCrit?'#fde047':'#4ade80',yOff:0}); playSynth(isCrit?320:200,'sawtooth',0.1,0.1); if(e.isLichKing&&!e._phase2&&e.hp<=e.maxHp*0.5&&e.hp>0){ e._phase2=true; e._moveCooldown=0; addLog('The <span class="text-purple-300">Lich King</span> surges into PHASE 2 — minions emerge!','text-[#c084fc] font-bold'); let _spawned=0; const _spDirs=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1],[-1,1],[1,-1]]; for(const [_dx,_dy] of _spDirs){ if(_spawned>=2) break; const _mx=e.x+_dx,_my=e.y+_dy; if(_mx>=0&&_mx<60&&_my>=0&&_my<60){ const _st=gameState.world[_my][_mx]; if((_st===TILES.FLOOR||_st===TILES.PLANT)&&!gameState.enemies.some(o=>o.x===_mx&&o.y===_my)){ gameState.enemies.push({x:_mx,y:_my,name:'Lich',hp:30,maxHp:30,dmg:14,sprite:'ℓ',colour:'#c084fc',score:0,isBoss:false,dropChance:0,attackFlash:0}); _spawned++; } } } } if(e.hp<=0){ const now=performance.now(); if(now-gameState.lastKillTime<3000&&!e.isBoss){ gameState.comboCount++; } else { gameState.comboCount=1; } gameState.lastKillTime=now; const comboBonus=gameState.comboCount>1?Math.floor(e.score*(gameState.comboCount-1)):0; gameState.player.score+=e.score+comboBonus; gameState.player.killScore+=e.score+comboBonus; gameState.player.exp+=e.score*50; gameState.player.kills++; checkLevelUp(); {const _qkc=loadCharacter();if(_qkc&&_qkc.quests){let _qkd=false;_qkc.quests.forEach(q=>{if(q.type==='kill'&&!q.completed&&q.progress<q.goal){q.progress=Math.min(q.goal,gameState.player.kills);_qkd=true;}});if(_qkd){saveCharacter(_qkc);renderQuestTracker();}}} if(comboBonus>0){ addLog(`COMBO x${gameState.comboCount}! +${comboBonus} bonus!`,'text-yellow-300'); gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-1,val:`COMBO x${gameState.comboCount}!`,timer:55,color:'#fbbf24',yOff:0,isCombo:true}); const _streakLabel=gameState.comboCount>=5?'On a Rampage!':gameState.comboCount===3?'Triple Kill!':gameState.comboCount===2?'Double Kill!':null; if(_streakLabel) gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:_streakLabel,timer:70,color:'#f97316',yOff:0,isCombo:true}); } if(gameState.currentFloor) gameState.currentFloor.kills.add(`${gameState.player.x},${gameState.player.y}`); if(e.isBoss){ if(e.isLichKing){ addLog('LICH KING VANQUISHED! The Sanctum Chalice materialises!','text-[#c084fc] font-bold'); gameState.items.push({x:e.x,y:e.y,type:'CHALICE'}); playSynth(880,'triangle',0.6,0.15); clearTimeout(bossHeartbeatTimeout); bossHeartbeatTimeout=null; _explrCheckAchievement('boss_clear','Lich King Slain!'); } else if(e.isRealmBoss){ addLog('REALM BOSS SLAIN! A Legendary relic materialises!','text-yellow-300 font-bold'); gameState.items.push({x:e.x,y:e.y,type:'CHALICE'}); playSynth(880,'triangle',0.6,0.15); clearTimeout(bossHeartbeatTimeout); bossHeartbeatTimeout=null; try{localStorage.setItem('exp_boss1_cleared','1');}catch(_){} const _legd=generateLegendaryDrop(); if(_legd){ gameState._pendingLootDrop=_legd; addLog('The Realm Boss left behind: '+_legd.name+' [Legendary]!','text-yellow-300'); } _explrCheckAchievement('boss_clear','Realm Boss Slain!'); } else { addLog('DUNGEON MASTER DOMINATED! The Chalice appears!','text-[#63c7a4] font-bold'); gameState.items.push({x:e.x,y:e.y,type:'CHALICE'}); playSynth(880,'triangle',0.6,0.15); clearTimeout(bossHeartbeatTimeout); bossHeartbeatTimeout=null; if(!gameState._pendingLootDrop){ const _bw=gameState._difficulty==='elite'?[['Rare',1.0]]:gameState._difficulty==='hard'?[['Common',0.10],['Uncommon',0.55],['Rare',0.35]]:[['Common',0.25],['Uncommon',0.50],['Rare',0.25]]; const r=rollLootRarity(_bw); const drop=generateGearDrop(r); if(drop){ gameState._pendingLootDrop=drop; addLog('The Dungeon Master dropped '+drop.rarity+' gear!','text-purple-300'); } } } } else { addLog(`Enemy Slain: ${e.name}. +${e.score*50} EXP`,'text-yellow-400'); } gameState.enemies.splice(idx,1); if(!e.isBoss&&(e.dropChance??0)>0&&Math.random()<e.dropChance){ gameState.items.push({x:e.x,y:e.y,type:'POTION'}); addLog(`${e.name} dropped a Health Potion!`,'text-blue-300'); } if(!e.isBoss&&(e.goldMin||0)>0){ const _g=Math.floor(Math.random()*(e.goldMax-e.goldMin+1))+e.goldMin; gameState.player.gold+=_g; addLog(`${e.name} dropped ${_g} gold!`,'text-yellow-300'); } if(!e.isBoss&&!gameState.floorCleared&&gameState.runFloor<(gameState._runMaxFloor||3)&&gameState.enemies.filter(en=>!en.isMerchant).length===0){gameState.floorCleared=true;gameState.player.score+=25;gameState.player.floorBonus+=25;addLog('Floor Cleared! All enemies defeated. +25 bonus.','text-yellow-400');gameState.floatNums.push({wx:gameState.player.x,wy:gameState.player.y-2,val:'FLOOR CLEARED!',timer:80,color:'#fde047',yOff:0,isFloorClear:true});showFloorClearToast();} } else { damagePlayer(e.dmg,e.x,e.y); playSynth(180,'triangle',0.18,0.06); if(gameState.player.hp<=0) endGame(false); } }
         function applyFlailDamage() {
             const {x,y}=gameState.player;
             const W=gameState.world;
@@ -2316,18 +2382,22 @@
         function moveEnemies(){
             gameState.enemies.forEach(e=>{
                 if(gameState.isGameOver||e.isMerchant) return;
+                if(e.isLichKing&&!e._phase2){ e._moveCooldown=((e._moveCooldown??0)+1)%2; if(e._moveCooldown!==0) return; }
                 const moveChance = e.moveChance ?? 1.0;
                 if(moveChance < 1 && Math.random() > moveChance) return;
                 let effectiveSteps = e.speed ?? 1;
-                if(e.isBoss){ const _adj=gameState.player.x>=e.x-1&&gameState.player.x<=e.x+2&&gameState.player.y>=e.y-1&&gameState.player.y<=e.y+2; if(_adj){ e.chargeWindUp=0; } else if(e.chargeWindUp>0){ effectiveSteps=2; e.chargeWindUp=0; e.attackFlash=7; } else if(Math.random()<0.12&&Math.max(Math.abs(gameState.player.x-e.x),Math.abs(gameState.player.y-e.y))<=10){ e.chargeWindUp=1; e.attackFlash=6; addLog('The <span class="text-orange-400">Dungeon Master</span> crouches — a charge is coming!','text-orange-400'); return; } }
+                if(e.isBoss&&!e.isLichKing){ const _adj=gameState.player.x>=e.x-1&&gameState.player.x<=e.x+2&&gameState.player.y>=e.y-1&&gameState.player.y<=e.y+2; if(_adj){ e.chargeWindUp=0; } else if(e.chargeWindUp>0){ effectiveSteps=2; e.chargeWindUp=0; e.attackFlash=7; } else if(Math.random()<0.12&&Math.max(Math.abs(gameState.player.x-e.x),Math.abs(gameState.player.y-e.y))<=10){ e.chargeWindUp=1; e.attackFlash=6; addLog('The <span class="text-orange-400">Dungeon Master</span> crouches — a charge is coming!','text-orange-400'); return; } }
                 for(let step=0; step<effectiveSteps; step++){
                     const pdx=gameState.player.x-e.x, pdy=gameState.player.y-e.y;
                     const chebyshev=Math.max(Math.abs(pdx),Math.abs(pdy));
                     const manhattan=Math.abs(pdx)+Math.abs(pdy);
-                    const isAdj=e.isBoss?(gameState.player.x>=e.x-1&&gameState.player.x<=e.x+2&&gameState.player.y>=e.y-1&&gameState.player.y<=e.y+2):chebyshev===1;
+                    const isAdj=(e.isBoss&&!e.isLichKing)?(gameState.player.x>=e.x-1&&gameState.player.x<=e.x+2&&gameState.player.y>=e.y-1&&gameState.player.y<=e.y+2):chebyshev===1;
                     if(isAdj){
                         if(step===0){
-                            if(e.isBoss){
+                            if(e.isLichKing){
+                                e.attackFlash=7; damagePlayer(e.dmg,e.x,e.y); e.hpBarUntil=(gameState.player.steps||0)+6; playSynth(180,'triangle',0.15,0.06); addLog(`The <span class="text-purple-300">Lich King</span> strikes you for <span class="text-white">${e.dmg} DMG</span>!`,'text-red-400');
+                                if(gameState.player.hp<=0&&!gameState.isGameOver){get('game-over-msg').innerText='Consumed by the Lich King';endGame(false);}
+                            } else if(e.isBoss){
                                 const hpPct=e.hp/e.maxHp; const jabChance=hpPct<0.5?0.5:0.3;
                                 if(e.windUpTimer===0){
                                     if(Math.random()<jabChance){ e.attackFlash=7; const jd=Math.round(e.dmg*0.6); damagePlayer(jd,e.x,e.y); e.hpBarUntil=(gameState.player.steps||0)+6; playSynth(220,'triangle',0.12,0.04); addLog(`Dungeon Master jabs you for <span class="text-white">${jd} DMG</span>!`,'text-orange-400'); if(gameState.player.hp<=0&&!gameState.isGameOver){get('game-over-msg').innerText='Felled by the Dungeon Master';endGame(false);} }
@@ -2351,7 +2421,7 @@
                     }
                     const nx=e.x+mdx, ny=e.y+mdy;
                     if(nx>=0&&nx<60&&ny>=0&&ny<60){
-                        if(e.isBoss){
+                        if(e.isBoss&&!e.isLichKing){
                             let canMove=true;
                             for(let cy=ny;cy<=ny+1&&canMove;cy++) for(let cx=nx;cx<=nx+1&&canMove;cx++){ if(cx<0||cx>=60||cy<0||cy>=60){canMove=false;break;} const bt=gameState.world[cy][cx]; if(bt!==TILES.FLOOR&&bt!==TILES.PLANT) canMove=false; }
                             if(canMove) {e.x=nx;e.y=ny;}
@@ -2423,7 +2493,7 @@
             playSynth(700,'triangle',0.4,0.15); updateUI(); moveEnemies();
         }
         function finalizeJourney() { if(gameState.currentFloor){ gameState.currentFloor.world=gameState.world.map(r=>[...r]); gameState.journeyFloors.push(gameState.currentFloor); gameState.currentFloor=null; } const jd={floors:gameState.journeyFloors.map(fd=>({world:fd.world,path:[...fd.path],kills:[...fd.kills],chest:fd.chest,spawnX:fd.spawnX,spawnY:fd.spawnY,exitX:fd.exitX,exitY:fd.exitY}))}; gameState.lastJourney=jd; try{localStorage.setItem('exp_last_journey',JSON.stringify(jd));}catch(e){} }
-        function endGame(won, timeout=false) { gameState.isGameOver=true; cancelAnimationFrame(_rafId); clearTimeout(_holdT); clearInterval(_holdI); _holdT=null; _holdI=null; gameState.swingAnim={active:false,frame:0,maxFrames:27,hit:false}; stopDungeonMusic(); finalizeJourney(); const mc=get('mobile-controls'); if(mc) mc.classList.add('hidden'); const go=get('game-over'), t=get('game-over-title'), l=get('level-display-final'), d=get('score-details'), f=get('final-score'); if(go)go.classList.remove('hidden'); if(t){ if(won){t.innerText="QUEST COMPLETE";t.style.color="#63c7a4";}else if(timeout){t.innerText="TIME'S UP";t.style.color="#f97316";}else{t.innerText="YOU DIED";t.style.color="#ef4444";} } let eff=won?Math.round(Math.max(0,120-Math.max(0,gameState.player.steps-200)*0.2)):0; let timebonus=won?Math.floor(gameState.timeLeft*1.0):0; let hpBonus=won?Math.floor(gameState.player.hp*0.5):0; let levelBonus=won?Math.floor((gameState.player.level-1)*gameState.player.level*2.5):0; let rawTotal=gameState.player.score+eff+timebonus+hpBonus+levelBonus; let total=rawTotal>=990?Math.min(999,rawTotal):Math.min(999,Math.round(rawTotal)); if(l)l.innerText='Reached Level: '+gameState.player.level; if(d)d.innerText='Steps: '+gameState.player.steps+' | Efficiency: +'+eff+' | Time: +'+timebonus+' | HP: +'+hpBonus+(levelBonus>0?' | Level: +'+levelBonus:''); if(f)f.innerText=total>=990?total.toFixed(2):Math.round(total).toLocaleString(); const ep=get('final-epithet'); if(ep){ ep.innerText=getEpithet(total); ep.style.color=getEpithetColor(total); } const breakdown={kills:gameState.player.killScore,floors:gameState.player.floorBonus,chalice:gameState.player.chaliceBonus,timeBonus:timebonus,efficiency:eff,hpBonus,levelBonus,total}; saveHighScore(total, won, false, timeout, breakdown);
+        function endGame(won, timeout=false) { gameState.isGameOver=true; renderQuestTracker(); cancelAnimationFrame(_rafId); clearTimeout(_holdT); clearInterval(_holdI); _holdT=null; _holdI=null; gameState.swingAnim={active:false,frame:0,maxFrames:27,hit:false}; stopDungeonMusic(); finalizeJourney(); const mc=get('mobile-controls'); if(mc) mc.classList.add('hidden'); const go=get('game-over'), t=get('game-over-title'), l=get('level-display-final'), d=get('score-details'), f=get('final-score'); if(go)go.classList.remove('hidden'); if(t){ if(won){t.innerText="QUEST COMPLETE";t.style.color="#63c7a4";}else if(timeout){t.innerText="TIME'S UP";t.style.color="#f97316";}else{t.innerText="YOU DIED";t.style.color="#ef4444";} } let eff=won?Math.round(Math.max(0,120-Math.max(0,gameState.player.steps-200)*0.2)):0; let timebonus=won?Math.floor(gameState.timeLeft*1.0):0; let hpBonus=won?Math.floor(gameState.player.hp*0.5):0; let levelBonus=won?Math.floor((gameState.player.level-1)*gameState.player.level*2.5):0; let rawTotal=gameState.player.score+eff+timebonus+hpBonus+levelBonus; let total=rawTotal>=990?Math.min(999,rawTotal):Math.min(999,Math.round(rawTotal)); if(l)l.innerText='Reached Level: '+gameState.player.level; if(d)d.innerText='Steps: '+gameState.player.steps+' | Efficiency: +'+eff+' | Time: +'+timebonus+' | HP: +'+hpBonus+(levelBonus>0?' | Level: +'+levelBonus:''); if(f)f.innerText=total>=990?total.toFixed(2):Math.round(total).toLocaleString(); const ep=get('final-epithet'); if(ep){ ep.innerText=getEpithet(total); ep.style.color=getEpithetColor(total); } const breakdown={kills:gameState.player.killScore,floors:gameState.player.floorBonus,chalice:gameState.player.chaliceBonus,timeBonus:timebonus,efficiency:eff,hpBonus,levelBonus,total}; saveHighScore(total, won, false, timeout, breakdown);
         const timing=analyzeActionLog(gameState.actionLog); gameState._lastTiming=timing; gameState._lastBreakdown=breakdown; gameState._lastTotal=total;
         const plausible=isRunPlausible(timing);
         const cs=get('challenge-section'); if(cs){ cs.style.display='flex'; cs.classList.remove('hidden');
@@ -2435,9 +2505,9 @@
                 +'<button id="challenge-copy-btn" onclick="copyChallengeLink()" class="btn-pixel text-sm px-3 py-1">COPY</button></div></div>'; }
             else{ cs.innerHTML='<p style="font-family:VT323,monospace;font-size:13px;color:#94a3b8;margin:4px 0 0">Run could not be verified — challenge unavailable.</p>'; }
         }
-        { gameState._runWon=won; const _ch=loadCharacter(); if(_ch){ const _floorsCleared=gameState._isBossDungeon?(won?1:0):(won?3:gameState.runFloor-1); const _baseXp=_floorsCleared*50+gameState.player.kills*10+(won?25:0); const _xpGained=Math.round(_baseXp*(_ch.xpBonus||1)); const _goldGained=_floorsCleared*10+Math.floor(gameState.player.kills*3)+(won?15:0); _ch.xp+=_xpGained; _ch.gold+=_goldGained; let _newLevel=0; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } let _qxp=0,_qg=0; if(_ch.quests&&_ch.quests.length){ _ch.quests.forEach(q=>{ if(q.completed) return; let done=false; if(q.type==='kill'&&gameState.player.kills>=q.goal) done=true; if(q.type==='survival'&&(gameState._runPotionsUsed||0)===0&&_floorsCleared>=1) done=true; if(q.type==='exploration'&&won) done=true; if(q.type==='loot'&&gameState._pendingLootDrop&&gameState._pendingLootDrop.rarity==='Rare') done=true; if(done){ q.completed=true; q.progress=q.goal; _qxp+=q.reward.xp; _qg+=q.reward.gold; } else if(q.type==='kill'){ q.progress=Math.min(q.goal,gameState.player.kills); } }); if(_qxp>0){ _ch.xp+=_qxp; _ch.gold+=_qg; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } } } saveCharacter(_ch); gameState._runXpGained=_xpGained+_qxp; gameState._runGoldGained=_goldGained+_qg; gameState._runNewLevel=_newLevel; gameState._runFloorsCleared=_floorsCleared;
+        { gameState._runWon=won; const _ch=loadCharacter(); if(_ch){ const _floorsCleared=gameState._isBossDungeon?(won?1:0):(won?(gameState._runMaxFloor||3):gameState.runFloor-1); const _baseXp=_floorsCleared*50+gameState.player.kills*10+(won?25:0); const _xpGained=Math.round(_baseXp*(_ch.xpBonus||1)); const _goldGained=_floorsCleared*10+Math.floor(gameState.player.kills*3)+(won?15:0); _ch.xp+=_xpGained; _ch.gold+=_goldGained; let _newLevel=0; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } let _qxp=0,_qg=0; if(_ch.quests&&_ch.quests.length){ _ch.quests.forEach(q=>{ if(q.completed) return; let done=false; if(q.type==='kill'&&gameState.player.kills>=q.goal) done=true; if(q.type==='survival'&&(gameState._runPotionsUsed||0)===0&&_floorsCleared>=1) done=true; if(q.type==='exploration'&&won) done=true; if(q.type==='loot'&&gameState._pendingLootDrop&&gameState._pendingLootDrop.rarity==='Rare') done=true; if(done){ q.completed=true; q.progress=q.goal; _qxp+=q.reward.xp; _qg+=q.reward.gold; } else if(q.type==='kill'){ q.progress=Math.min(q.goal,gameState.player.kills); } }); if(_qxp>0){ _ch.xp+=_qxp; _ch.gold+=_qg; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } } } saveCharacter(_ch); gameState._runXpGained=_xpGained+_qxp; gameState._runGoldGained=_goldGained+_qg; gameState._runNewLevel=_newLevel; gameState._runFloorsCleared=_floorsCleared;
           const _diff=gameState._difficulty; const _diffLabel=_diff==='elite'?'Elite':_diff==='hard'?'Hard':'';
-          if(gameState._isBossDungeon&&won){ _explrLog(`Realm Boss defeated — Legendary relic secured! +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else if(won){ _explrLog(`You cleared a${_diffLabel?' '+_diffLabel:''} dungeon — ${_floorsCleared} floor${_floorsCleared!==1?'s':''}, +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else { _explrLog(`Run ended on floor ${gameState.runFloor} — +${_xpGained+_qxp} XP`); }
+          if(gameState._isLichDungeon&&won){ _explrLog(`Lich King vanquished — Sanctum purged! +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else if(gameState._isBossDungeon&&won){ _explrLog(`Realm Boss defeated — Legendary relic secured! +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else if(won){ _explrLog(`You cleared a${_diffLabel?' '+_diffLabel:''} dungeon — ${_floorsCleared} floor${_floorsCleared!==1?'s':''}, +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else { _explrLog(`Run ended on floor ${gameState.runFloor} — +${_xpGained+_qxp} XP`); }
           if(_newLevel){ _explrLog(`Level ${_newLevel} reached!`); _explrCheckAchievement('first_levelup','First Level Up!'); }
           if(gameState._pendingLootDrop){ const _d=gameState._pendingLootDrop; _explrLog(`Found ${_d.rarity} ${_d.name}`); if(_d.rarity==='Rare'||_d.rarity==='Legendary') _explrCheckAchievement('first_rare','First Rare Drop!'); }
         } }
@@ -2488,6 +2558,8 @@
         };
         function _makeQuest(type) { const d=_QUEST_DEFS[type]; return {type,desc:d.desc,goal:d.goal,progress:0,completed:false,reward:d.reward}; }
         function _freshQuests(n=3,exclude=[]) { const pool=Object.keys(_QUEST_DEFS).filter(t=>!exclude.includes(t)).sort(()=>Math.random()-0.5); return pool.slice(0,n).map(_makeQuest); }
+        const _QT_LABELS={kill:'Kill Enemies',survival:'No Potions',exploration:'3 Floors',loot:'Find Rare'};
+        function renderQuestTracker() { const el=document.getElementById('quest-tracker'); if(!el) return; if(!gameState.gameStarted||gameState.isGameOver){el.style.display='none';return;} const ch=loadCharacter(); const active=(ch&&ch.quests)?ch.quests.filter(q=>!q.completed).slice(0,3):[]; if(!active.length){el.style.display='none';return;} el.style.display='block'; el.innerHTML=active.map(q=>`<div>${_QT_LABELS[q.type]||q.type}: ${q.progress}/${q.goal}</div>`).join(''); }
         function renderQuests() {
           const ch=loadCharacter(); const el=document.getElementById('quests-content'); if(!el) return;
           if(!ch||!ch.quests||!ch.quests.length){ el.innerHTML='<div style="color:#45b28b;text-align:center;padding:24px">No quests yet — enter the dungeon.</div>'; return; }
@@ -2518,6 +2590,10 @@
               <button ${locked?'disabled':''} onclick="${onclick}" class="btn-pixel text-base px-5 py-2" style="width:100%;${locked?'opacity:0.4;cursor:not-allowed;':''}">${locked?'LOCKED':'ENTER'}</button>
             </div>`;
           }).join('');
+          const _deepLocked=lvl<8; const _dbc=_deepLocked?'#334':'#ef4444';
+          const _lichCleared=!!localStorage.getItem('exp_boss1_cleared');
+          el.innerHTML+=`<div style="margin-top:12px;border-top:2px solid #2a1a4a;padding-top:12px"><div style="font-size:1rem;color:#c084fc;margin-bottom:10px;letter-spacing:0.04em">&#9917; LICH SANCTUM</div><div style="border:4px solid ${_lichCleared?'#c084fc':'#334'};padding:14px;background:rgba(0,20,36,0.9);opacity:${_lichCleared?1:0.45}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:1.5rem;color:${_lichCleared?'#c084fc':'#334'};text-transform:uppercase;letter-spacing:0.05em">The Lich Sanctum</span>${_lichCleared?'<span style="color:#4ade80;font-size:0.9rem">&#10003; Unlocked</span>':'<span style="color:#f87171;font-size:0.9rem">Clear the Realm Boss first</span>'}</div><div style="color:#a8d8c0;font-size:0.9rem;margin-bottom:6px">Boss: LICH KING &nbsp;&middot;&nbsp; HP: 180 &nbsp;&middot;&nbsp; Phase 2 at 50%</div><div style="color:#c084fc;font-size:0.85rem;margin-bottom:10px">&#9670; Prestige II completion — Lich King drops no loot, only glory</div><button ${_lichCleared?'':'disabled'} onclick="gameState._difficulty='boss2';gameState._isLichDungeon=true;startGame()" class="btn-pixel text-base px-5 py-2" style="width:100%;${_lichCleared?'':'opacity:0.4;cursor:not-allowed;'}">${_lichCleared?'ENTER SANCTUM':'LOCKED'}</button></div></div>`;
+          el.innerHTML+=`<div style="margin-top:4px;border-top:2px solid #2a1a4a;padding-top:12px"><div style="font-size:1rem;color:#a78bfa;margin-bottom:10px;letter-spacing:0.04em">&#9760; DEEP FLOORS</div><div style="border:4px solid ${_dbc};padding:14px;background:rgba(0,20,36,0.9);opacity:${_deepLocked?0.55:1}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:1.5rem;color:${_dbc};text-transform:uppercase;letter-spacing:0.05em">&#9888; Veteran Only &mdash; Floors 4&ndash;6</span>${_deepLocked?'<span style="color:#f87171;font-size:0.9rem">Level 8+ required</span>':'<span style="color:#4ade80;font-size:0.9rem">&#10003; Unlocked</span>'}</div><div style="color:#a8d8c0;font-size:0.9rem;margin-bottom:6px">Enemy HP: 1.15&ndash;1.32&times; &nbsp;&middot;&nbsp; Enemy DMG: 1.15&ndash;1.32&times;</div><div style="color:#a78bfa;font-size:0.85rem;margin-bottom:10px">&#9670; Golems &amp; Liches spawn &mdash; deep dungeon scaling active</div><button ${_deepLocked?'disabled':''} onclick="gameState._difficulty='normal';gameState._isBossDungeon=false;gameState._runMaxFloor=6;gameState._deepFloorStart=4;startGame()" class="btn-pixel text-base px-5 py-2" style="width:100%;${_deepLocked?'opacity:0.4;cursor:not-allowed;':''}">${_deepLocked?'LOCKED':'DESCEND'}</button></div></div>`;
         }
         function createCharacter(name, cls) { const b=CLASS_BASE[cls]; const ch={name,class:cls,level:1,xp:0,gold:0,potions:0,maxHp:b.maxHp,attack:b.attack,defense:b.defense,crit:b.crit,xpBonus:b.xpBonus,gear:{weapon:null,armour:null},quests:_freshQuests(3)}; saveCharacter(ch); return ch; }
         let _selectedClass=null;
@@ -2528,11 +2604,77 @@
         let _achieveTimer=null;
         function _explrAchievementToast(text) { const t=document.getElementById('achievement-toast'); const tt=document.getElementById('achievement-toast-text'); if(!t||!tt) return; tt.textContent=text; t.style.transform='translateX(-50%) translateY(0)'; t.style.opacity='1'; clearTimeout(_achieveTimer); _achieveTimer=setTimeout(()=>{ t.style.transform='translateX(-50%) translateY(-80px)'; t.style.opacity='0'; },3200); }
         function _explrCheckAchievement(key, text) { try { const a=JSON.parse(localStorage.getItem('exp_achievements')||'{}'); if(a[key]) return; a[key]=true; localStorage.setItem('exp_achievements',JSON.stringify(a)); _explrAchievementToast(text); } catch(e){} }
-        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; renderEventLog(); showStartPanel('hub'); }
+        function drawWorldMap() {
+          const wc = document.getElementById('world-canvas');
+          if (!wc) return;
+          const W = 11, H = 15;
+          const cw = wc.parentElement ? wc.parentElement.clientWidth : 400;
+          wc.width = cw;
+          wc.height = Math.round(cw * H / W);
+          const ctx2d = wc.getContext('2d');
+          const tw = cw / W, th = wc.height / H;
+          for (let r = 0; r < H; r++) {
+            for (let c = 0; c < W; c++) {
+              const t = WORLD_MAP[r][c];
+              ctx2d.fillStyle = WORLD_TILE_COLORS[t];
+              ctx2d.fillRect(c * tw, r * th, tw + 0.5, th + 0.5);
+              const glyph = WORLD_TILE_GLYPHS[t];
+              if (glyph) {
+                ctx2d.font = `bold ${Math.round(th * 0.6)}px VT323, monospace`;
+                ctx2d.fillStyle = '#63c7a4';
+                ctx2d.textAlign = 'center';
+                ctx2d.textBaseline = 'middle';
+                ctx2d.fillText(glyph, c * tw + tw / 2, r * th + th / 2);
+              }
+            }
+          }
+          for(const sh of SHRINE_TILES){
+            if(!sh.revealed){ if(Math.abs(worldPlayer.y-sh.row)+Math.abs(worldPlayer.x-sh.col)<=1) sh.revealed=true; }
+            if(sh.revealed&&!sh.used){
+              ctx2d.fillStyle='#2a1a4a'; ctx2d.fillRect(sh.col*tw,sh.row*th,tw+0.5,th+0.5);
+              ctx2d.font=`bold ${Math.round(th*0.6)}px VT323,monospace`; ctx2d.fillStyle='#c084fc';
+              ctx2d.textAlign='center'; ctx2d.textBaseline='middle';
+              ctx2d.fillText('?',sh.col*tw+tw/2,sh.row*th+th/2);
+            }
+          }
+          ctx2d.font = `${Math.round(th * 0.75)}px VT323, monospace`;
+          ctx2d.fillStyle = '#00ff88';
+          ctx2d.textAlign = 'center';
+          ctx2d.textBaseline = 'middle';
+          ctx2d.fillText('▲', worldPlayer.x * tw + tw / 2, worldPlayer.y * th + th / 2);
+          const prompt = document.getElementById('hub-interact-prompt');
+          if (!prompt) return;
+          const key = `${worldPlayer.y},${worldPlayer.x}`;
+          const zone = INTERACTION_ZONES[key];
+          if (zone) { prompt.textContent = '▶ Enter ' + zone.name; prompt.style.display = 'block'; }
+          else { prompt.style.display = 'none'; }
+        }
+        function worldPlayerMove(dx, dy) {
+          if (document.getElementById('start-hub').classList.contains('hidden')) return;
+          const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
+          if (nx < 0 || nx > 10 || ny < 0 || ny > 14) return;
+          const t = WORLD_MAP[ny][nx];
+          if (t === 2 || t === 4 || t === 5 || t === 6 || t === 7) return;
+          worldPlayer.x = nx; worldPlayer.y = ny;
+          drawWorldMap();
+          playFootstep();
+        }
+        function centerBtnAction() {
+          if (!document.getElementById('start-hub').classList.contains('hidden')) {
+            const key = `${worldPlayer.y},${worldPlayer.x}`;
+            const zone = INTERACTION_ZONES[key];
+            if (zone) { if (zone.panel === 'dungeonselect') playGateRumble(); showStartPanel(zone.panel); return; }
+            const _sh=SHRINE_TILES.find(s=>s.row===worldPlayer.y&&s.col===worldPlayer.x&&s.revealed&&!s.used);
+            if(_sh){ _sh.used=true; const _buff=['hp','gold','potion'][Math.floor(Math.random()*3)]; gameState._hubBuff=_buff; let _desc=''; if(_buff==='hp'){_desc='+25 Max HP this run';}else if(_buff==='gold'){const _sc=loadCharacter();if(_sc){_sc.gold=(_sc.gold||0)+30;saveCharacter(_sc);}_desc='+30 Gold';}else{const _sc=loadCharacter();if(_sc){_sc.potions=Math.min(3,(_sc.potions||0)+1);saveCharacter(_sc);}_desc='+1 Potion';} const _pr=document.getElementById('hub-interact-prompt'); if(_pr){_pr.textContent='◆ Shrine: '+_desc;_pr.style.display='block';setTimeout(()=>{_pr.style.display='none';},2000);} drawWorldMap(); return; }
+            return;
+          }
+          swingFlail();
+        }
+        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='exp_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); worldPlayer={x:5,y:12}; SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();},0); }
         function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('exp_character'); _selectedClass=null; showStartPanel('charcreate'); }
-        function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if(gameState._isBossDungeon&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
+        function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if((gameState._isBossDungeon||gameState._isLichDungeon)&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
         function finishRunSummary() { const rs=get('run-summary'); if(rs) rs.classList.add('hidden'); get('start-overlay').classList.remove('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
-        function showEndgameScreen() { const eo=document.getElementById('endgame-overlay'); if(!eo){ finishRunSummary(); return; } const ef=id=>document.getElementById(id); const ch=loadCharacter(); const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):''; if(ef('eg-sub')) ef('eg-sub').textContent=ch?`${ch.name} — ${cap(ch.class)} — Level ${ch.level}`:''; if(ef('eg-xp')) ef('eg-xp').textContent='+'+(gameState._runXpGained||0); if(ef('eg-gold')) ef('eg-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lur=ef('eg-levelup-row'); const nl=ef('eg-newlevel'); if(gameState._runNewLevel){ if(lur){ lur.style.display='flex'; lur.classList.remove('hidden'); } if(nl) nl.textContent='Level '+gameState._runNewLevel+'!'; } else { if(lur){ lur.style.display='none'; } } const drop=gameState._pendingLootDrop; const eld=ef('eg-loot'); if(drop&&eld){ eld.style.opacity='1'; if(ef('eg-loot-name')) ef('eg-loot-name').textContent=drop.name; if(ef('eg-loot-slot')) ef('eg-loot-slot').textContent=drop.slot; const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('eg-loot-stats')) ef('eg-loot-stats').textContent=sb.join(' · ')||'—'; } get('start-overlay').classList.remove('hidden'); eo.classList.remove('hidden'); }
+        function showEndgameScreen() { const eo=document.getElementById('endgame-overlay'); if(!eo){ finishRunSummary(); return; } const ef=id=>document.getElementById(id); const ch=loadCharacter(); const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):''; const _egt=ef('eg-title'); if(_egt){ if(gameState._isLichDungeon){ _egt.textContent='LICH SANCTUM PURGED'; _egt.style.color='#c084fc'; _egt.style.textShadow='0 0 18px rgba(192,132,252,0.5)'; } else { _egt.textContent='REALM CONQUERED'; _egt.style.color='#fde047'; _egt.style.textShadow='0 0 18px rgba(253,224,71,0.5)'; } } if(ef('eg-sub')) ef('eg-sub').textContent=ch?`${ch.name} — ${cap(ch.class)} — Level ${ch.level} — Prestige ${gameState._isLichDungeon?'II':'I'}`:''; if(ef('eg-xp')) ef('eg-xp').textContent='+'+(gameState._runXpGained||0); if(ef('eg-gold')) ef('eg-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lur=ef('eg-levelup-row'); const nl=ef('eg-newlevel'); if(gameState._runNewLevel){ if(lur){ lur.style.display='flex'; lur.classList.remove('hidden'); } if(nl) nl.textContent='Level '+gameState._runNewLevel+'!'; } else { if(lur){ lur.style.display='none'; } } const drop=gameState._pendingLootDrop; const eld=ef('eg-loot'); if(drop&&eld){ eld.style.opacity='1'; if(ef('eg-loot-name')) ef('eg-loot-name').textContent=drop.name; if(ef('eg-loot-slot')) ef('eg-loot-slot').textContent=drop.slot; const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('eg-loot-stats')) ef('eg-loot-stats').textContent=sb.join(' · ')||'—'; } get('start-overlay').classList.remove('hidden'); eo.classList.remove('hidden'); }
         function finishEndgame() { const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
         function newGamePlus() { const ch=loadCharacter(); if(!ch) return; const b=CLASS_BASE[ch.class]; ch.prestige=(ch.prestige||0)+1; ch.level=1; ch.xp=0; ch.maxHp=b.maxHp; ch.attack=b.attack; ch.defense=b.defense; ch.crit=b.crit||0; ch.xpBonus=b.xpBonus||1; ch.gear={weapon:null,armour:null}; ch.quests=_freshQuests(3); saveCharacter(ch); const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); gameState._pendingLootDrop=null; _explrLog(`${ch.name} began Prestige ${ch.prestige}!`); showHub(); }
         // ──────────────────────────────────────────────────────────────────────
@@ -2615,7 +2757,7 @@
           saveCharacter(ch); renderHubShop();
           const gEl=document.getElementById('hub-hero-gold'); if(gEl) gEl.textContent=ch.gold+' G';
         }
-        function showStartPanel(name, fromPopstate=false) { ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
+        function showStartPanel(name, fromPopstate=false) { if(name!=='hub') stopHubAmbience(); ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
         history.replaceState({panel:'main'},'');
         window.addEventListener('popstate', function(e){ const ov=document.getElementById('start-overlay'); if(!ov) return; const _goHome=()=>{ if(loadCharacter()) showHub(); else showStartPanel('charcreate',true); }; if(!ov.classList.contains('hidden')){ _goHome(); } else if(gameState.gameStarted&&!gameState.isGameOver){ stopDungeonMusic(); cancelAnimationFrame(_rafId); gameState.gameStarted=false; gameState.menuOpen=false; get('menu-overlay').classList.add('hidden'); get('mobile-controls').classList.add('hidden'); ov.classList.remove('hidden'); _goHome(); } });
 
@@ -2682,7 +2824,7 @@
         (function(){ if(localStorage.getItem('exp_leftHanded')==='1'){ gameState.leftHanded=true; const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.add('left-handed'); ['handed-toggle','ig-handed-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText='ON';}); } })();
         (function(){ var k='exp_wipe_v1'; if(localStorage.getItem(k)!=='1'){ localStorage.removeItem('exp_highscores'); localStorage.removeItem('exp_last_journey'); localStorage.setItem(k,'1'); } })();
 
-        function startGame(replaySeed=null) { history.pushState({panel:'game'},''); initAudio(); cancelAnimationFrame(_rafId); const p=gameState.player; const _ch=loadCharacter(); const _chHp=_ch?_ch.maxHp:100; const _chAtk=_ch?(_ch.attack-1.0):0; const _chDef=_ch?Math.max(0,(_ch.defense-1.0)*5):0; const _chWpn=_ch&&_ch.gear&&_ch.gear.weapon; const _chArm=_ch&&_ch.gear&&_ch.gear.armour; const _gearAtkFlat=_chWpn?(_chWpn.atkBonus||0):0; const _gearDefBonus=_chArm?(_chArm.defBonus||0):0; const _gearHpBonus=_chArm?(_chArm.hpBonus||0):0; const _hubPotions=_ch?(_ch.potions||0):0; if(_ch&&_ch.potions){_ch.potions=0;saveCharacter(_ch);} p.hp=p.maxHp=_chHp+_gearHpBonus; p.potions=_hubPotions; p.armourPotions=0; p.armor=Math.round(_chDef+_gearDefBonus); p.score=0; p.exp=0; p.kills=0; p.gold=0; p.steps=0; p.level=1; p.animTimer=0; p.damagePots=0; p.damageBonusPct=_chAtk; p.gearAtkFlat=_gearAtkFlat; p._critChance=_ch?(_ch.crit||0.2):0.2; p.luckyStrike=false; p.killScore=0; p.floorBonus=0; p.chaliceBonus=0; p.hitFlash=0; p.armourFlash=0; p.dmgDir=null; p.dmgDirTimer=0; gameState._runXpGained=0; gameState._runGoldGained=0; gameState._runNewLevel=0; gameState._runPotionsUsed=0; gameState._pendingLootDrop=null; gameState.timeLeft=300; gameState.isGameOver=false; gameState.menuOpen=false; gameState.shopOpen=false; gameState.isTransitioning=false; gameState.isLevelingUp=false; gameState.hasChalice=false; gameState.hasKey=false; gameState.seen=new Set(); gameState.journeyFloors=[]; gameState.currentFloor=null; gameState.lastJourney=null; gameState.lastKillTime=0; gameState.comboCount=0; gameState.floatNums=[]; gameState.timeWarnPlayed=false; gameState.lastDamageTime=0; gameState.hiddenRooms=[]; gameState.actionLog=[]; const _seed=replaySeed!=null?replaySeed:gameState.challengeSeed; if(_seed!=null){gameState.runStartIndex=_seed;gameState.runFloor=1;loadFloor(_seed);}else{gameState.challengeSeed=null;generateLevel();} const go=get('game-over'); if(go) go.classList.add('hidden'); const mc=get('mobile-controls'); if(mc) mc.classList.remove('hidden'); gameState.gameStarted=true; get('start-overlay').classList.add('hidden'); lastT=performance.now(); startDungeonMusic(); _rafId=requestAnimationFrame(loop); }
+        function startGame(replaySeed=null) { history.pushState({panel:'game'},''); initAudio(); cancelAnimationFrame(_rafId); if(gameState._difficulty!=='boss2') gameState._isLichDungeon=false; const p=gameState.player; const _ch=loadCharacter(); const _chHp=_ch?_ch.maxHp:100; const _chAtk=_ch?(_ch.attack-1.0):0; const _chDef=_ch?Math.max(0,(_ch.defense-1.0)*5):0; const _chWpn=_ch&&_ch.gear&&_ch.gear.weapon; const _chArm=_ch&&_ch.gear&&_ch.gear.armour; const _gearAtkFlat=_chWpn?(_chWpn.atkBonus||0):0; const _gearDefBonus=_chArm?(_chArm.defBonus||0):0; const _gearHpBonus=_chArm?(_chArm.hpBonus||0):0; const _hubPotions=_ch?(_ch.potions||0):0; if(_ch&&_ch.potions){_ch.potions=0;saveCharacter(_ch);} const _shrineHp=(gameState._hubBuff==='hp')?25:0; gameState._hubBuff=null; p.hp=p.maxHp=_chHp+_gearHpBonus+_shrineHp; p.potions=_hubPotions; p.armourPotions=0; p.armor=Math.round(_chDef+_gearDefBonus); p.score=0; p.exp=0; p.kills=0; p.gold=0; p.steps=0; p.level=1; p.animTimer=0; p.damagePots=0; p.damageBonusPct=_chAtk; p.gearAtkFlat=_gearAtkFlat; p._critChance=_ch?(_ch.crit||0.2):0.2; p.luckyStrike=false; p.killScore=0; p.floorBonus=0; p.chaliceBonus=0; p.hitFlash=0; p.armourFlash=0; p.dmgDir=null; p.dmgDirTimer=0; gameState._runXpGained=0; gameState._runGoldGained=0; gameState._runNewLevel=0; gameState._runPotionsUsed=0; gameState._pendingLootDrop=null; gameState.timeLeft=300; gameState.isGameOver=false; gameState.menuOpen=false; gameState.shopOpen=false; gameState.isTransitioning=false; gameState.isLevelingUp=false; gameState.hasChalice=false; gameState.hasKey=false; gameState.seen=new Set(); gameState.journeyFloors=[]; gameState.currentFloor=null; gameState.lastJourney=null; gameState.lastKillTime=0; gameState.comboCount=0; gameState.floatNums=[]; gameState.timeWarnPlayed=false; gameState.lastDamageTime=0; gameState.hiddenRooms=[]; gameState.actionLog=[]; const _seed=replaySeed!=null?replaySeed:gameState.challengeSeed; if(_seed!=null){gameState.runStartIndex=_seed;gameState.runFloor=1;loadFloor(_seed);}else{gameState.challengeSeed=null;generateLevel();} const go=get('game-over'); if(go) go.classList.add('hidden'); const mc=get('mobile-controls'); if(mc) mc.classList.remove('hidden'); gameState.gameStarted=true; get('start-overlay').classList.add('hidden'); lastT=performance.now(); startDungeonMusic(); renderQuestTracker(); _rafId=requestAnimationFrame(loop); }
         let lastT=0, _rafId=0; function loop() { _rafId=requestAnimationFrame(loop); if(!gameState.isGameOver&&!gameState.menuOpen){ if(gameState.gameStarted){ const now=performance.now(); if(now-lastT>=1000){ gameState.timeLeft--; lastT=now; if(gameState.timeLeft===60&&!gameState.timeWarnPlayed){ gameState.timeWarnPlayed=true; playSynth(440,'square',0.15,0.08); setTimeout(()=>playSynth(330,'square',0.10,0.12),120); } if(gameState.timeLeft<=0){get('game-over-msg').innerText="TIME EXPIRED"; endGame(false,true);} } } draw(); } }
 
         window.onload = () => {
