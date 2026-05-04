@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>xPL0R3Rx v0.0.4</title>
+    <title>xPL0R3Rx v0.0.6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -33,6 +33,17 @@
             image-rendering: pixelated;
             height: 100dvh;
             max-height: 100dvh;
+            /* Make body a flex column so <header> and <main> stack correctly
+               and main's flex-grow actually works. Without this, main was a
+               plain block and could sit anywhere relative to the header. */
+            display: flex;
+            flex-direction: column;
+            /* Push content below iOS notch / Android punch-hole. The previous
+               layout had no top safe-area padding, so on phones with a notch
+               the header was being clipped above the visual viewport. */
+            padding-top: env(safe-area-inset-top);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         #landscape-warn {
@@ -711,7 +722,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.4</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.6</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -972,195 +983,190 @@
                         <!-- World map scene -->
                         <div id="hub-scene-wrap" style="position:relative;width:100%;overflow:hidden">
                           <svg id="hub-scene-svg" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
-                            <!-- Forest floor -->
-                            <rect width="220" height="300" fill="#071a0a"/>
-                            <!-- Village square clearing (rows 11-13, y=220-280) -->
-                            <rect x="0" y="220" width="220" height="60" fill="#0e2010"/>
-                            <line x1="0" y1="240" x2="220" y2="240" stroke="#081508" stroke-width="1"/>
-                            <line x1="0" y1="260" x2="220" y2="260" stroke="#081508" stroke-width="1"/>
-                            <line x1="55" y1="220" x2="55" y2="280" stroke="#081508" stroke-width="1"/>
-                            <line x1="110" y1="220" x2="110" y2="280" stroke="#081508" stroke-width="1"/>
-                            <line x1="165" y1="220" x2="165" y2="280" stroke="#081508" stroke-width="1"/>
-                            <!-- Gate row (y=280-300) -->
-                            <rect x="0" y="280" width="80" height="20" fill="#071a0a"/>
-                            <rect x="140" y="280" width="80" height="20" fill="#071a0a"/>
-                            <rect x="80" y="280" width="60" height="20" fill="#0f1e2e"/>
-                            <rect x="80" y="280" width="10" height="20" fill="#1a2e42"/>
-                            <rect x="130" y="280" width="10" height="20" fill="#1a2e42"/>
-                            <rect x="90" y="285" width="40" height="15" fill="#010810"/>
-                            <rect x="90" y="284" width="40" height="2" fill="#90e0ef" opacity="0.4"/>
-                            <rect x="93" y="281" width="3" height="2" fill="#90e0ef" opacity="0.5"/>
-                            <rect x="112" y="281" width="3" height="2" fill="#90e0ef" opacity="0.5"/>
-                            <rect x="124" y="281" width="3" height="2" fill="#90e0ef" opacity="0.5"/>
-                            <!-- Torches beside gate -->
-                            <rect x="76" y="272" width="4" height="10" fill="#2d1b0e"/>
-                            <polygon points="78,266 74,274 82,274" fill="#f97316" opacity="0.6"/>
-                            <rect x="140" y="272" width="4" height="10" fill="#2d1b0e"/>
-                            <polygon points="142,266 138,274 146,274" fill="#f97316" opacity="0.6"/>
-                            <!-- Scribe's Tower (x=20,y=20,w=40,h=80) -->
-                            <rect x="20" y="18" width="42" height="84" fill="#030e0a"/>
-                            <rect x="20" y="20" width="40" height="80" fill="#1a2e3a"/>
-                            <rect x="20" y="14" width="9" height="8" fill="#1a2e3a"/>
-                            <rect x="33" y="14" width="9" height="8" fill="#1a2e3a"/>
-                            <rect x="46" y="14" width="9" height="8" fill="#1a2e3a"/>
-                            <rect x="18" y="12" width="44" height="4" fill="#162636"/>
-                            <rect x="24" y="26" width="10" height="14" fill="#0a1a24"/>
-                            <rect x="46" y="26" width="10" height="14" fill="#0a1a24"/>
-                            <rect x="25" y="27" width="8" height="5" fill="#fde047" opacity="0.15"/>
-                            <rect x="47" y="27" width="8" height="5" fill="#fde047" opacity="0.1"/>
-                            <rect x="24" y="50" width="10" height="14" fill="#0a1a24"/>
-                            <rect x="46" y="50" width="10" height="14" fill="#0a1a24"/>
-                            <rect x="25" y="51" width="8" height="5" fill="#a8d8c0" opacity="0.18"/>
-                            <line x1="20" y1="45" x2="60" y2="45" stroke="#0e1e2a" stroke-width="1"/>
-                            <line x1="20" y1="70" x2="60" y2="70" stroke="#0e1e2a" stroke-width="1"/>
-                            <line x1="20" y1="90" x2="60" y2="90" stroke="#0e1e2a" stroke-width="1"/>
-                            <line x1="40" y1="20" x2="40" y2="100" stroke="#0e1e2a" stroke-width="1" opacity="0.4"/>
-                            <rect x="30" y="84" width="14" height="16" fill="#060e14"/>
-                            <rect x="29" y="83" width="16" height="4" rx="2" fill="#162636"/>
-                            <!-- Tree: col 0 upper -->
-                            <rect x="2" y="94" width="5" height="8" fill="#2d1b0e"/>
-                            <polygon points="4.5,80 0,94 9,94" fill="#0d3815"/>
-                            <polygon points="4.5,85 1,94 8,94" fill="#0f4a1d"/>
-                            <!-- Top row trees -->
-                            <rect x="62" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="64.5,0 59,14 70,14" fill="#0d3815"/><polygon points="64.5,5 60,14 69,14" fill="#0f4a1d"/>
-                            <rect x="82" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="84.5,0 79,14 90,14" fill="#0d3815"/><polygon points="84.5,5 80,14 89,14" fill="#0f4a1d"/>
-                            <rect x="102" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,0 99,14 110,14" fill="#0d3815"/><polygon points="104.5,5 100,14 109,14" fill="#0f4a1d"/>
-                            <rect x="122" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,0 119,14 130,14" fill="#0d3815"/><polygon points="124.5,5 120,14 129,14" fill="#0f4a1d"/>
-                            <rect x="142" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,0 139,14 150,14" fill="#0d3815"/><polygon points="144.5,5 140,14 149,14" fill="#0f4a1d"/>
-                            <rect x="162" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,0 159,14 170,14" fill="#0d3815"/><polygon points="164.5,5 160,14 169,14" fill="#0f4a1d"/>
-                            <rect x="182" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,0 179,14 190,14" fill="#0d3815"/><polygon points="184.5,5 180,14 189,14" fill="#0f4a1d"/>
-                            <rect x="206" y="14" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,0 202,14 215,14" fill="#0d3815"/><polygon points="208.5,5 203,14 214,14" fill="#0f4a1d"/>
-                            <!-- Right edge trees (col 10) -->
-                            <rect x="206" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,20 202,34 215,34" fill="#0d3815"/>
-                            <rect x="206" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,40 202,54 215,54" fill="#0d3815"/>
-                            <rect x="206" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,60 202,74 215,74" fill="#0d3815"/>
-                            <rect x="206" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,80 202,94 215,94" fill="#0d3815"/>
-                            <rect x="206" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,100 202,114 215,114" fill="#0d3815"/>
-                            <rect x="206" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="208.5,120 202,134 215,134" fill="#0d3815"/>
-                            <!-- Forest trees (cols 3-9, rows 1-6 staggered) -->
-                            <rect x="62" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="64.5,20 59,34 70,34" fill="#0d3815"/>
-                            <rect x="102" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,20 99,34 110,34" fill="#0d3815"/>
-                            <rect x="122" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,20 119,34 130,34" fill="#0d3815"/>
-                            <rect x="142" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,20 139,34 150,34" fill="#0d3815"/>
-                            <rect x="162" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,20 159,34 170,34" fill="#0d3815"/>
-                            <rect x="182" y="34" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,20 179,34 190,34" fill="#0d3815"/>
-                            <rect x="82" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="84.5,40 79,54 90,54" fill="#0d3815"/>
-                            <rect x="102" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,40 99,54 110,54" fill="#0d3815"/>
-                            <rect x="122" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,40 119,54 130,54" fill="#0d3815"/>
-                            <rect x="142" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,40 139,54 150,54" fill="#0d3815"/>
-                            <rect x="162" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,40 159,54 170,54" fill="#0d3815"/>
-                            <rect x="182" y="54" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,40 179,54 190,54" fill="#0d3815"/>
-                            <rect x="62" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="64.5,60 59,74 70,74" fill="#0d3815"/>
-                            <rect x="82" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="84.5,60 79,74 90,74" fill="#0d3815"/>
-                            <rect x="102" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,60 99,74 110,74" fill="#0d3815"/>
-                            <rect x="122" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,60 119,74 130,74" fill="#0d3815"/>
-                            <rect x="142" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,60 139,74 150,74" fill="#0d3815"/>
-                            <rect x="162" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,60 159,74 170,74" fill="#0d3815"/>
-                            <rect x="182" y="74" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,60 179,74 190,74" fill="#0d3815"/>
-                            <rect x="82" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="84.5,80 79,94 90,94" fill="#0d3815"/>
-                            <rect x="102" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,80 99,94 110,94" fill="#0d3815"/>
-                            <rect x="122" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,80 119,94 130,94" fill="#0d3815"/>
-                            <rect x="142" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,80 139,94 150,94" fill="#0d3815"/>
-                            <rect x="162" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,80 159,94 170,94" fill="#0d3815"/>
-                            <rect x="182" y="94" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,80 179,94 190,94" fill="#0d3815"/>
-                            <rect x="62" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="64.5,100 59,114 70,114" fill="#0d3815"/>
-                            <rect x="82" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="84.5,100 79,114 90,114" fill="#0d3815"/>
-                            <rect x="102" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,100 99,114 110,114" fill="#0d3815"/>
-                            <rect x="122" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,100 119,114 130,114" fill="#0d3815"/>
-                            <rect x="142" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,100 139,114 150,114" fill="#0d3815"/>
-                            <rect x="162" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,100 159,114 170,114" fill="#0d3815"/>
-                            <rect x="182" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,100 179,114 190,114" fill="#0d3815"/>
-                            <rect x="62" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="64.5,120 59,134 70,134" fill="#0d3815"/>
-                            <rect x="102" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="104.5,120 99,134 110,134" fill="#0d3815"/>
-                            <rect x="122" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="124.5,120 119,134 130,134" fill="#0d3815"/>
-                            <rect x="142" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="144.5,120 139,134 150,134" fill="#0d3815"/>
-                            <rect x="162" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="164.5,120 159,134 170,134" fill="#0d3815"/>
-                            <rect x="182" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="184.5,120 179,134 190,134" fill="#0d3815"/>
-                            <!-- Left edge trees (col 0, rows 5-7) -->
-                            <rect x="2" y="114" width="5" height="8" fill="#2d1b0e"/><polygon points="4.5,100 0,114 9,114" fill="#0d3815"/>
-                            <rect x="2" y="134" width="5" height="8" fill="#2d1b0e"/><polygon points="4.5,120 0,134 9,134" fill="#0d3815"/>
-                            <!-- Tavern (x=80,y=140,w=60,h=80) -->
-                            <rect x="78" y="136" width="64" height="86" fill="#030e0a"/>
-                            <polygon points="110,132 78,152 142,152" fill="#111e2a"/>
-                            <rect x="86" y="122" width="10" height="18" fill="#162030"/>
-                            <rect x="84" y="120" width="14" height="4" fill="#1a2838"/>
-                            <circle cx="91" cy="116" r="3" fill="#1a2838" opacity="0.5"/>
-                            <circle cx="94" cy="110" r="2.5" fill="#1a2838" opacity="0.3"/>
-                            <rect x="80" y="150" width="60" height="70" fill="#1c2a38"/>
-                            <line x1="80" y1="168" x2="140" y2="168" stroke="#101e2c" stroke-width="1"/>
-                            <line x1="80" y1="186" x2="140" y2="186" stroke="#101e2c" stroke-width="1"/>
-                            <line x1="80" y1="204" x2="140" y2="204" stroke="#101e2c" stroke-width="1"/>
-                            <line x1="110" y1="152" x2="110" y2="220" stroke="#101e2c" stroke-width="1" opacity="0.4"/>
-                            <rect x="85" y="155" width="14" height="16" fill="#0a1828" rx="1"/>
-                            <rect x="86" y="156" width="12" height="6" fill="#d97706" opacity="0.2"/>
-                            <rect x="121" y="155" width="14" height="16" fill="#0a1828" rx="1"/>
-                            <rect x="122" y="156" width="12" height="6" fill="#d97706" opacity="0.2"/>
-                            <rect x="95" y="173" width="30" height="9" fill="#1a0e08"/>
-                            <rect x="94" y="172" width="32" height="11" fill="none" stroke="#2d1b0e" stroke-width="1"/>
-                            <rect x="98" y="176" width="4" height="2" fill="#d97706" opacity="0.5"/>
-                            <rect x="107" y="176" width="4" height="2" fill="#d97706" opacity="0.5"/>
-                            <rect x="116" y="176" width="4" height="2" fill="#d97706" opacity="0.5"/>
-                            <rect x="103" y="198" width="14" height="22" fill="#080e18"/>
-                            <rect x="102" y="197" width="16" height="4" rx="2" fill="#1c2a38"/>
-                            <!-- Armory (x=20,y=160,w=60,h=60) -->
-                            <rect x="18" y="156" width="64" height="66" fill="#030e0a"/>
-                            <rect x="20" y="160" width="60" height="60" fill="#1c2830"/>
-                            <rect x="20" y="158" width="60" height="6" fill="#141e28"/>
-                            <rect x="22" y="152" width="8" height="8" fill="#141e28"/>
-                            <rect x="36" y="152" width="8" height="8" fill="#141e28"/>
-                            <rect x="50" y="152" width="8" height="8" fill="#141e28"/>
-                            <rect x="64" y="152" width="8" height="8" fill="#141e28"/>
-                            <line x1="20" y1="178" x2="80" y2="178" stroke="#0e1820" stroke-width="1"/>
-                            <line x1="20" y1="195" x2="80" y2="195" stroke="#0e1820" stroke-width="1"/>
-                            <line x1="50" y1="160" x2="50" y2="220" stroke="#0e1820" stroke-width="1" opacity="0.4"/>
-                            <rect x="25" y="166" width="18" height="20" fill="#080e14"/>
-                            <rect x="26" y="167" width="16" height="14" fill="#7f1d1d" opacity="0.25"/>
-                            <rect x="26" y="176" width="16" height="8" fill="#dc2626" opacity="0.1"/>
-                            <rect x="27" y="144" width="10" height="16" fill="#141e28"/>
-                            <rect x="25" y="142" width="14" height="4" fill="#1a2430"/>
-                            <circle cx="32" cy="138" r="3" fill="#1a2430" opacity="0.55"/>
-                            <circle cx="36" cy="132" r="2.5" fill="#1a2430" opacity="0.35"/>
-                            <rect x="38" y="196" width="20" height="24" fill="#060c14"/>
-                            <rect x="37" y="195" width="22" height="4" fill="#141e28"/>
-                            <!-- Merchant (x=140,y=160,w=60,h=60) -->
-                            <rect x="138" y="156" width="64" height="66" fill="#030e0a"/>
-                            <rect x="140" y="160" width="60" height="60" fill="#1a2e20"/>
-                            <rect x="140" y="160" width="60" height="12" fill="#132414"/>
-                            <line x1="149" y1="160" x2="149" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <line x1="158" y1="160" x2="158" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <line x1="167" y1="160" x2="167" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <line x1="176" y1="160" x2="176" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <line x1="185" y1="160" x2="185" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <line x1="194" y1="160" x2="194" y2="172" stroke="#0d1c10" stroke-width="1.5"/>
-                            <rect x="140" y="172" width="60" height="48" fill="#1a2e20"/>
-                            <line x1="140" y1="190" x2="200" y2="190" stroke="#0d1e14" stroke-width="1"/>
-                            <line x1="140" y1="205" x2="200" y2="205" stroke="#0d1e14" stroke-width="1"/>
-                            <line x1="170" y1="172" x2="170" y2="220" stroke="#0d1e14" stroke-width="1" opacity="0.4"/>
-                            <rect x="145" y="177" width="14" height="16" fill="#080e18" rx="1"/>
-                            <rect x="146" y="178" width="12" height="6" fill="#90e0ef" opacity="0.12"/>
-                            <rect x="181" y="177" width="14" height="16" fill="#080e18" rx="1"/>
-                            <rect x="182" y="178" width="12" height="6" fill="#90e0ef" opacity="0.12"/>
-                            <rect x="146" y="195" width="48" height="5" fill="#060e10"/>
-                            <circle cx="154" cy="197" r="2" fill="#90e0ef" opacity="0.45"/>
-                            <circle cx="163" cy="197" r="2" fill="#fde047" opacity="0.45"/>
-                            <circle cx="172" cy="197" r="2" fill="#c084fc" opacity="0.45"/>
-                            <circle cx="181" cy="197" r="2" fill="#60a5fa" opacity="0.45"/>
-                            <circle cx="190" cy="197" r="2" fill="#f97316" opacity="0.45"/>
-                            <rect x="156" y="204" width="18" height="16" fill="#050c10"/>
-                            <rect x="155" y="203" width="20" height="3" fill="#1a2e20"/>
-                            <rect x="159" y="205" width="2" height="12" fill="#90e0ef" opacity="0.12"/>
-                            <rect x="164" y="205" width="2" height="12" fill="#90e0ef" opacity="0.12"/>
-                            <rect x="169" y="205" width="2" height="12" fill="#90e0ef" opacity="0.12"/>
+                            <!-- defs -->
+                            <defs><radialGradient id="clearing-glow" cx="50%" cy="76%" r="45%"><stop offset="0%" stop-color="#fbbf24" stop-opacity="0.07"/><stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/></radialGradient></defs>
+                            <rect width="220" height="300" fill="#0d1a08"/>
+                            <!-- Tall sentinel trees -->
+                            <rect x="6" y="51" width="6" height="14" fill="#3d1f00"/><polygon points="9,29 -7,53 25,53" fill="#1a4020"/><polygon points="9,13 -1,35 19,35" fill="#2d6a35"/><polygon points="9,1 3,17 15,17" fill="#4a9455"/>
+                            <rect x="207" y="46" width="6" height="14" fill="#3d1f00"/><polygon points="210,24 194,48 226,48" fill="#1a4020"/><polygon points="210,8 200,30 220,30" fill="#2d6a35"/><polygon points="210,-4 204,12 216,12" fill="#4a9455"/>
+                            <!-- Top row medium trees -->
+                            <rect x="62" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="64,18 53,36 75,36" fill="#1a4020"/><polygon points="64,8 57,24 71,24" fill="#2d6a35"/><polygon points="64,0 60,12 68,12" fill="#4a9455"/>
+                            <rect x="82" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="84,18 73,36 95,36" fill="#1a4020"/><polygon points="84,8 77,24 91,24" fill="#2d6a35"/><polygon points="84,0 80,12 88,12" fill="#4a9455"/>
+                            <rect x="102" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="104,18 93,36 115,36" fill="#1a4020"/><polygon points="104,8 97,24 111,24" fill="#2d6a35"/><polygon points="104,0 100,12 108,12" fill="#4a9455"/>
+                            <rect x="122" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="124,18 113,36 135,36" fill="#1a4020"/><polygon points="124,8 117,24 131,24" fill="#2d6a35"/><polygon points="124,0 120,12 128,12" fill="#4a9455"/>
+                            <rect x="142" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="144,18 133,36 155,36" fill="#1a4020"/><polygon points="144,8 137,24 151,24" fill="#2d6a35"/><polygon points="144,0 140,12 148,12" fill="#4a9455"/>
+                            <rect x="162" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="164,18 153,36 175,36" fill="#1a4020"/><polygon points="164,8 157,24 171,24" fill="#2d6a35"/><polygon points="164,0 160,12 168,12" fill="#4a9455"/>
+                            <rect x="182" y="34" width="4" height="10" fill="#3d1f00"/><polygon points="184,18 173,36 195,36" fill="#1a4020"/><polygon points="184,8 177,24 191,24" fill="#2d6a35"/><polygon points="184,0 180,12 188,12" fill="#4a9455"/>
+                            <!-- Left column trees -->
+                            <rect x="6" y="92" width="4" height="10" fill="#3d1f00"/><polygon points="8,76 -3,94 19,94" fill="#1a4020"/><polygon points="8,66 1,82 15,82" fill="#2d6a35"/><polygon points="8,58 4,70 12,70" fill="#4a9455"/>
+                            <rect x="6" y="118" width="4" height="10" fill="#3d1f00"/><polygon points="8,102 -3,120 19,120" fill="#1a4020"/><polygon points="8,92 1,108 15,108" fill="#2d6a35"/><polygon points="8,84 4,96 12,96" fill="#4a9455"/>
+                            <rect x="6" y="144" width="4" height="10" fill="#3d1f00"/><polygon points="8,128 -3,146 19,146" fill="#1a4020"/><polygon points="8,118 1,134 15,134" fill="#2d6a35"/><polygon points="8,110 4,122 12,122" fill="#4a9455"/>
+                            <!-- Right column trees -->
+                            <rect x="210" y="80" width="4" height="10" fill="#3d1f00"/><polygon points="212,64 201,82 223,82" fill="#1a4020"/><polygon points="212,54 205,70 219,70" fill="#2d6a35"/><polygon points="212,46 208,58 216,58" fill="#4a9455"/>
+                            <rect x="210" y="104" width="4" height="10" fill="#3d1f00"/><polygon points="212,88 201,106 223,106" fill="#1a4020"/><polygon points="212,78 205,94 219,94" fill="#2d6a35"/><polygon points="212,70 208,82 216,82" fill="#4a9455"/>
+                            <rect x="210" y="130" width="4" height="10" fill="#3d1f00"/><polygon points="212,114 201,132 223,132" fill="#1a4020"/><polygon points="212,104 205,120 219,120" fill="#2d6a35"/><polygon points="212,96 208,108 216,108" fill="#4a9455"/>
+                            <rect x="210" y="148" width="4" height="10" fill="#3d1f00"/><polygon points="212,132 201,150 223,150" fill="#1a4020"/><polygon points="212,122 205,138 219,138" fill="#2d6a35"/><polygon points="212,114 208,126 216,126" fill="#4a9455"/>
+                            <!-- Interior forest row 1 -->
+                            <rect x="66" y="52" width="4" height="10" fill="#3d1f00"/><polygon points="68,36 57,54 79,54" fill="#1a4020"/><polygon points="68,26 61,42 75,42" fill="#2d6a35"/><polygon points="68,18 64,30 72,30" fill="#4a9455"/>
+                            <rect x="86" y="50" width="4" height="10" fill="#3d1f00"/><polygon points="88,34 77,52 99,52" fill="#1a4020"/><polygon points="88,24 81,40 95,40" fill="#2d6a35"/><polygon points="88,16 84,28 92,28" fill="#4a9455"/>
+                            <rect x="106" y="50" width="4" height="10" fill="#3d1f00"/><polygon points="108,34 97,52 119,52" fill="#1a4020"/><polygon points="108,24 101,40 115,40" fill="#2d6a35"/><polygon points="108,16 104,28 112,28" fill="#4a9455"/>
+                            <rect x="126" y="48" width="4" height="10" fill="#3d1f00"/><polygon points="128,32 117,50 139,50" fill="#1a4020"/><polygon points="128,22 121,38 135,38" fill="#2d6a35"/><polygon points="128,14 124,26 132,26" fill="#4a9455"/>
+                            <rect x="146" y="50" width="4" height="10" fill="#3d1f00"/><polygon points="148,34 137,52 159,52" fill="#1a4020"/><polygon points="148,24 141,40 155,40" fill="#2d6a35"/><polygon points="148,16 144,28 152,28" fill="#4a9455"/>
+                            <rect x="166" y="48" width="4" height="10" fill="#3d1f00"/><polygon points="168,32 157,50 179,50" fill="#1a4020"/><polygon points="168,22 161,38 175,38" fill="#2d6a35"/><polygon points="168,14 164,26 172,26" fill="#4a9455"/>
+                            <rect x="186" y="50" width="4" height="10" fill="#3d1f00"/><polygon points="188,34 177,52 199,52" fill="#1a4020"/><polygon points="188,24 181,40 195,40" fill="#2d6a35"/><polygon points="188,16 184,28 192,28" fill="#4a9455"/>
+                            <!-- Interior forest row 2 -->
+                            <rect x="66" y="70" width="4" height="10" fill="#3d1f00"/><polygon points="68,54 57,72 79,72" fill="#1a4020"/><polygon points="68,44 61,60 75,60" fill="#2d6a35"/><polygon points="68,36 64,48 72,48" fill="#4a9455"/>
+                            <rect x="87" y="74" width="3" height="8" fill="#3d1f00"/><polygon points="88,66 81,78 95,78" fill="#1a4020"/><polygon points="88,60 84,70 92,70" fill="#2d6a35"/><polygon points="88,54 85,62 91,62" fill="#4a9455"/>
+                            <rect x="106" y="68" width="4" height="10" fill="#3d1f00"/><polygon points="108,52 97,70 119,70" fill="#1a4020"/><polygon points="108,42 101,58 115,58" fill="#2d6a35"/><polygon points="108,34 104,46 112,46" fill="#4a9455"/>
+                            <rect x="126" y="68" width="4" height="10" fill="#3d1f00"/><polygon points="128,52 117,70 139,70" fill="#1a4020"/><polygon points="128,42 121,58 135,58" fill="#2d6a35"/><polygon points="128,34 124,46 132,46" fill="#4a9455"/>
+                            <rect x="146" y="68" width="4" height="10" fill="#3d1f00"/><polygon points="148,52 137,70 159,70" fill="#1a4020"/><polygon points="148,42 141,58 155,58" fill="#2d6a35"/><polygon points="148,34 144,46 152,46" fill="#4a9455"/>
+                            <rect x="166" y="68" width="4" height="10" fill="#3d1f00"/><polygon points="168,52 157,70 179,70" fill="#1a4020"/><polygon points="168,42 161,58 175,58" fill="#2d6a35"/><polygon points="168,34 164,46 172,46" fill="#4a9455"/>
+                            <rect x="186" y="68" width="4" height="10" fill="#3d1f00"/><polygon points="188,52 177,70 199,70" fill="#1a4020"/><polygon points="188,42 181,58 195,58" fill="#2d6a35"/><polygon points="188,34 184,46 192,46" fill="#4a9455"/>
+                            <!-- Interior forest row 3 -->
+                            <rect x="67" y="92" width="3" height="8" fill="#3d1f00"/><polygon points="68,84 61,96 75,96" fill="#1a4020"/><polygon points="68,78 64,88 72,88" fill="#2d6a35"/><polygon points="68,72 66,80 70,80" fill="#4a9455"/>
+                            <rect x="87" y="92" width="3" height="8" fill="#3d1f00"/><polygon points="88,84 81,96 95,96" fill="#1a4020"/><polygon points="88,78 84,88 92,88" fill="#2d6a35"/><polygon points="88,72 85,80 91,80" fill="#4a9455"/>
+                            <rect x="106" y="88" width="4" height="10" fill="#3d1f00"/><polygon points="108,72 97,90 119,90" fill="#1a4020"/><polygon points="108,62 101,78 115,78" fill="#2d6a35"/><polygon points="108,54 104,66 112,66" fill="#4a9455"/>
+                            <rect x="126" y="88" width="4" height="10" fill="#3d1f00"/><polygon points="128,72 117,90 139,90" fill="#1a4020"/><polygon points="128,62 121,78 135,78" fill="#2d6a35"/><polygon points="128,54 124,66 132,66" fill="#4a9455"/>
+                            <rect x="146" y="88" width="4" height="10" fill="#3d1f00"/><polygon points="148,72 137,90 159,90" fill="#1a4020"/><polygon points="148,62 141,78 155,78" fill="#2d6a35"/><polygon points="148,54 144,66 152,66" fill="#4a9455"/>
+                            <rect x="166" y="88" width="4" height="10" fill="#3d1f00"/><polygon points="168,72 157,90 179,90" fill="#1a4020"/><polygon points="168,62 161,78 175,78" fill="#2d6a35"/><polygon points="168,54 164,66 172,66" fill="#4a9455"/>
+                            <rect x="186" y="88" width="4" height="10" fill="#3d1f00"/><polygon points="188,72 177,90 199,90" fill="#1a4020"/><polygon points="188,62 181,78 195,78" fill="#2d6a35"/><polygon points="188,54 184,66 192,66" fill="#4a9455"/>
+                            <!-- Deciduous trees -->
+                            <rect x="98.5" y="76" width="3" height="14" fill="#3d1f00"/><ellipse cx="100" cy="64" rx="11" ry="13" fill="#2d6a35"/><ellipse cx="97" cy="59" rx="7" ry="8" fill="#4a9455"/>
+                            <rect x="153.5" y="118" width="3" height="14" fill="#3d1f00"/><ellipse cx="155" cy="106" rx="11" ry="13" fill="#2d6a35"/><ellipse cx="152" cy="101" rx="7" ry="8" fill="#4a9455"/>
+                            <!-- Interior forest row 4 -->
+                            <rect x="67" y="110" width="3" height="8" fill="#3d1f00"/><polygon points="68,102 61,114 75,114" fill="#1a4020"/><polygon points="68,96 64,106 72,106" fill="#2d6a35"/><polygon points="68,90 66,98 70,98" fill="#4a9455"/>
+                            <rect x="87" y="110" width="3" height="8" fill="#3d1f00"/><polygon points="88,102 81,114 95,114" fill="#1a4020"/><polygon points="88,96 84,106 92,106" fill="#2d6a35"/><polygon points="88,90 85,98 91,98" fill="#4a9455"/>
+                            <rect x="107" y="110" width="3" height="8" fill="#3d1f00"/><polygon points="108,102 101,114 115,114" fill="#1a4020"/><polygon points="108,96 104,106 112,106" fill="#2d6a35"/><polygon points="108,90 106,98 110,98" fill="#4a9455"/>
+                            <rect x="126" y="106" width="4" height="10" fill="#3d1f00"/><polygon points="128,90 117,108 139,108" fill="#1a4020"/><polygon points="128,80 121,96 135,96" fill="#2d6a35"/><polygon points="128,72 124,84 132,84" fill="#4a9455"/>
+                            <rect x="146" y="106" width="4" height="10" fill="#3d1f00"/><polygon points="148,90 137,108 159,108" fill="#1a4020"/><polygon points="148,80 141,96 155,96" fill="#2d6a35"/><polygon points="148,72 144,84 152,84" fill="#4a9455"/>
+                            <rect x="166" y="108" width="4" height="10" fill="#3d1f00"/><polygon points="168,92 157,110 179,110" fill="#1a4020"/><polygon points="168,82 161,98 175,98" fill="#2d6a35"/><polygon points="168,74 164,86 172,86" fill="#4a9455"/>
+                            <rect x="186" y="108" width="4" height="10" fill="#3d1f00"/><polygon points="188,92 177,110 199,110" fill="#1a4020"/><polygon points="188,82 181,98 195,98" fill="#2d6a35"/><polygon points="188,74 184,86 192,86" fill="#4a9455"/>
+                            <!-- Interior forest row 5 -->
+                            <rect x="67" y="130" width="3" height="8" fill="#3d1f00"/><polygon points="68,122 61,134 75,134" fill="#1a4020"/><polygon points="68,116 64,126 72,126" fill="#2d6a35"/><polygon points="68,110 66,118 70,118" fill="#4a9455"/>
+                            <rect x="107" y="130" width="3" height="8" fill="#3d1f00"/><polygon points="108,122 101,134 115,134" fill="#1a4020"/><polygon points="108,116 104,126 112,126" fill="#2d6a35"/><polygon points="108,110 106,118 110,118" fill="#4a9455"/>
+                            <rect x="126" y="128" width="4" height="10" fill="#3d1f00"/><polygon points="128,112 117,130 139,130" fill="#1a4020"/><polygon points="128,102 121,118 135,118" fill="#2d6a35"/><polygon points="128,94 124,106 132,106" fill="#4a9455"/>
+                            <rect x="146" y="128" width="4" height="10" fill="#3d1f00"/><polygon points="148,112 137,130 159,130" fill="#1a4020"/><polygon points="148,102 141,118 155,118" fill="#2d6a35"/><polygon points="148,94 144,106 152,106" fill="#4a9455"/>
+                            <rect x="166" y="128" width="4" height="10" fill="#3d1f00"/><polygon points="168,112 157,130 179,130" fill="#1a4020"/><polygon points="168,102 161,118 175,118" fill="#2d6a35"/><polygon points="168,94 164,106 172,106" fill="#4a9455"/>
+                            <rect x="186" y="128" width="4" height="10" fill="#3d1f00"/><polygon points="188,112 177,130 199,130" fill="#1a4020"/><polygon points="188,102 181,118 195,118" fill="#2d6a35"/><polygon points="188,94 184,106 192,106" fill="#4a9455"/>
+                            <!-- Ground: dirt clearing, stepping stones, grass -->
+                            <ellipse cx="110" cy="228" rx="82" ry="52" fill="#6b4423" opacity="0.6"/>
+                            <rect x="96" y="270" width="16" height="6" rx="2" fill="#9ca3af" opacity="0.7"/>
+                            <rect x="100" y="255" width="14" height="5" rx="2" fill="#9ca3af" opacity="0.6"/>
+                            <rect x="104" y="242" width="12" height="4" rx="2" fill="#9ca3af" opacity="0.55"/>
+                            <rect x="102" y="232" width="10" height="4" rx="2" fill="#9ca3af" opacity="0.5"/>
+                            <rect x="50" y="228" width="8" height="3" rx="1" fill="#2d6a35" opacity="0.7"/>
+                            <rect x="62" y="240" width="6" height="2" rx="1" fill="#2d6a35" opacity="0.6"/>
+                            <rect x="155" y="232" width="7" height="3" rx="1" fill="#2d6a35" opacity="0.7"/>
+                            <rect x="168" y="244" width="6" height="2" rx="1" fill="#2d6a35" opacity="0.6"/>
+                            <rect x="48" y="248" width="5" height="2" rx="1" fill="#2d6a35" opacity="0.5"/>
+                            <rect x="172" y="258" width="5" height="2" rx="1" fill="#2d6a35" opacity="0.5"/>
+                            <!-- Gate -->
+                            <rect x="0" y="280" width="78" height="20" fill="#0d1a08"/>
+                            <rect x="142" y="280" width="78" height="20" fill="#0d1a08"/>
+                            <rect x="78" y="268" width="14" height="32" fill="#4b5563"/>
+                            <rect x="128" y="268" width="14" height="32" fill="#4b5563"/>
+                            <rect x="88" y="268" width="4" height="32" fill="#374151"/>
+                            <rect x="138" y="268" width="4" height="32" fill="#374151"/>
+                            <rect x="76" y="265" width="68" height="7" fill="#6b7280"/>
+                            <rect x="76" y="264" width="68" height="3" fill="#9ca3af" opacity="0.4"/>
+                            <rect x="80" y="257" width="6" height="9" fill="#4b5563"/>
+                            <rect x="92" y="257" width="6" height="9" fill="#4b5563"/>
+                            <rect x="108" y="257" width="6" height="9" fill="#4b5563"/>
+                            <rect x="124" y="257" width="6" height="9" fill="#4b5563"/>
+                            <rect x="134" y="257" width="6" height="9" fill="#4b5563"/>
+                            <rect x="92" y="272" width="36" height="28" fill="#010810"/>
+                            <!-- Scribe's Tower (starter) -->
+                            <rect x="22" y="22" width="36" height="78" fill="#5d6573" stroke="#1f2937" stroke-width="1.5"/>
+                            <polygon points="20,24 40,6 60,24" fill="#7a4435" stroke="#3d1f00" stroke-width="1"/>
+                            <rect x="34" y="80" width="12" height="20" fill="#1e1008" stroke="#1f2937" stroke-width="1"/>
+                            <rect x="28" y="38" width="8" height="10" fill="#fde047" opacity="0.85" stroke="#1f2937" stroke-width="0.6"/>
+                            <rect x="44" y="38" width="8" height="10" fill="#fde047" opacity="0.85" stroke="#1f2937" stroke-width="0.6"/>
+                            <rect x="28" y="58" width="8" height="10" fill="#a8d8c0" opacity="0.55" stroke="#1f2937" stroke-width="0.6"/>
+                            <rect x="44" y="58" width="8" height="10" fill="#a8d8c0" opacity="0.55" stroke="#1f2937" stroke-width="0.6"/>
+                            <!-- Sign: book -->
+                            <rect x="34" y="72" width="12" height="6" fill="#92400e" stroke="#1e1008" stroke-width="0.6"/>
+                            <rect x="39.5" y="72" width="1" height="6" fill="#1e1008"/>
+                            <rect x="20" y="96" width="40" height="4" fill="#2d6a35" opacity="0.18"/>
+                            <!-- Tavern (starter) -->
+                            <rect x="80" y="152" width="60" height="68" fill="#c4a268" stroke="#3d1f00" stroke-width="1.5"/>
+                            <polygon points="76,154 110,128 144,154" fill="#5c3d1a" stroke="#3d1f00" stroke-width="1.5"/>
+                            <rect x="100" y="118" width="10" height="20" fill="#5d6573" stroke="#1f2937" stroke-width="1"/>
+                            <rect x="98" y="116" width="14" height="4" fill="#1f2937"/>
+                            <rect x="103" y="196" width="14" height="24" fill="#3d1f00" stroke="#1e1008" stroke-width="1"/>
+                            <rect x="86" y="172" width="14" height="14" fill="#fde047" opacity="0.7" stroke="#3d1f00" stroke-width="0.8"/>
+                            <rect x="120" y="172" width="14" height="14" fill="#fde047" opacity="0.7" stroke="#3d1f00" stroke-width="0.8"/>
+                            <!-- Sign: mug -->
+                            <rect x="105" y="186" width="10" height="8" fill="#a07830" stroke="#3d1f00" stroke-width="0.6"/>
+                            <rect x="115" y="188" width="2" height="4" fill="#3d1f00"/>
+                            <rect x="106" y="187" width="8" height="2" fill="#fde047" opacity="0.6"/>
+                            <rect x="80" y="216" width="60" height="4" fill="#2d6a35" opacity="0.2"/>
+                            <!-- Armory (starter) -->
+                            <rect x="20" y="160" width="60" height="60" fill="#374151" stroke="#0c1018" stroke-width="1.5"/>
+                            <polygon points="16,162 50,142 84,162" fill="#1f2937" stroke="#0c1018" stroke-width="1.5"/>
+                            <rect x="40" y="194" width="20" height="26" fill="#0c1018" stroke="#1f2937" stroke-width="1"/>
+                            <rect x="26" y="172" width="12" height="12" fill="#7f1d1d" opacity="0.45" stroke="#0c1018" stroke-width="0.8"/>
+                            <rect x="62" y="172" width="12" height="12" fill="#7f1d1d" opacity="0.45" stroke="#0c1018" stroke-width="0.8"/>
+                            <!-- Sign: sword -->
+                            <rect x="49" y="184" width="2" height="9" fill="#cbd5e1" stroke="#1f2937" stroke-width="0.4"/>
+                            <rect x="46" y="187" width="8" height="2" fill="#92400e"/>
+                            <polygon points="49,184 51,184 50,182" fill="#fde047"/>
+                            <rect x="20" y="216" width="60" height="4" fill="#2d6a35" opacity="0.18"/>
+                            <!-- Merchant (starter) -->
+                            <rect x="140" y="160" width="60" height="60" fill="#c4a882" stroke="#5c3d1a" stroke-width="1.5"/>
+                            <polygon points="136,162 170,142 204,162" fill="#a08060" stroke="#5c3d1a" stroke-width="1.5"/>
+                            <!-- Striped awning -->
+                            <rect x="140" y="174" width="60" height="8" fill="#c9963f" stroke="#5c3d1a" stroke-width="0.8"/>
+                            <rect x="140" y="174" width="10" height="8" fill="#ef4444" opacity="0.75"/>
+                            <rect x="160" y="174" width="10" height="8" fill="#ef4444" opacity="0.75"/>
+                            <rect x="180" y="174" width="10" height="8" fill="#ef4444" opacity="0.75"/>
+                            <rect x="156" y="194" width="20" height="26" fill="#3d1f00" stroke="#5c3d1a" stroke-width="1"/>
+                            <rect x="146" y="186" width="14" height="14" fill="#fde047" opacity="0.65" stroke="#5c3d1a" stroke-width="0.8"/>
+                            <rect x="180" y="186" width="14" height="14" fill="#fde047" opacity="0.65" stroke="#5c3d1a" stroke-width="0.8"/>
+                            <!-- Sign: coin -->
+                            <circle cx="166" cy="190" r="4" fill="#fbbf24" stroke="#92400e" stroke-width="0.8"/>
+                            <text x="166" y="192" text-anchor="middle" font-family="VT323,monospace" font-size="6" fill="#5c3d1a" font-weight="bold">$</text>
+                            <rect x="140" y="216" width="60" height="4" fill="#2d6a35" opacity="0.2"/>
+                            <!-- Fence posts -->
+                            <rect x="14" y="220" width="4" height="12" fill="#5c3d1a"/>
+                            <rect x="22" y="218" width="4" height="12" fill="#5c3d1a"/>
+                            <rect x="14" y="225" width="12" height="2" fill="#5c3d1a" opacity="0.7"/>
+                            <rect x="194" y="220" width="4" height="12" fill="#5c3d1a"/>
+                            <rect x="202" y="222" width="4" height="12" fill="#5c3d1a"/>
+                            <rect x="194" y="227" width="12" height="2" fill="#5c3d1a" opacity="0.7"/>
+                            <rect x="138" y="218" width="4" height="12" fill="#5c3d1a"/>
+                            <rect x="146" y="220" width="4" height="12" fill="#5c3d1a"/>
+                            <!-- Barrels -->
+                            <rect x="196" y="206" width="10" height="14" fill="#5c3d1a" rx="2"/>
+                            <ellipse cx="201" cy="206" rx="5" ry="2" fill="#6b4423"/>
+                            <rect x="196" y="211" width="10" height="1" fill="#3d2810"/>
+                            <rect x="208" y="210" width="9" height="12" fill="#5c3d1a" rx="2"/>
+                            <ellipse cx="212" cy="210" rx="4" ry="2" fill="#6b4423"/>
+                            <!-- Clearing-edge trees (in front of buildings) -->
+                            <rect x="6.5" y="234" width="3" height="8" fill="#3d1f00"/><polygon points="8,226 1,238 15,238" fill="#1a4020"/><polygon points="8,220 4,230 12,230" fill="#2d6a35"/><polygon points="8,214 5.5,222 10.5,222" fill="#4a9455"/>
+                            <rect x="6.5" y="260" width="3" height="8" fill="#3d1f00"/><polygon points="8,252 1,264 15,264" fill="#1a4020"/><polygon points="8,246 4,256 12,256" fill="#2d6a35"/><polygon points="8,240 5.5,248 10.5,248" fill="#4a9455"/>
+                            <rect x="210.5" y="230" width="3" height="8" fill="#3d1f00"/><polygon points="212,222 205,234 219,234" fill="#1a4020"/><polygon points="212,216 208,226 216,226" fill="#2d6a35"/><polygon points="212,210 209.5,218 214.5,218" fill="#4a9455"/>
+                            <rect x="210.5" y="252" width="3" height="8" fill="#3d1f00"/><polygon points="212,244 205,256 219,256" fill="#1a4020"/><polygon points="212,238 208,248 216,248" fill="#2d6a35"/><polygon points="212,232 209.5,240 214.5,240" fill="#4a9455"/>
                             <!-- Bottom framing trees -->
-                            <rect x="2" y="294" width="5" height="6" fill="#2d1b0e"/><polygon points="4.5,280 0,296 9,296" fill="#0d3815"/>
-                            <rect x="54" y="294" width="5" height="6" fill="#2d1b0e"/><polygon points="56.5,280 51,296 62,296" fill="#0d3815"/>
-                            <rect x="161" y="294" width="5" height="6" fill="#2d1b0e"/><polygon points="163.5,280 158,296 169,296" fill="#0d3815"/>
-                            <rect x="214" y="290" width="5" height="10" fill="#2d1b0e"/><polygon points="216.5,278 210,292 223,292" fill="#0d3815"/>
-                            <!-- Edge trees beside clearing -->
-                            <rect x="2" y="232" width="5" height="8" fill="#2d1b0e"/><polygon points="4.5,218 0,232 9,232" fill="#0d3815"/>
-                            <rect x="2" y="260" width="5" height="8" fill="#2d1b0e"/><polygon points="4.5,248 0,262 9,262" fill="#0d3815"/>
-                            <rect x="214" y="232" width="5" height="8" fill="#2d1b0e"/><polygon points="216.5,218 210,232 223,232" fill="#0d3815"/>
-                            <rect x="214" y="256" width="5" height="8" fill="#2d1b0e"/><polygon points="216.5,244 210,258 223,258" fill="#0d3815"/>
+                            <rect x="4.5" y="288" width="3" height="8" fill="#3d1f00"/><polygon points="6,280 -1,292 13,292" fill="#1a4020"/><polygon points="6,274 2,284 10,284" fill="#2d6a35"/><polygon points="6,268 3.5,276 8.5,276" fill="#4a9455"/>
+                            <rect x="55.5" y="290" width="3" height="8" fill="#3d1f00"/><polygon points="57,282 50,294 64,294" fill="#1a4020"/><polygon points="57,276 53,286 61,286" fill="#2d6a35"/><polygon points="57,270 54.5,278 59.5,278" fill="#4a9455"/>
+                            <rect x="161.5" y="288" width="3" height="8" fill="#3d1f00"/><polygon points="163,280 156,292 170,292" fill="#1a4020"/><polygon points="163,274 159,284 167,284" fill="#2d6a35"/><polygon points="163,268 160.5,276 165.5,276" fill="#4a9455"/>
+                            <rect x="212.5" y="284" width="3" height="8" fill="#3d1f00"/><polygon points="214,276 207,288 221,288" fill="#1a4020"/><polygon points="214,270 210,280 218,280" fill="#2d6a35"/><polygon points="214,264 211.5,272 216.5,272" fill="#4a9455"/>
+                            <!-- Torches: gate pair -->
+                            <rect x="76" y="270" width="4" height="10" fill="#3d1f00"/>
+                            <polygon points="78,264 74,272 82,272" fill="#f97316" opacity="0.7"/>
+                            <polygon points="78,266 75,272 81,272" fill="#fbbf24" opacity="0.5"/>
+                            <rect x="140" y="270" width="4" height="10" fill="#3d1f00"/>
+                            <polygon points="142,264 138,272 146,272" fill="#f97316" opacity="0.7"/>
+                            <polygon points="142,266 139,272 145,272" fill="#fbbf24" opacity="0.5"/>
+                            <!-- Torches: tavern entrance pair -->
+                            <rect x="86" y="206" width="3" height="8" fill="#3d1f00"/>
+                            <polygon points="87.5,200 85,207 90,207" fill="#f97316" opacity="0.6"/>
+                            <polygon points="87.5,202 86,207 89,207" fill="#fbbf24" opacity="0.4"/>
+                            <rect x="131" y="206" width="3" height="8" fill="#3d1f00"/>
+                            <polygon points="132.5,200 130,207 135,207" fill="#f97316" opacity="0.6"/>
+                            <polygon points="132.5,202 131,207 134,207" fill="#fbbf24" opacity="0.4"/>
+                            <!-- Clearing glow -->
+                            <ellipse cx="110" cy="228" rx="90" ry="60" fill="url(#clearing-glow)"/>
                           </svg>
                           <canvas id="world-canvas" style="display:block;position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
                         </div>
@@ -1170,7 +1176,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">xPL0R3Rx v0.0.4</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">xPL0R3Rx v0.0.6</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1329,7 +1335,7 @@
                     <div id="final-score" style="font-size:clamp(2.5rem,11vw,4.5rem);color:#90e0ef;line-height:1;margin:0">0000</div>
                     <div class="text-xl text-yellow-400" style="margin:0" id="final-epithet"></div>
                     <div id="challenge-section" class="hidden" style="width:100%;max-width:480px;flex-direction:column;align-items:center;gap:4px"></div>
-                    <button onclick="showRunSummary()" class="btn-pixel text-lg px-6 py-2" style="margin-top:6px">RETURN TO HUB</button>
+                    <button onclick="showRunSummary()" class="btn-pixel text-lg px-6 py-2" style="margin-top:6px">RETURN TO DREADWICK</button>
                 </div>
                 <div id="run-summary" class="modal-overlay hidden flex-col text-center" style="justify-content:center;align-items:center;gap:8px;overflow:hidden;padding:20px;background:rgba(0,10,18,0.97)">
                     <h2 style="font-size:clamp(1.6rem,7vw,3rem);color:#90e0ef;font-weight:bold;text-transform:uppercase;font-style:italic;margin:0">RUN COMPLETE</h2>
@@ -1350,7 +1356,7 @@
                             <button onclick="resolveLootDrop(false)" class="btn-pixel text-sm px-4 py-1">DISCARD</button>
                         </div>
                     </div>
-                    <button onclick="finishRunSummary()" class="btn-pixel text-base px-5 py-2" style="margin-top:8px">&#8962; BACK TO HUB</button>
+                    <button onclick="finishRunSummary()" class="btn-pixel text-base px-5 py-2" style="margin-top:8px">&#8962; BACK TO DREADWICK</button>
                 </div>
                 <!-- Endgame screen (boss dungeon clear) -->
                 <div id="endgame-overlay" class="modal-overlay hidden flex-col text-center" style="justify-content:center;align-items:center;gap:10px;overflow-y:auto;padding:24px;background:rgba(0,5,12,0.98)">
@@ -2756,6 +2762,8 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.6', title: 'Mobile Fix', date: '2026-05-04', sections: [{ heading: 'Updates', items: ['Mobile safe-area inset fix; flex column body layout; clearing scene SVG artwork added.'] }] },
+            { version: 'v0.0.5', title: 'Version Bump', date: '2026-05-04', sections: [{ heading: 'Updates', items: ['Version bump.'] }] },
             { version: 'v0.0.4', title: 'Arctic Colours', date: '2026-05-04', sections: [{ heading: 'Updates', items: ['Replaced GG/Teal colour scheme with Arctic (TC).'] }] },
             { version: 'v0.0.3', title: 'Fix broken main menu', date: '2026-05-03', sections: [{ heading: 'Fixes', items: ['Removed stray unclosed IIFE that wrapped startGame, loop, and window.onload — caused a JS syntax error preventing all menu buttons from firing.'] }] },
             { version: 'v0.0.2', title: 'Debug pass', date: '2026-05-03', sections: [{ heading: 'Fixes', items: ['Crit chance now uses class stat (Warrior 5%, Mage 10%, Rogue 20%) instead of hardcoded 20%.', 'Fixed header branding — now reads EXPLR.', 'Updated How to Play text to reference EXPLR.'] }] },
