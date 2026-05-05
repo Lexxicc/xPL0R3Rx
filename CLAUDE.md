@@ -1,8 +1,8 @@
-# xPL0R3Rx
+# XPL0R3R
 
 **Code:** EXP  
 **Remote:** https://github.com/Lexxicc/RPGX.git  
-**Version:** v0.0.5 (`xPL0R3Rx v0.0.5.html`)  
+**Version:** v0.0.5 (`XPL0R3R v0.0.5.html`)  
 **Genre:** RPG / exploration
 
 ## Tech
