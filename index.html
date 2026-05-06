@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.9</title>
+    <title>XPL0R3R v0.0.10</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -258,6 +258,7 @@
         .mob-bar-val { font-family:'VT323',monospace; font-size:9px; color:#a8d8c0; width:28px; flex-shrink:0; }
 
         @media (pointer: coarse) {
+            body { padding-top: max(10vw, env(safe-area-inset-top, 24px)); }
             main { min-height: 0; padding-bottom: 204px !important; }
             #mobile-controls {
                 position: fixed;
@@ -270,7 +271,12 @@
                 background: #001828;
                 padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
             }
-            #start-overlay { padding-bottom: 204px; }
+            #start-overlay {
+                align-items: flex-start !important;
+                padding-top: max(10vw, 36px);
+                padding-bottom: calc(204px + 4vw);
+            }
+            .menu-scroll { max-height: calc(100dvh - 270px); }
             .game-viewport {
                 flex: 1 1 0 !important;
                 min-height: 0 !important;
@@ -718,7 +724,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.9</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.10</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1172,7 +1178,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.9</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.10</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -2758,6 +2764,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.10', title: 'Mobile Layout Fix', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Start overlay and body safe-area padding corrected for pointer:coarse devices.'] }] },
             { version: 'v0.0.9', title: 'Viewport Refit', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Left/right borders 1.6vw from screen edges; top/bottom 3vw; mobile controls repositioned to match.'] }] },
             { version: 'v0.0.8', title: 'Version Bump', date: '2026-05-05', sections: [{ heading: 'Updates', items: ['Title updated to XPL0R3R; wall tile brick pattern added.'] }] },
             {version: 'v0.0.7', title: 'Version Bump', date: '2026-05-05', sections: [{ heading: 'Updates', items: ['Version bump.'] }] },
