@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.17</title>
+    <title>XPL0R3R v0.0.18</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.17</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.18</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.17</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.18</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1244,6 +1244,21 @@
                         <div class="dialog-text" id="dialog-text" style="font-size:1.05rem;color:#d8e8e0;min-height:64px;line-height:1.4;margin-bottom:12px;white-space:pre-wrap"></div>
                         <div class="dialog-quest-info hidden" id="dialog-quest-info" style="font-size:0.92rem;color:#fde047;border:1px dashed #fde047;padding:6px 8px;margin-bottom:10px;background:rgba(40,30,0,0.3)"></div>
                         <div class="dialog-options" id="dialog-options" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end"></div>
+                    </div>
+                </div>
+                <!-- ── Phase 2G: Lore shrine overlay ───────────────────── -->
+                <div id="lore-overlay" class="hidden" style="position:fixed;inset:0;z-index:262;background:rgba(0,8,16,0.85);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;font-family:'VT323',monospace">
+                    <div style="width:100%;max-width:420px;max-height:84vh;background:#001218;border:3px solid #c084fc;box-shadow:0 0 22px rgba(192,132,252,0.5),inset 0 0 0 1px #2a1a4a;color:#d8c8e8;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0c0420;border-bottom:3px solid #c084fc">
+                            <span id="lore-glyph" style="font-size:1.4rem;color:#c084fc;text-shadow:0 0 8px rgba(192,132,252,0.7)">&#9670;</span>
+                            <h2 id="lore-name" style="flex:1;margin:0;font-size:1.4rem;color:#c084fc;text-transform:uppercase;letter-spacing:0.05em;text-shadow:0 0 6px rgba(192,132,252,0.4)">Shrine</h2>
+                            <span id="lore-read-tag" class="hidden" style="font-size:0.78rem;color:#90e0ef;border:1px solid #00b4d8;padding:2px 6px;letter-spacing:0.06em">READ</span>
+                        </div>
+                        <div id="lore-text" style="padding:14px 16px;overflow-y:auto;font-size:1.05rem;color:#d8c8e8;line-height:1.5;white-space:pre-wrap;flex:1"></div>
+                        <div id="lore-reward" class="hidden" style="padding:6px 14px;font-size:0.95rem;color:#fde047;border-top:1px dashed #2a1a4a;background:rgba(40,30,0,0.25)">First Reading: +25 XP</div>
+                        <div style="padding:10px 14px;display:flex;justify-content:flex-end;gap:8px;border-top:2px solid #2a1a4a;background:#000a14">
+                            <button onclick="closeLoreOverlay()" style="background:#c084fc;color:#000;border:none;padding:6px 14px;cursor:pointer;font-family:'VT323',monospace;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em;min-width:80px">Close</button>
+                        </div>
                     </div>
                 </div>
                 <!-- ── Phase 2E: Specialist / travelling shop overlay ───── -->
@@ -1669,6 +1684,8 @@
           //  18  potion shop (interaction)
           //  19  cave mouth (side-dungeon entry; passable, opens prompt)
           //  20  ruin entrance (side-dungeon entry; passable, opens prompt)
+          //  25  stone monolith / lore shrine marker (impassable; interact
+          //      from adjacent tile via centerBtnAction)
           //
           // Phase 2E: trading-post cluster on row 15, cols 14/16/18 (weapon /
           // armour / potion). Path stubs at cols 13/15/17/19 frame the shops
@@ -1677,6 +1694,10 @@
           // and east (ruin entrance, col 20 row 8) sides of the map. Each
           // entry tile is walkable; stepping onto it triggers an
           // "Enter the [cave|ruin]?" confirm overlay → side-dungeon load.
+          // Phase 2G: zone-level `collectibles` array (auto-pickup tiles)
+          // and `shrines` array (interact-from-adjacent lore objects) added
+          // alongside mobs/npcs/sideDungeons. Both render via the same
+          // pipeline as NPCs (sprite drawn over base tile).
           overworld_grasslands: {
             id: 'overworld_grasslands',
             name: 'Verdant Reach',
@@ -1797,6 +1818,43 @@
             sideDungeons: [
               { tileX:  3, tileY:  5, dungeonId: 'cave-of-fangs', name: 'Cave of Fangs', difficulty: 1 },
               { tileX: 20, tileY:  8, dungeonId: 'ancient-ruin',  name: 'Ancient Ruin',  difficulty: 2 }
+            ],
+            // ── Phase 2G: collectibles ───────────────────────────────────
+            // Walk-on auto-pickup tiles. Each entry has a stable id used as
+            // the key in character.collectiblesPicked. type drives the icon
+            // drawn on top of the base tile + the pickup behaviour:
+            //   gold-small / gold-medium  → +value G floating text
+            //   potion / herb / rune-shard / mystery → +1 [name] floating text
+            //                                          + ch.inventory bump
+            // Positions verified against the map above to sit on walkable
+            // tiles (grass / tall grass / flower) and never on the path.
+            collectibles: [
+              { id: 'gold-1',    type: 'gold-small',  tileX:  5, tileY:  6, value: 10 },
+              { id: 'gold-2',    type: 'gold-medium', tileX: 18, tileY: 11, value: 30 },
+              { id: 'gold-3',    type: 'gold-small',  tileX:  2, tileY: 10, value: 12 },
+              { id: 'herb-1',    type: 'herb',        tileX:  7, tileY:  9, item: { id: 'herb-green', name: 'Green Herb', icon: 'potion-purple', slot: 'misc', kind: 'material' } },
+              { id: 'herb-2',    type: 'herb',        tileX: 16, tileY:  4, item: { id: 'herb-green', name: 'Green Herb', icon: 'potion-purple', slot: 'misc', kind: 'material' } },
+              { id: 'rune-1',    type: 'rune-shard',  tileX: 21, tileY: 14, item: { id: 'rune-shard', name: 'Rune Shard', icon: 'star',          slot: 'misc', kind: 'material' } },
+              { id: 'pot-1',     type: 'potion',      tileX:  4, tileY: 13, item: { id: 'potion-health-1', name: 'Health Potion', icon: 'potion-red', slot: 'consumable', kind: 'health-potion' } },
+              { id: 'pot-2',     type: 'potion',      tileX: 22, tileY:  9, item: { id: 'potion-mana-1',   name: 'Mana Potion',   icon: 'potion-blue', slot: 'consumable', kind: 'mana-potion' } }
+            ],
+            // ── Phase 2G: lore shrines ───────────────────────────────────
+            // Stationary obelisks. Player walks adjacent (Manhattan ≤ 1) and
+            // taps centre-button to read the lore overlay. Each shrine has a
+            // stable id (also used as the persistence key) + a unique 3-4
+            // sentence passage. First reading awards +25 XP; subsequent
+            // re-reads show the lore but no XP. Each shrine sits on a
+            // walkable grass tile; the sprite renders over the tile so the
+            // player can stand directly on the shrine if they want.
+            shrines: [
+              { id: 'forest-edge-shrine', name: 'Forest Edge Shrine', tileX: 13, tileY: 11,
+                lore: "A weathered obelisk leans where the campfire smoke once curled.\n\nTravellers carved their initials at its base, then carved them out again. The first letter of every name has been smoothed away by something that wasn't weather.\n\nThe stone hums when the fire is lit. Not loudly. Just enough to warn." },
+              { id: 'old-path-marker',    name: 'Old Path Marker',    tileX: 15, tileY:  7,
+                lore: "Before the road, the path. Before the path, the line of tribute beasts that wore the grass to dust.\n\nThis stone marked the league between the river kings. Now the kings are gone, and the league is measured in shadows that don't quite match the trees that throw them.\n\nWalk past, and don't look at your own shadow until you reach the milestone." },
+              { id: 'hilltop-cairn',      name: 'Hilltop Cairn',      tileX:  3, tileY:  1,
+                lore: "Stones piled by hands that didn't belong to one body each.\n\nWhen the light is low the cairn casts a single shadow. When the light is high it casts none. Locals leave a coin on top so the cairn remembers them, and lift it again on the way back.\n\nNobody can name what they're paying. Everyone pays anyway." },
+              { id: 'riverside-shrine',   name: 'Riverside Shrine',   tileX: 20, tileY:  1,
+                lore: "Cool stone, cool moss, cool air rising off water that isn't quite there anymore.\n\nThis shrine remembers the river. The river drained when the second wall fell, and the shrine remembered it loudly for a hundred years before learning to be quiet.\n\nPress an ear to it on the right night, and you'll hear a rapid that hasn't existed since your grandmother's mother was born." }
             ]
           }
         };
@@ -1932,7 +1990,16 @@
               { type: 'cave-bat',    count: 2 },
               { type: 'cave-spider', count: 1 }
             ],
-            loot: { gold: [50, 150], items: ['mystery-box', 'rune-shard'] }
+            loot: { gold: [50, 150], items: ['mystery-box', 'rune-shard'] },
+            // Phase 2G: one lore shrine per side-dungeon. Position is a
+            // template — _placeSideDungeonShrine() drops it onto a deep
+            // interior floor tile each visit, but the shrineId remains
+            // stable so first-read XP only fires once. Side-dungeon shrines
+            // are persisted under the composite key '<dungeonId>__<shrineId>'.
+            shrines: [
+              { id: 'cave-fang-inscription', name: 'Bone Inscription',
+                lore: "Letters chewed into the wall by something with patience and time.\n\nThe inscription reads, in a language that hasn't been spoken in five centuries: 'We were here first. We will be here last.'\n\nUnderneath, scratched in a fresher hand: 'Don't believe them.'" }
+            ]
           },
           'ancient-ruin': {
             id: 'ancient-ruin',
@@ -1947,7 +2014,11 @@
               { type: 'ruin-bandit', count: 3 },
               { type: 'ruin-wraith', count: 2 }
             ],
-            loot: { gold: [80, 220], items: ['silvered-key', 'mystery-box'] }
+            loot: { gold: [80, 220], items: ['silvered-key', 'mystery-box'] },
+            shrines: [
+              { id: 'ruin-altar-stone', name: 'Altar Stone',
+                lore: "An altar carved from a single block of black basalt, polished by hands and knees and centuries.\n\nThe basin at its centre is dry. The grooves around the basin are not.\n\nA name is etched along the rim — yours. The carving looks old. Older than your grandmother. Older than her grandmother. The letters are a little wrong, but the shape is unmistakable." }
+            ]
           }
         };
         // Tiles a mob is allowed to occupy. Excludes 3 (gate) so mobs never
@@ -2050,6 +2121,10 @@
               _maybeSpawnTravellingMerchant(ZONES[zoneId]);
             }
           } catch(e){}
+          // Phase 2G: filter collectibles down to the unpicked set so
+          // re-entry never respawns previously-picked items. The zone keeps
+          // a _collectiblesMaster cache so the original list survives.
+          try { _reconcileCollectibles(ZONES[zoneId]); } catch(e){}
           resetCamera();
           updateCamera();
           // Phase 2C: gate the mob-wander timer to non-town zones. We start
@@ -2254,6 +2329,50 @@
           }
           return mobs;
         }
+        // Phase 2G: drop one shrine per template into the dungeon's deep
+        // interior (north half), avoiding the exit + any tiles already
+        // occupied by a mob. The shrine carries _dungeonId so its read
+        // state persists across regenerations.
+        function _placeSideDungeonShrines(template, mapInfo, mobs, dungeonId) {
+          const out = [];
+          if (!Array.isArray(template.shrines) || !template.shrines.length) return out;
+          const W = template.cols, H = template.rows;
+          const map = mapInfo.map;
+          const floorTile = mapInfo.floorTile;
+          const occupied = new Set();
+          for (const m of (mobs || [])) occupied.add(m.tileX + ',' + m.tileY);
+          // Candidate floor tiles — restricted to north half so the shrine
+          // is "deep" rather than near the exit.
+          const cands = [];
+          for (let y = 1; y < Math.floor(H * 0.55); y++) {
+            for (let x = 1; x < W - 1; x++) {
+              if (map[y][x] !== floorTile) continue;
+              if (occupied.has(x + ',' + y)) continue;
+              cands.push({ x, y });
+            }
+          }
+          if (!cands.length) return out;
+          // Shuffle so each visit picks a different deep tile.
+          for (let i = cands.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const t = cands[i]; cands[i] = cands[j]; cands[j] = t;
+          }
+          let cursor = 0;
+          for (const tpl of template.shrines) {
+            if (cursor >= cands.length) break;
+            const pos = cands[cursor++];
+            out.push({
+              id: tpl.id,
+              name: tpl.name,
+              lore: tpl.lore,
+              tileX: pos.x, tileY: pos.y,
+              _dungeonId: dungeonId
+            });
+            // Block adjacent placements so shrines don't crowd each other.
+            occupied.add(pos.x + ',' + pos.y);
+          }
+          return out;
+        }
         // Saved overworld position so _exitSideDungeon() knows where to drop
         // the player back. Set on enterSideDungeon, cleared on exit.
         let _sideDungeonReturn = null;
@@ -2265,6 +2384,11 @@
           // returning resets all mobs (each visit feels fresh).
           const mapInfo = _genSideDungeonMap(template);
           const mobs = _placeSideDungeonMobs(template, mapInfo);
+          // Phase 2G: place lore shrine(s) on a deep interior floor tile
+          // (north half of the dungeon, far from the exit). The shrine's
+          // dungeonId is stamped on the placed instance so the read-state
+          // persists under '<dungeonId>__<shrineId>' across regenerations.
+          const shrines = _placeSideDungeonShrines(template, mapInfo, mobs, dungeonId);
           ZONES[sideZoneId] = {
             id: sideZoneId,
             name: template.name,
@@ -2278,6 +2402,7 @@
             connections: [],
             mobs: mobs,
             npcs: [],
+            shrines: shrines,
             // Save a back-reference for the loot table + return position.
             _sideDungeonId: dungeonId,
             _sideDungeonLoot: template.loot
@@ -2296,6 +2421,28 @@
         }
         function _exitSideDungeon() {
           const ret = _sideDungeonReturn;
+          // Phase 2G: if every mob in the dungeon is dead, mark it as
+          // cleared on the character so the discoveries tracker counts it.
+          // This persists even though the dungeon zone gets deleted on
+          // exit (the cleared state lives on the character, not the zone).
+          try {
+            const z = currentZone();
+            if (z && z._sideDungeonId && Array.isArray(z.mobs)) {
+              const alive = z.mobs.filter(m => m.state !== 'dead').length;
+              if (alive === 0) {
+                const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+                if (ch) {
+                  if (!ch.sideDungeonsCleared || typeof ch.sideDungeonsCleared !== 'object') {
+                    ch.sideDungeonsCleared = {};
+                  }
+                  if (!ch.sideDungeonsCleared[z._sideDungeonId]) {
+                    ch.sideDungeonsCleared[z._sideDungeonId] = true;
+                    if (typeof saveCharacter === 'function') saveCharacter(ch);
+                  }
+                }
+              }
+            }
+          } catch(e){}
           if (!ret || !ZONES[ret.zone]) {
             // Defensive: dump player back to hub if return data was lost.
             switchZone('hub', ZONES.hub.spawn.x, ZONES.hub.spawn.y);
@@ -2336,7 +2483,11 @@
         // grass base so they blend; 21 cave floor / 22 ruin floor / 23 cave
         // wall / 24 ruin wall use biome-tinted bases for the side-dungeon
         // interior.
-        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a'};
+        // Phase 2G: tile 25 reserved for stone monolith / lore shrine — kept
+        // in the colour table for future map authors who want to embed a
+        // shrine directly in their tile grid. Live shrines today are placed
+        // via zone.shrines[] objects rendered via drawLoreShrine().
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a',25:'#0a2e1a'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
@@ -3328,6 +3479,9 @@
             if (_ql && !_ql.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeQuestLog(); } return; }
             const _sov = document.getElementById('shopov-overlay');
             if (_sov && !_sov.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeShopOverlay(); } return; }
+            // Phase 2G: lore overlay absorbs input + closes on Escape.
+            const _lov = document.getElementById('lore-overlay');
+            if (_lov && !_lov.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeLoreOverlay(); } return; }
             if(gameState.isTransitioning) return; if(gameState.isGameOver||gameState.menuOpen){ if(e.key==='Escape'&&!gameState.isGameOver) toggleMenu(); return; }
             if(!gameState.gameStarted){
                 if(!document.getElementById('start-hub').classList.contains('hidden')){
@@ -3581,6 +3735,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.18', title: 'Collectibles + Lore Shrines (Phase 2G — Phase 2 complete)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['8 collectibles in Verdant Reach: 3 gold piles (small/medium), 2 herbs, 1 rune shard, 2 potions. Auto-pickup on walk-over with floating reward text. Persisted via character.collectiblesPicked — never respawn.', '4 lore shrines in overworld + 2 in side-dungeons (Bone Inscription in Cave of Fangs, Altar Stone in Ancient Ruin). Each shrine has unique atmospheric worldbuilding text; first reading grants +25 XP.', 'Shrine UI: dedicated #lore-overlay with violet theme, scrollable lore text, READ tag on subsequent reads.', 'Discoveries tracker added to character sheet: shrines read X/Y, collectibles found X/Y, side-dungeons cleared X/Y, plus % explored aggregate.', 'Persistence: character.shrinesRead, character.collectiblesPicked, character.sideDungeonsCleared. Side-dungeon entities use composite keys (dungeonId__shrineId) so they survive dungeon regeneration.'] }] },
             { version: 'v0.0.17', title: 'Side-Dungeons (Phase 2F)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['2 side-dungeon entries on Verdant Reach: Cave of Fangs (tile 19, west at (3,5)) + Ancient Ruin (tile 20, east at (20,8)).', 'Side-dungeons implemented as themed mini-zones via the existing ZONES system — dynamic registration on entry, procedural layout per visit, deletion on exit.', 'Cave of Fangs: 12×12, mobs (3 cave-rat, 2 cave-bat, 1 cave-spider mini-boss). Ancient Ruin: 14×12, mobs (3 ruin-bandit, 2 ruin-wraith mini-boss).', '5 new mob types added with full sprites: cave-rat, cave-bat, cave-spider (mini-boss), ruin-bandit, ruin-wraith (mini-boss).', '6 new tile types added: cave mouth (19), ruin entrance (20), cave floor (21), ruin floor (22), cave wall (23), ruin wall (24).', 'Entry flow: walk onto entry tile → "Enter the cave/ruin?" prompt → confirm → procedural map generation + mob placement + south-edge exit tile.', 'Mini-boss kills drop a guaranteed item from the dungeon loot table (mystery box, rune shard, silvered key) into character.inventory.'] }] },
             { version: 'v0.0.16', title: 'Shop Variety (Phase 2E)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['Travelling merchant random encounter (40% spawn chance per overworld entry; rotating inventory of 4 random items from an 11-item pool; distinct hooded purple-cloak sprite with backpack + bedroll + walking stick).', '3 specialist shops on a row-15 trading post: Argent Forge (weapons, tile 16, col 14), Ironcrest Armoury (armour, tile 17, col 16), Murmuring Cauldron (potions, tile 18, col 18). Path stubs connect them to the main path.', 'Shop overlay UI: full-screen modal with item list, drawIcon-painted icons, prices, gold counter, Buy buttons (with Owned / Need-X-G / Full-cap states). Pauses player input.', 'Item registry: per-class weapons (2 tiers: Steel/Twin/Aether 160G +6/7/8 ATK; Runed/Venom/Voidcaller 340G +10/11/12 ATK), armour (3 tiers: Padded 120G +3/+12, Plated 220G +6/+20, Iron 380G +10/+30), potions, elixirs, mystery box.', 'character.inventory array — items viewable in inventory but weapons/armour not yet equippable (Phase 3 deliverable). Health potions bump ch.potions for dungeon-run integration.'] }] },
             { version: 'v0.0.15', title: 'NPCs + Quest System (Phase 2D)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['4 overworld NPCs added: Mira (campsite, kill-rats-3 quest), Old Eron (milestone, kill-bandit-1 quest), Pilgrim + Forager (flavour wanderers, no quests).', 'Per-zone NPC sprites: drawOverworldNPC() with traveller/hermit/wanderer types. Idle bob + quest indicator (! available, ? turn-in).', 'Wandering NPC movement: 3.5s timer, walkable-tile aware, anchor-based with random direction + edge-pull.', 'Dialog overlay UI: greeting/available/accepted/turn-in/done stages, mobile-friendly tap targets, ESC/close, gates player input while open.', 'Quest registry: kill-rats-3 (rat ×3, +30G/+50XP), kill-bandit-1 (bandit ×1, +60G/+100XP). Mob death increments matching active quests; turn-in grants reward + can level up.', 'Quest log overlay accessible from main menu (Quest Log button); shows active quests with progress + completed grayed-out.', 'Persistence: character.npcQuests separate from legacy quests array; reconciled on every zone-enter.'] }] },
@@ -5798,6 +5953,30 @@
               drawOverworldNPC(ctx2d, npc, npx, npy, tw, th);
             }
           }
+          // ─── Phase 2G: render collectibles (after tiles, before player)
+          // — these are auto-pickup pickups. The live array is filtered on
+          // switchZone so already-picked items don't draw.
+          if (currentZoneId !== 'hub' && Array.isArray(zone.collectibles)) {
+            for (const c of zone.collectibles) {
+              if (c.tileX < startCol || c.tileX >= endCol) continue;
+              if (c.tileY < startRow || c.tileY >= endRow) continue;
+              const cpx = (c.tileX - camera.x) * tw;
+              const cpy = (c.tileY - camera.y) * th;
+              drawCollectible(ctx2d, c, cpx, cpy, tw, th);
+            }
+          }
+          // ─── Phase 2G: render lore shrines. Drawn after collectibles so
+          // a (theoretical) overlap renders the shrine on top. Shrines also
+          // block movement, so the player never stands on a shrine tile.
+          if (currentZoneId !== 'hub' && Array.isArray(zone.shrines)) {
+            for (const sh of zone.shrines) {
+              if (sh.tileX < startCol || sh.tileX >= endCol) continue;
+              if (sh.tileY < startRow || sh.tileY >= endRow) continue;
+              const spx = (sh.tileX - camera.x) * tw;
+              const spy = (sh.tileY - camera.y) * th;
+              drawLoreShrine(ctx2d, sh, spx, spy, tw, th);
+            }
+          }
           // ─── Phase 2C: render mobs (after tiles, before player) ─────────
           // Hub never has mobs (zone.mobs is undefined), so this is a no-op
           // there. Cull out-of-camera mobs to keep big zones cheap.
@@ -5897,6 +6076,14 @@
             if (adj) {
               prompt.textContent = '▶ Talk to ' + (adj.name || 'NPC');
               prompt.style.display = 'block';
+              return;
+            }
+            // Phase 2G: shrine adjacency prompt — lower priority than NPCs
+            // and shops so quest-givers / merchants always win the tile.
+            const adjShrine = _findAdjacentShrine();
+            if (adjShrine) {
+              prompt.textContent = '▶ Read ' + (adjShrine.name || 'shrine');
+              prompt.style.display = 'block';
             } else {
               prompt.style.display = 'none';
             }
@@ -5934,6 +6121,390 @@
           }
           return null;
         }
+        // ─── Phase 2G: collectible + shrine helpers ──────────────────────
+        // Compose the persistence key for a collectible. Side-dungeons
+        // dynamically generate zones, so we namespace the key by zoneId so a
+        // 'pot-1' in cave-of-fangs never collides with a 'pot-1' in the
+        // overworld. Overworld static collectibles use just the bare id.
+        function _collectibleKey(zoneId, collId) {
+          if (!zoneId) return collId;
+          if (zoneId.indexOf('side_') === 0) return zoneId + '__' + collId;
+          return collId;
+        }
+        // Same composition rule for shrines. Side-dungeon shrines persist
+        // their read-state under '<dungeonId>__<shrineId>' so a fresh visit
+        // to a regenerated dungeon doesn't re-grant the +25 XP reward.
+        function _shrineKey(zoneId, shrineId, dungeonId) {
+          if (dungeonId) return dungeonId + '__' + shrineId;
+          return shrineId;
+        }
+        // Filter the zone's collectibles array down to the ones the player
+        // hasn't picked yet. Called on switchZone() so re-entry never shows
+        // already-collected items. The original master list lives on the
+        // ZONES entry; we mutate the live array in place.
+        function _reconcileCollectibles(zone) {
+          if (!zone || !Array.isArray(zone.collectibles)) return;
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          const picked = (ch && ch.collectiblesPicked) || {};
+          // Cache the master list once on the zone definition so we can
+          // restore it on subsequent visits (it gets filtered here so we
+          // need the original to filter again later).
+          if (!zone._collectiblesMaster) zone._collectiblesMaster = zone.collectibles.slice();
+          zone.collectibles = zone._collectiblesMaster.filter(c => {
+            const k = _collectibleKey(zone.id, c.id);
+            return !picked[k];
+          });
+        }
+        // Adjacent (Manhattan ≤ 1) shrine for the centre-button + interaction
+        // prompt. Same-tile counts (shrines block movement, so adjacency is
+        // the player's cardinal neighbour).
+        function _findAdjacentShrine() {
+          const zone = currentZone();
+          if (!zone || !Array.isArray(zone.shrines)) return null;
+          for (const sh of zone.shrines) {
+            const d = Math.abs(sh.tileX - worldPlayer.x) + Math.abs(sh.tileY - worldPlayer.y);
+            if (d <= 1) return sh;
+          }
+          return null;
+        }
+        // Tile-coord shrine lookup — returns the shrine sitting on (x,y) or
+        // null. Used in worldPlayerMove to block movement into a shrine
+        // tile (treats shrines like impassable obstacles, similar to mobs).
+        function _findShrineAt(x, y) {
+          const zone = currentZone();
+          if (!zone || !Array.isArray(zone.shrines)) return null;
+          for (const sh of zone.shrines) {
+            if (sh.tileX === x && sh.tileY === y) return sh;
+          }
+          return null;
+        }
+        // Tile-coord collectible lookup. Player walks onto a collectible
+        // tile → auto-pickup. Returns the collectible or null.
+        function _findCollectibleAt(x, y) {
+          const zone = currentZone();
+          if (!zone || !Array.isArray(zone.collectibles)) return null;
+          for (const c of zone.collectibles) {
+            if (c.tileX === x && c.tileY === y) return c;
+          }
+          return null;
+        }
+        // Pickup logic. Removes the collectible from the live zone array,
+        // marks it as picked in character.collectiblesPicked, applies the
+        // reward (gold or inventory item), and pushes a floating "+X" text.
+        function _pickupCollectible(c) {
+          if (!c) return;
+          const zone = currentZone();
+          if (!zone) return;
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          if (!ch) return;
+          if (!ch.collectiblesPicked || typeof ch.collectiblesPicked !== 'object') {
+            ch.collectiblesPicked = {};
+          }
+          const key = _collectibleKey(zone.id, c.id);
+          if (ch.collectiblesPicked[key]) return;  // double-pickup guard
+          ch.collectiblesPicked[key] = true;
+          // Apply reward.
+          if (c.type === 'gold-small' || c.type === 'gold-medium') {
+            const v = c.value || 0;
+            ch.gold = (ch.gold || 0) + v;
+            overworldFloatNums.push({
+              tileX: c.tileX, tileY: c.tileY, val: '+' + v + ' G',
+              color: '#fde047', timer: 60, yOff: 0
+            });
+            try { playSynth(880, 'triangle', 0.18, 0.08); } catch(e){}
+          } else if (c.item) {
+            // Stack consumables / misc by id; equipment stays unique
+            // (mirrors the side-dungeon mini-boss loot path).
+            if (!Array.isArray(ch.inventory)) ch.inventory = [];
+            const slot = c.item.slot;
+            if (slot === 'consumable' || slot === 'misc') {
+              const existing = ch.inventory.find(it => it && it.id === c.item.id);
+              if (existing) {
+                existing.qty = (existing.qty || 1) + 1;
+              } else {
+                ch.inventory.push({ id: c.item.id, qty: 1 });
+              }
+              // Health potions also bump the dungeon-run counter so the
+              // hub potion stack reflects the find (matches the shop path).
+              if (c.item.kind === 'health-potion') {
+                ch.potions = Math.min(3, (ch.potions || 0) + 1);
+              }
+            } else {
+              ch.inventory.push({ id: c.item.id, qty: 1 });
+            }
+            overworldFloatNums.push({
+              tileX: c.tileX, tileY: c.tileY, val: '+1 ' + c.item.name,
+              color: c.type === 'rune-shard' ? '#c084fc' : '#90e0ef',
+              timer: 80, yOff: 0
+            });
+            try { playSynth(660, 'sine', 0.22, 0.08); } catch(e){}
+          }
+          if (typeof saveCharacter === 'function') saveCharacter(ch);
+          // Remove from live array — re-entry won't respawn because the
+          // master list is filtered on switchZone via collectiblesPicked.
+          zone.collectibles = zone.collectibles.filter(o => o.id !== c.id);
+        }
+        // ─── Phase 2G: lore shrine overlay ───────────────────────────────
+        // Reuses a dedicated overlay (lore-overlay). On open, looks up the
+        // shrine + persisted read-state. First reading awards +25 XP and
+        // marks the shrine as read in character.shrinesRead. Subsequent
+        // re-reads show the lore but no XP.
+        let _activeShrine = null;
+        function openLoreShrine(shrine) {
+          if (!shrine) return;
+          _activeShrine = shrine;
+          const ov = document.getElementById('lore-overlay');
+          if (!ov) return;
+          const nameEl   = document.getElementById('lore-name');
+          const textEl   = document.getElementById('lore-text');
+          const rewardEl = document.getElementById('lore-reward');
+          const readTag  = document.getElementById('lore-read-tag');
+          if (!nameEl || !textEl) return;
+          nameEl.textContent = shrine.name || 'Shrine';
+          textEl.textContent = shrine.lore || '...';
+          // Resolve persistence key. Side-dungeon shrines carry _dungeonId
+          // (set when placed by enterSideDungeon); overworld shrines use
+          // their bare id.
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          if (!ch) { ov.classList.remove('hidden'); return; }
+          if (!ch.shrinesRead || typeof ch.shrinesRead !== 'object') ch.shrinesRead = {};
+          const key = _shrineKey(currentZoneId, shrine.id, shrine._dungeonId);
+          const wasRead = !!ch.shrinesRead[key];
+          if (wasRead) {
+            if (rewardEl) rewardEl.classList.add('hidden');
+            if (readTag)  readTag.classList.remove('hidden');
+          } else {
+            if (rewardEl) rewardEl.classList.remove('hidden');
+            if (readTag)  readTag.classList.add('hidden');
+            // Mark + grant reward.
+            ch.shrinesRead[key] = true;
+            ch.xp = (ch.xp || 0) + 25;
+            // Level-up check (mirror NPC quest turn-in logic).
+            while (ch.xp >= ch.level * 100) {
+              ch.xp -= ch.level * 100;
+              ch.level++;
+              if (ch.class === 'warrior') { ch.maxHp += 10; ch.defense += 0.05; }
+              else if (ch.class === 'rogue') { ch.maxHp += 5; ch.attack += 0.10; ch.crit += 0.01; }
+              else if (ch.class === 'mage') { ch.maxHp += 3; ch.attack += 0.15; }
+            }
+            if (typeof saveCharacter === 'function') saveCharacter(ch);
+            overworldFloatNums.push({
+              tileX: shrine.tileX, tileY: shrine.tileY, val: '+25 XP',
+              color: '#90e0ef', timer: 70, yOff: -22
+            });
+            try { playSynth(520, 'sine', 0.4, 0.06); } catch(e){}
+          }
+          ov.classList.remove('hidden');
+        }
+        function closeLoreOverlay() {
+          const ov = document.getElementById('lore-overlay');
+          if (ov) ov.classList.add('hidden');
+          _activeShrine = null;
+          try { drawWorldMap(); } catch(e){}
+        }
+        // Render a collectible icon on top of its base tile. Called from
+        // drawWorldMap after tiles + before mobs.
+        function drawCollectible(ctx2d, c, px, py, tw, th) {
+          const cx = px + tw/2, cy = py + th/2;
+          // Subtle bob keyed off Date.now + a per-tile phase so the field of
+          // collectibles doesn't all rise/fall in sync.
+          const phase = (c.tileX*0.37 + c.tileY*0.23);
+          const bob = Math.sin(Date.now()/520 + phase) * th*0.04;
+          ctx2d.save();
+          if (c.type === 'gold-small' || c.type === 'gold-medium') {
+            // 3-5 stacked coins with glint. medium = wider stack.
+            const isMed = c.type === 'gold-medium';
+            const stackN = isMed ? 5 : 3;
+            const coinW = isMed ? tw*0.22 : tw*0.18;
+            const coinH = Math.max(2, th*0.06);
+            for (let i = 0; i < stackN; i++) {
+              const y = cy + th*0.18 - i*coinH*0.95 + bob;
+              // Coin body
+              ctx2d.fillStyle = '#c08010';
+              ctx2d.fillRect(cx - coinW/2, y, coinW, coinH);
+              ctx2d.fillStyle = '#fde047';
+              ctx2d.fillRect(cx - coinW/2, y, coinW, Math.max(1, coinH*0.55));
+              ctx2d.fillStyle = '#ffcc00';
+              ctx2d.fillRect(cx - coinW/2 + 1, y, Math.max(1, coinW*0.2), Math.max(1, coinH*0.4));
+            }
+            // Glint particle (sparkles)
+            const glintPulse = 0.5 + 0.5 * Math.sin(Date.now()/300 + phase);
+            ctx2d.fillStyle = `rgba(255,240,160,${0.5 + 0.45 * glintPulse})`;
+            ctx2d.shadowColor = '#ffcc00';
+            ctx2d.shadowBlur = 4 * glintPulse + 1;
+            ctx2d.beginPath();
+            ctx2d.arc(cx + (isMed ? tw*0.14 : tw*0.10), cy + th*0.04 + bob, Math.max(1, tw*0.025), 0, Math.PI*2);
+            ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Faint floor halo
+            ctx2d.fillStyle = 'rgba(253,224,71,0.18)';
+            ctx2d.beginPath();
+            ctx2d.ellipse(cx, cy + th*0.32, tw*0.22, th*0.06, 0, 0, Math.PI*2);
+            ctx2d.fill();
+          } else if (c.type === 'potion') {
+            // Mini potion bottle with cork. Colour keyed by item.icon
+            // (potion-red / potion-blue / potion-purple).
+            const icon = (c.item && c.item.icon) || 'potion-red';
+            const liquid = icon === 'potion-blue' ? '#3a8aff' : icon === 'potion-purple' ? '#a855f7' : '#c92a2a';
+            const liquidLight = icon === 'potion-blue' ? '#90c0ff' : icon === 'potion-purple' ? '#d8b0ff' : '#ff8a8a';
+            // Cork
+            ctx2d.fillStyle = '#3a1810';
+            ctx2d.fillRect(cx - tw*0.04, cy - th*0.18 + bob, tw*0.08, th*0.05);
+            // Collar
+            ctx2d.fillStyle = '#5a3a20';
+            ctx2d.fillRect(cx - tw*0.06, cy - th*0.13 + bob, tw*0.12, Math.max(1, th*0.025));
+            // Bottle body
+            ctx2d.fillStyle = liquid;
+            ctx2d.fillRect(cx - tw*0.08, cy - th*0.10 + bob, tw*0.16, th*0.18);
+            // Liquid highlight
+            ctx2d.fillStyle = liquidLight;
+            ctx2d.fillRect(cx - tw*0.06, cy - th*0.07 + bob, Math.max(1, tw*0.03), th*0.13);
+            // Bottle base shadow
+            ctx2d.fillStyle = '#000';
+            ctx2d.fillRect(cx - tw*0.08, cy + th*0.08 + bob, tw*0.16, Math.max(1, th*0.018));
+            // Floor halo
+            ctx2d.fillStyle = 'rgba(144,224,239,0.2)';
+            ctx2d.beginPath();
+            ctx2d.ellipse(cx, cy + th*0.22, tw*0.12, th*0.04, 0, 0, Math.PI*2);
+            ctx2d.fill();
+          } else if (c.type === 'herb') {
+            // Cluster of three small leaves on a stalk.
+            ctx2d.strokeStyle = '#3a7a2a';
+            ctx2d.lineWidth = Math.max(1, tw*0.025);
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx, cy + th*0.2 + bob);
+            ctx2d.lineTo(cx, cy - th*0.04 + bob);
+            ctx2d.stroke();
+            // Three leaves
+            ctx2d.fillStyle = '#4ade80';
+            ctx2d.beginPath();
+            ctx2d.ellipse(cx - tw*0.08, cy + bob, tw*0.06, th*0.04, -0.5, 0, Math.PI*2);
+            ctx2d.fill();
+            ctx2d.beginPath();
+            ctx2d.ellipse(cx + tw*0.08, cy - th*0.04 + bob, tw*0.06, th*0.04, 0.5, 0, Math.PI*2);
+            ctx2d.fill();
+            ctx2d.beginPath();
+            ctx2d.ellipse(cx, cy - th*0.10 + bob, tw*0.05, th*0.035, 0, 0, Math.PI*2);
+            ctx2d.fill();
+            // Highlight
+            ctx2d.fillStyle = '#a8f0c0';
+            ctx2d.fillRect(cx - tw*0.01, cy - th*0.11 + bob, Math.max(1, tw*0.02), Math.max(1, th*0.02));
+          } else if (c.type === 'rune-shard') {
+            // Floating violet shard with glow. Rotates slowly.
+            const rot = Date.now()/1100 + phase;
+            ctx2d.translate(cx, cy + bob);
+            ctx2d.rotate(rot);
+            ctx2d.fillStyle = '#c084fc';
+            ctx2d.shadowColor = '#a855f7';
+            ctx2d.shadowBlur = 8;
+            ctx2d.beginPath();
+            ctx2d.moveTo(0, -th*0.16);
+            ctx2d.lineTo(tw*0.10, 0);
+            ctx2d.lineTo(0, th*0.16);
+            ctx2d.lineTo(-tw*0.10, 0);
+            ctx2d.closePath();
+            ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Inner highlight diamond
+            ctx2d.fillStyle = '#f0d8ff';
+            ctx2d.beginPath();
+            ctx2d.moveTo(0, -th*0.08);
+            ctx2d.lineTo(tw*0.04, 0);
+            ctx2d.lineTo(0, th*0.08);
+            ctx2d.lineTo(-tw*0.04, 0);
+            ctx2d.closePath();
+            ctx2d.fill();
+          }
+          ctx2d.restore();
+        }
+        // Render a lore shrine — small stone obelisk with engraved animated
+        // rune. Glow pulse ties to Date.now so multiple shrines pulse
+        // independently per (col,row) phase.
+        function drawLoreShrine(ctx2d, sh, px, py, tw, th) {
+          const cx = px + tw/2, cy = py + th/2;
+          const phase = sh.tileX*0.41 + sh.tileY*0.27;
+          const pulse = 0.5 + 0.5 * Math.sin(Date.now()/720 + phase);
+          ctx2d.save();
+          // Ground shadow
+          ctx2d.fillStyle = 'rgba(0,0,0,0.5)';
+          ctx2d.beginPath();
+          ctx2d.ellipse(cx, cy + th*0.4, tw*0.28, th*0.06, 0, 0, Math.PI*2);
+          ctx2d.fill();
+          // Plinth (wide base block)
+          ctx2d.fillStyle = '#3a3848';
+          ctx2d.fillRect(cx - tw*0.22, cy + th*0.24, tw*0.44, th*0.14);
+          ctx2d.fillStyle = '#5a586a';
+          ctx2d.fillRect(cx - tw*0.22, cy + th*0.24, tw*0.44, Math.max(1, th*0.04));
+          // Plinth shadow underside
+          ctx2d.fillStyle = '#1a1820';
+          ctx2d.fillRect(cx - tw*0.22, cy + th*0.36, tw*0.44, Math.max(1, th*0.02));
+          // Obelisk shaft (tapered)
+          ctx2d.fillStyle = '#4a485a';
+          ctx2d.beginPath();
+          ctx2d.moveTo(cx - tw*0.10, cy + th*0.24);
+          ctx2d.lineTo(cx - tw*0.08, cy - th*0.30);
+          ctx2d.lineTo(cx + tw*0.08, cy - th*0.30);
+          ctx2d.lineTo(cx + tw*0.10, cy + th*0.24);
+          ctx2d.closePath();
+          ctx2d.fill();
+          // Shaft front-face highlight
+          ctx2d.fillStyle = '#6a687c';
+          ctx2d.beginPath();
+          ctx2d.moveTo(cx - tw*0.10, cy + th*0.24);
+          ctx2d.lineTo(cx - tw*0.08, cy - th*0.30);
+          ctx2d.lineTo(cx - tw*0.04, cy - th*0.30);
+          ctx2d.lineTo(cx - tw*0.06, cy + th*0.24);
+          ctx2d.closePath();
+          ctx2d.fill();
+          // Pyramidal cap
+          ctx2d.fillStyle = '#3a3848';
+          ctx2d.beginPath();
+          ctx2d.moveTo(cx - tw*0.08, cy - th*0.30);
+          ctx2d.lineTo(cx, cy - th*0.40);
+          ctx2d.lineTo(cx + tw*0.08, cy - th*0.30);
+          ctx2d.closePath();
+          ctx2d.fill();
+          ctx2d.fillStyle = '#5a586a';
+          ctx2d.beginPath();
+          ctx2d.moveTo(cx - tw*0.08, cy - th*0.30);
+          ctx2d.lineTo(cx, cy - th*0.40);
+          ctx2d.lineTo(cx, cy - th*0.30);
+          ctx2d.closePath();
+          ctx2d.fill();
+          // Engraved rune (animated glow)
+          ctx2d.fillStyle = `rgba(192,132,252,${0.55 + 0.4 * pulse})`;
+          ctx2d.shadowColor = '#a855f7';
+          ctx2d.shadowBlur = 6 * pulse + 2;
+          // Vertical spine
+          ctx2d.fillRect(cx - tw*0.008, cy - th*0.16, Math.max(1, tw*0.018), th*0.22);
+          // Horizontal cross
+          ctx2d.fillRect(cx - tw*0.05, cy - th*0.06, tw*0.10, Math.max(1, th*0.018));
+          // Top dot
+          ctx2d.beginPath();
+          ctx2d.arc(cx, cy - th*0.20, Math.max(1, tw*0.022), 0, Math.PI*2);
+          ctx2d.fill();
+          ctx2d.shadowBlur = 0;
+          // Subtle ground glow halo (lavender)
+          ctx2d.fillStyle = `rgba(192,132,252,${0.08 + 0.10 * pulse})`;
+          ctx2d.beginPath();
+          ctx2d.ellipse(cx, cy + th*0.36, tw*0.36, th*0.10, 0, 0, Math.PI*2);
+          ctx2d.fill();
+          // Read indicator (small dim glyph in upper-right corner if read)
+          try {
+            const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+            if (ch && ch.shrinesRead) {
+              const key = _shrineKey(currentZoneId, sh.id, sh._dungeonId);
+              if (ch.shrinesRead[key]) {
+                ctx2d.fillStyle = 'rgba(144,224,239,0.5)';
+                ctx2d.font = `${Math.round(th*0.18)}px VT323,monospace`;
+                ctx2d.textAlign = 'left';
+                ctx2d.textBaseline = 'top';
+                ctx2d.fillText('✓', cx + tw*0.12, cy - th*0.36);
+              }
+            }
+          } catch(e){}
+          ctx2d.restore();
+        }
         function worldPlayerMove(dx, dy) {
           if (document.getElementById('start-hub').classList.contains('hidden')) return;
           // Phase 2D: pause player movement while dialog or quest-log is open.
@@ -5944,11 +6515,21 @@
           // Phase 2E: pause movement while the shop overlay is open.
           const _sov = document.getElementById('shopov-overlay');
           if (_sov && !_sov.classList.contains('hidden')) return;
+          // Phase 2G: pause movement while the lore overlay is open.
+          const _lov = document.getElementById('lore-overlay');
+          if (_lov && !_lov.classList.contains('hidden')) return;
           const zone = currentZone();
           const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
           // Bounds now driven by the active zone's dimensions, not the
           // hardcoded 11×15 hub size.
           if (nx < 0 || nx >= zone.cols || ny < 0 || ny >= zone.rows) return;
+
+          // ─── Phase 2G: shrine block ────────────────────────────────────
+          // Shrines occupy their tile as impassable obstacles. Walking INTO
+          // a shrine is blocked (no movement, no footstep). Player still
+          // reads it via the centre-action button when adjacent.
+          const _shrineBlock = _findShrineAt(nx, ny);
+          if (_shrineBlock) return;
 
           // ─── Phase 2C: bump combat ─────────────────────────────────────
           // If the destination tile contains a live mob, treat the input
@@ -5993,6 +6574,12 @@
           if (!isWalkable(t)) return;
           worldPlayer.x = nx; worldPlayer.y = ny;
           updateCamera();
+          // Phase 2G: collectible auto-pickup. Walking onto a tile that
+          // hosts a collectible consumes it immediately + applies the
+          // reward. Persistence is handled in _pickupCollectible so
+          // re-entering the zone never respawns the same item.
+          const _coll = _findCollectibleAt(worldPlayer.x, worldPlayer.y);
+          if (_coll) _pickupCollectible(_coll);
           // Phase 2A: gate-tile zone transitions. Hub has no connections yet,
           // so this is a no-op until 2B populates ZONES.hub.connections.
           tryZoneTransition(worldPlayer.x, worldPlayer.y);
@@ -6013,6 +6600,9 @@
           if (_ql && !_ql.classList.contains('hidden')) return;
           const _sov = document.getElementById('shopov-overlay');
           if (_sov && !_sov.classList.contains('hidden')) return;
+          // Phase 2G: also gate while the lore overlay is open.
+          const _lov = document.getElementById('lore-overlay');
+          if (_lov && !_lov.classList.contains('hidden')) return;
           if (!document.getElementById('start-hub').classList.contains('hidden')) {
             // Phase 2A: INTERACTION_ZONES is hub-only (Gate / Armory / Tavern /
             // Merchant / Scribe). Future zones will need their own interact
@@ -6030,6 +6620,11 @@
               // (or routes to the shop overlay for travelling merchants).
               const adj = _findAdjacentNPC();
               if (adj) { openNpcDialog(adj); return; }
+              // Phase 2G: lore shrine — lower priority than NPCs (so
+              // quest-givers always win an overlap) and shops, but the
+              // shrine adjacency check is the third interactable category.
+              const adjShrine = _findAdjacentShrine();
+              if (adjShrine) { openLoreShrine(adjShrine); return; }
             }
             const _sh=SHRINE_TILES.find(s=>s.row===worldPlayer.y&&s.col===worldPlayer.x&&s.revealed&&!s.used);
             if(_sh){ _sh.used=true; const _buff=['hp','gold','potion'][Math.floor(Math.random()*3)]; gameState._hubBuff=_buff; let _desc=''; if(_buff==='hp'){_desc='+25 Max HP this run';}else if(_buff==='gold'){const _sc=loadCharacter();if(_sc){_sc.gold=(_sc.gold||0)+30;saveCharacter(_sc);}_desc='+30 Gold';}else{const _sc=loadCharacter();if(_sc){_sc.potions=Math.min(3,(_sc.potions||0)+1);saveCharacter(_sc);}_desc='+1 Potion';} const _pr=document.getElementById('hub-interact-prompt'); if(_pr){_pr.textContent='◆ Shrine: '+_desc;_pr.style.display='block';setTimeout(()=>{_pr.style.display='none';},2000);} drawWorldMap(); return; }
@@ -6464,7 +7059,65 @@
               return `<div style="display:flex;align-items:center;gap:8px;border:1px solid #002030;background:#000c14;padding:5px 8px;margin-top:4px"><div style="flex:1"><div style="color:#fff;font-size:0.95rem">${it.name}</div><div style="color:#00b4d8;font-size:0.72rem">${tag}${stats.length?' · '+stats.join(' · '):''}</div></div></div>`;
             }).join('')
           : `<div style="color:#3a5a6a;font-size:0.78rem;padding:6px 0">Empty. Visit shops in Verdant Reach.</div>`;
-        el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><span style="font-size:2rem;color:${cc}">${ci}</span><div><div style="font-size:1.4rem;color:#fff;line-height:1">${ch.name}</div><div style="font-size:1rem;color:${cc};text-transform:uppercase;letter-spacing:0.05em">${ch.class}</div>${(ch.prestige||0)>0?`<div style="font-size:0.7rem;color:#fde047;border:1px solid #fde047;padding:1px 5px;margin-top:3px;display:inline-block;letter-spacing:0.1em">&#9733; PRESTIGE ${ch.prestige}</div>`:''}</div><div style="margin-left:auto;text-align:right"><div style="color:#90e0ef">Level ${ch.level}</div><div style="color:#fde047;font-size:0.85rem">${ch.gold} G</div></div></div><div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#00b4d8;margin-bottom:3px"><span>XP to Next Level</span><span>${ch.xp} / ${xpNext}</span></div><div style="height:8px;background:#001830;border:2px solid #00b4d8;overflow:hidden"><div style="height:100%;width:${xpPct}%;background:#90e0ef"></div></div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Stats</div><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Max HP</span><span style="color:#fff">${totalHp}${hpB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+hpB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Attack</span><span style="color:#fff">${baseAtk}${atkB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+atkB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Armour Start</span><span style="color:#fff">${baseDef}${defB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+defB+')</span>':''}</span></div>${ch.class==='rogue'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Crit Chance</span><span style="color:#fff">${Math.round(ch.crit*100)}%</span></div>`:''}${ch.class==='mage'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">XP Bonus</span><span style="color:#fff">+${Math.round((ch.xpBonus-1)*100)}%</span></div>`:''}</div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Gear</div><div style="display:flex;flex-direction:column;gap:5px">${gs('Weapon',wpn)}${gs('Armour',arm)}</div></div><div><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Inventory <span style="color:#90e0ef;font-size:0.75rem">(${inv.length})</span></div>${invHtml}</div>`; }
+        // Phase 2G: discoveries totals — shrines read, collectibles found,
+        // side-dungeons cleared. Totals are computed by walking the static
+        // ZONES + SIDE_DUNGEONS registries so they stay accurate as future
+        // zones add more pickups + shrines.
+        const discoveries = (function(){
+          let totalShrines = 0, readShrines = 0;
+          let totalColl = 0, foundColl = 0;
+          let totalDungeons = 0, clearedDungeons = 0;
+          const sread = (ch.shrinesRead && typeof ch.shrinesRead === 'object') ? ch.shrinesRead : {};
+          const cpicked = (ch.collectiblesPicked && typeof ch.collectiblesPicked === 'object') ? ch.collectiblesPicked : {};
+          const cleared = (ch.sideDungeonsCleared && typeof ch.sideDungeonsCleared === 'object') ? ch.sideDungeonsCleared : {};
+          // Static zones (overworld_grasslands today; future zones folded in
+          // automatically). Side-dungeon zone entries are skipped here so
+          // they don't double-count with the SIDE_DUNGEONS templates below.
+          for (const zid in ZONES) {
+            if (zid.indexOf('side_') === 0) continue;
+            const z = ZONES[zid];
+            const masterColl = z._collectiblesMaster || z.collectibles;
+            if (Array.isArray(masterColl)) {
+              for (const c of masterColl) {
+                totalColl++;
+                if (cpicked[_collectibleKey(zid, c.id)]) foundColl++;
+              }
+            }
+            if (Array.isArray(z.shrines)) {
+              for (const sh of z.shrines) {
+                totalShrines++;
+                if (sread[_shrineKey(zid, sh.id, sh._dungeonId)]) readShrines++;
+              }
+            }
+          }
+          // Side-dungeon templates — count the shrines defined in
+          // SIDE_DUNGEONS[X].shrines so the player's "Shrines read" total
+          // includes side-dungeon shrines without needing the dungeon to
+          // be currently loaded.
+          if (typeof SIDE_DUNGEONS !== 'undefined') {
+            for (const did in SIDE_DUNGEONS) {
+              totalDungeons++;
+              if (cleared[did]) clearedDungeons++;
+              const tpl = SIDE_DUNGEONS[did];
+              if (Array.isArray(tpl.shrines)) {
+                for (const sh of tpl.shrines) {
+                  totalShrines++;
+                  if (sread[_shrineKey(null, sh.id, did)]) readShrines++;
+                }
+              }
+            }
+          }
+          return { totalShrines, readShrines, totalColl, foundColl, totalDungeons, clearedDungeons };
+        })();
+        const discRow = (label, num, denom, color) =>
+          `<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">${label}</span><span style="color:${color}">${num} / ${denom}</span></div>`;
+        const _discPct = discoveries.totalShrines + discoveries.totalColl + discoveries.totalDungeons === 0
+          ? 0
+          : Math.round(((discoveries.readShrines + discoveries.foundColl + discoveries.clearedDungeons) /
+                        (discoveries.totalShrines + discoveries.totalColl + discoveries.totalDungeons)) * 100);
+        const discHtml =
+          `<div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="color:#c084fc;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em">Discoveries</span><span style="color:#90e0ef;font-size:0.75rem">${_discPct}% explored</span></div><div style="display:flex;flex-direction:column;gap:4px;font-size:0.92rem">${discRow('Shrines read', discoveries.readShrines, discoveries.totalShrines, '#c084fc')}${discRow('Collectibles found', discoveries.foundColl, discoveries.totalColl, '#fde047')}${discRow('Side-dungeons cleared', discoveries.clearedDungeons, discoveries.totalDungeons, '#90e0ef')}</div></div>`;
+        el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><span style="font-size:2rem;color:${cc}">${ci}</span><div><div style="font-size:1.4rem;color:#fff;line-height:1">${ch.name}</div><div style="font-size:1rem;color:${cc};text-transform:uppercase;letter-spacing:0.05em">${ch.class}</div>${(ch.prestige||0)>0?`<div style="font-size:0.7rem;color:#fde047;border:1px solid #fde047;padding:1px 5px;margin-top:3px;display:inline-block;letter-spacing:0.1em">&#9733; PRESTIGE ${ch.prestige}</div>`:''}</div><div style="margin-left:auto;text-align:right"><div style="color:#90e0ef">Level ${ch.level}</div><div style="color:#fde047;font-size:0.85rem">${ch.gold} G</div></div></div><div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#00b4d8;margin-bottom:3px"><span>XP to Next Level</span><span>${ch.xp} / ${xpNext}</span></div><div style="height:8px;background:#001830;border:2px solid #00b4d8;overflow:hidden"><div style="height:100%;width:${xpPct}%;background:#90e0ef"></div></div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Stats</div><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Max HP</span><span style="color:#fff">${totalHp}${hpB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+hpB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Attack</span><span style="color:#fff">${baseAtk}${atkB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+atkB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Armour Start</span><span style="color:#fff">${baseDef}${defB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+defB+')</span>':''}</span></div>${ch.class==='rogue'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Crit Chance</span><span style="color:#fff">${Math.round(ch.crit*100)}%</span></div>`:''}${ch.class==='mage'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">XP Bonus</span><span style="color:#fff">+${Math.round((ch.xpBonus-1)*100)}%</span></div>`:''}</div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Gear</div><div style="display:flex;flex-direction:column;gap:5px">${gs('Weapon',wpn)}${gs('Armour',arm)}</div></div>${discHtml}<div><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Inventory <span style="color:#90e0ef;font-size:0.75rem">(${inv.length})</span></div>${invHtml}</div>`; }
         const EXPLR_LOOT_TABLES = {
           warrior: {
             weapon: [ {name:'Iron Sword',rarity:'Common',atkBonus:5,defBonus:0,hpBonus:0},{name:'Steel Sword',rarity:'Uncommon',atkBonus:9,defBonus:0,hpBonus:0},{name:'Enchanted Blade',rarity:'Rare',atkBonus:14,defBonus:0,hpBonus:0},{name:"Realm's Edge",rarity:'Legendary',atkBonus:22,defBonus:3,hpBonus:0} ],
