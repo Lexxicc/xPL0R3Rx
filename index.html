@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.15</title>
+    <title>XPL0R3R v0.0.16</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.15</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.16</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.15</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.16</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1244,6 +1244,18 @@
                         <div class="dialog-text" id="dialog-text" style="font-size:1.05rem;color:#d8e8e0;min-height:64px;line-height:1.4;margin-bottom:12px;white-space:pre-wrap"></div>
                         <div class="dialog-quest-info hidden" id="dialog-quest-info" style="font-size:0.92rem;color:#fde047;border:1px dashed #fde047;padding:6px 8px;margin-bottom:10px;background:rgba(40,30,0,0.3)"></div>
                         <div class="dialog-options" id="dialog-options" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end"></div>
+                    </div>
+                </div>
+                <!-- ── Phase 2E: Specialist / travelling shop overlay ───── -->
+                <div id="shopov-overlay" class="hidden" style="position:fixed;inset:0;z-index:265;background:rgba(0,8,16,0.85);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;font-family:'VT323',monospace">
+                    <div style="width:100%;max-width:420px;max-height:88vh;background:#001218;border:3px solid #00b4d8;box-shadow:0 0 18px rgba(0,180,216,0.45),inset 0 0 0 1px #003050;color:#a8d8c0;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#001520;border-bottom:3px solid #00b4d8">
+                            <h2 id="shopov-name" style="flex:1;margin:0;font-size:1.4rem;color:#90e0ef;text-transform:uppercase;letter-spacing:0.05em;text-shadow:0 0 6px rgba(144,224,239,0.4)">Shop</h2>
+                            <span id="shopov-gold" style="font-size:1.1rem;color:#fde047">0 G</span>
+                            <button onclick="closeShopOverlay()" style="background:#00b4d8;color:#000;border:none;padding:4px 12px;cursor:pointer;font-family:'VT323',monospace;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em">Close</button>
+                        </div>
+                        <div id="shopov-flavour" style="padding:6px 14px 0;font-size:0.9rem;color:#00b4d8;font-style:italic"></div>
+                        <div id="shopov-content" style="padding:10px 12px 14px;overflow-y:auto;font-size:1rem;color:#a8d8c0"></div>
                     </div>
                 </div>
                 <!-- ── Phase 2D: Quest log overlay ──────────────────────── -->
@@ -1653,6 +1665,12 @@
           //  10  tree (impassable)          11  rock/boulder (impassable)
           //  12  flower patch (passable)    13  milestone (passable)
           //  14  campsite firepit (passable) 15  tall grass (passable)
+          //  16  weapon shop (interaction)  17  armour shop (interaction)
+          //  18  potion shop (interaction)
+          //
+          // Phase 2E: trading-post cluster on row 15, cols 14/16/18 (weapon /
+          // armour / potion). Path stubs at cols 13/15/17/19 frame the shops
+          // and link them back to the main north-south path at col 12.
           overworld_grasslands: {
             id: 'overworld_grasslands',
             name: 'Verdant Reach',
@@ -1676,7 +1694,7 @@
               [10, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,11, 0,10],
               [10, 0, 0,15, 0, 0,11, 0, 0, 0, 0,13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10],
               [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0,11, 0, 0, 0, 0,15, 0, 0,10],
-              [10, 0,15, 0, 0,11, 0, 0,12, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10],
+              [10, 0,15, 0, 0,11, 0, 0,12, 0, 0, 0, 1, 1,16, 1,17, 1,18, 1, 0, 0, 0,10],
               [10, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 0, 1, 0, 0, 0,15, 0, 0, 0, 0, 0, 0,10],
               [10,10,10,10,10,10,10,10,10,10,10,10, 3,10,10,10,10,10,10,10,10,10,10,10]
             ],
@@ -1789,6 +1807,64 @@
             reward: { gold: 60, xp: 100 }
           }
         };
+        // ─── Phase 2E: shop item registry ─────────────────────────────────
+        // Items the specialist shops + travelling merchant sell. Each entry:
+        //   id        — unique key, used as inventory item id
+        //   name      — display name
+        //   icon      — drawIcon() type (reuses Phase 1 iconography)
+        //   price     — cost in gold
+        //   desc      — one-line buyer description (effect or flavour)
+        //   slot      — 'consumable' | 'weapon' | 'armour' | 'misc'
+        //   gear      — only for weapons/armour: { atkBonus / defBonus / hpBonus }
+        //               so equip-action in Phase 3 can plug straight into ch.gear
+        // Items go into ch.inventory[] on purchase. Consumables stack via
+        // qty; equipment is a unique entry per buy. Equip UI is deferred to
+        // Phase 3 (player polish); for now equipment sits in inventory and
+        // shows up in the inventory panel as "(unequipped)".
+        const SHOP_ITEMS = {
+          // ── Consumables ───────────────────────────────────────────────
+          'potion-health-1':  { id:'potion-health-1',  name:'Health Potion',     icon:'potion-red',    price:30,  desc:'Restores full HP at run start. Stacks to 3.', slot:'consumable', kind:'health-potion' },
+          'potion-mana-1':    { id:'potion-mana-1',    name:'Mana Potion',       icon:'potion-blue',   price:35,  desc:'Restores caster reserves (currently flavour).', slot:'consumable', kind:'mana-potion' },
+          'elixir-regen':     { id:'elixir-regen',     name:'Regen Elixir',      icon:'potion-purple', price:60,  desc:'Slow heal-over-time on next dungeon run.',     slot:'consumable', kind:'elixir-regen' },
+          'elixir-damage':    { id:'elixir-damage',    name:'Damage Elixir',     icon:'potion-purple', price:75,  desc:'+10% damage for one dungeon run.',             slot:'consumable', kind:'elixir-damage' },
+          // ── Weapons (per class, 2 tiers) ──────────────────────────────
+          'wpn-warrior-2':    { id:'wpn-warrior-2',    name:'Steel Sword',       icon:'sword',         price:160, desc:'+6 ATK warrior weapon.',                       slot:'weapon', cls:'warrior', gear:{ name:'Steel Sword',     rarity:'Uncommon', slot:'weapon', atkBonus:6, defBonus:0, hpBonus:0 } },
+          'wpn-warrior-3':    { id:'wpn-warrior-3',    name:'Runed Greatsword',  icon:'sword',         price:340, desc:'+10 ATK warrior weapon.',                      slot:'weapon', cls:'warrior', gear:{ name:'Runed Greatsword',rarity:'Rare',     slot:'weapon', atkBonus:10,defBonus:0, hpBonus:0 } },
+          'wpn-rogue-2':      { id:'wpn-rogue-2',      name:'Twin Daggers',      icon:'dagger',        price:160, desc:'+7 ATK rogue weapon.',                         slot:'weapon', cls:'rogue',   gear:{ name:'Twin Daggers',    rarity:'Uncommon', slot:'weapon', atkBonus:7, defBonus:0, hpBonus:0 } },
+          'wpn-rogue-3':      { id:'wpn-rogue-3',      name:'Venom Stiletto',    icon:'dagger',        price:340, desc:'+11 ATK rogue weapon.',                        slot:'weapon', cls:'rogue',   gear:{ name:'Venom Stiletto',  rarity:'Rare',     slot:'weapon', atkBonus:11,defBonus:0, hpBonus:0 } },
+          'wpn-mage-2':       { id:'wpn-mage-2',       name:'Aether Staff',      icon:'staff',         price:160, desc:'+8 ATK mage weapon.',                          slot:'weapon', cls:'mage',    gear:{ name:'Aether Staff',    rarity:'Uncommon', slot:'weapon', atkBonus:8, defBonus:0, hpBonus:0 } },
+          'wpn-mage-3':       { id:'wpn-mage-3',       name:'Voidcaller Rod',    icon:'staff',         price:340, desc:'+12 ATK mage weapon.',                         slot:'weapon', cls:'mage',    gear:{ name:'Voidcaller Rod',  rarity:'Rare',     slot:'weapon', atkBonus:12,defBonus:0, hpBonus:0 } },
+          // ── Armour (light / medium / heavy) ───────────────────────────
+          'arm-light':        { id:'arm-light',        name:'Padded Leather',    icon:'shield',        price:120, desc:'Light armour: +3 DEF, +12 HP.',                slot:'armour', tier:'light',  gear:{ name:'Padded Leather',  rarity:'Uncommon', slot:'armour', atkBonus:0, defBonus:3, hpBonus:12 } },
+          'arm-medium':       { id:'arm-medium',       name:'Plated Vest',       icon:'shield',        price:220, desc:'Medium armour: +6 DEF, +20 HP.',               slot:'armour', tier:'medium', gear:{ name:'Plated Vest',     rarity:'Uncommon', slot:'armour', atkBonus:0, defBonus:6, hpBonus:20 } },
+          'arm-heavy':        { id:'arm-heavy',        name:'Iron Bulwark',      icon:'shield',        price:380, desc:'Heavy armour: +10 DEF, +30 HP.',               slot:'armour', tier:'heavy',  gear:{ name:'Iron Bulwark',    rarity:'Rare',     slot:'armour', atkBonus:0, defBonus:10,hpBonus:30 } },
+          // ── Misc / mystery / crafting (travelling pool only) ──────────
+          'mystery-box':      { id:'mystery-box',      name:'Mystery Box',       icon:'scroll',        price:50,  desc:'A sealed box. Contents unknown.',              slot:'misc' },
+          'rune-shard':       { id:'rune-shard',       name:'Rune Shard',        icon:'star',          price:90,  desc:'Rare crafting material — keep for later.',     slot:'misc' },
+          'silvered-key':     { id:'silvered-key',     name:'Silvered Key',      icon:'key',           price:70,  desc:'A peculiar key. It hums faintly.',             slot:'misc' }
+        };
+        // Specialist shop catalogs — fixed inventory per shop.
+        // Weapon shop pulls 2 tiers for the player's class; armour shop pulls
+        // the 3 light/medium/heavy tiers; potion shop pulls health/mana plus
+        // both elixirs.
+        function _weaponShopItemsFor(cls) {
+          if (cls === 'warrior') return ['wpn-warrior-2', 'wpn-warrior-3'];
+          if (cls === 'rogue')   return ['wpn-rogue-2',   'wpn-rogue-3'];
+          if (cls === 'mage')    return ['wpn-mage-2',    'wpn-mage-3'];
+          return [];
+        }
+        const SHOP_DEFS = {
+          weapon:  { name:"Argent Forge",      flavour:'"Class-fit blades. Pay coin, take steel."' },
+          armour:  { name:"Ironcrest Armoury", flavour:'"Light, medium, heavy. Pick your weight."' },
+          potion:  { name:"Murmuring Cauldron",flavour:'"Drink quick. The cauldron waits."' },
+          travelling: { name:"Wandering Cart", flavour:'"Bit of this, bit of that. Today only."' }
+        };
+        // Travelling-merchant pool — picks 4 random items each visit.
+        const TRAVELLING_POOL = [
+          'potion-health-1', 'potion-mana-1', 'elixir-regen', 'elixir-damage',
+          'arm-light', 'mystery-box', 'rune-shard', 'silvered-key',
+          'wpn-warrior-2', 'wpn-rogue-2', 'wpn-mage-2'
+        ];
         // Phase 2C: mob type registry — stats per type. sightRange is
         // manhattan-distance tiles; xpReward is the same currency used by
         // dungeon kills (tracked on the character). Bandit > Slime > Rat.
@@ -1808,12 +1884,16 @@
         function currentZone() { return ZONES[currentZoneId]; }
         // Zone-agnostic walkability test. Listed walkable tiles cover both the
         // hub set (0/1/3/8/9) and the Phase 2B grassland additions
-        // (12 flowers / 13 milestone / 14 campsite / 15 tall grass).
+        // (12 flowers / 13 milestone / 14 campsite / 15 tall grass) plus
+        // Phase 2E specialist shop tiles (16/17/18) — those are interaction
+        // tiles: walking onto them is fine, the shop overlay opens via
+        // centerBtnAction (or auto-prompt while standing on them).
         // Impassable: 2 water, 4-7 hub buildings, 10 tree, 11 rock.
         function isWalkable(tileVal) {
           return tileVal === 0 || tileVal === 1 || tileVal === 3 ||
                  tileVal === 8 || tileVal === 9 ||
-                 tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15;
+                 tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15 ||
+                 tileVal === 16 || tileVal === 17 || tileVal === 18;
         }
         // Legacy alias — repointed by switchZone() so existing code that reads
         // WORLD_MAP[row][col] still works without change.
@@ -1874,6 +1954,15 @@
               saveCharacter(ch);
             }
           } catch(e){}
+          // Phase 2E: each switchZone into a non-town zone gets a 40% chance
+          // to spawn a travelling merchant on a random walkable tile. Run
+          // this BEFORE camera/render so the new NPC is in zone.npcs by the
+          // time we draw.
+          try {
+            if (ZONES[zoneId].biome !== 'town') {
+              _maybeSpawnTravellingMerchant(ZONES[zoneId]);
+            }
+          } catch(e){}
           resetCamera();
           updateCamera();
           // Phase 2C: gate the mob-wander timer to non-town zones. We start
@@ -1904,7 +1993,7 @@
           _zoneSwitchGuard = false;  // clear after each move
         }
         // Base fills (drawn first, then drawWorldBuilding paints detail on top).
-        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a'};
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
@@ -2894,6 +2983,8 @@
             if (_dlg && !_dlg.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeNpcDialog(); } return; }
             const _ql = document.getElementById('questlog-overlay');
             if (_ql && !_ql.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeQuestLog(); } return; }
+            const _sov = document.getElementById('shopov-overlay');
+            if (_sov && !_sov.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeShopOverlay(); } return; }
             if(gameState.isTransitioning) return; if(gameState.isGameOver||gameState.menuOpen){ if(e.key==='Escape'&&!gameState.isGameOver) toggleMenu(); return; }
             if(!gameState.gameStarted){
                 if(!document.getElementById('start-hub').classList.contains('hidden')){
@@ -3147,6 +3238,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.16', title: 'Shop Variety (Phase 2E)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['Travelling merchant random encounter (40% spawn chance per overworld entry; rotating inventory of 4 random items from an 11-item pool; distinct hooded purple-cloak sprite with backpack + bedroll + walking stick).', '3 specialist shops on a row-15 trading post: Argent Forge (weapons, tile 16, col 14), Ironcrest Armoury (armour, tile 17, col 16), Murmuring Cauldron (potions, tile 18, col 18). Path stubs connect them to the main path.', 'Shop overlay UI: full-screen modal with item list, drawIcon-painted icons, prices, gold counter, Buy buttons (with Owned / Need-X-G / Full-cap states). Pauses player input.', 'Item registry: per-class weapons (2 tiers: Steel/Twin/Aether 160G +6/7/8 ATK; Runed/Venom/Voidcaller 340G +10/11/12 ATK), armour (3 tiers: Padded 120G +3/+12, Plated 220G +6/+20, Iron 380G +10/+30), potions, elixirs, mystery box.', 'character.inventory array — items viewable in inventory but weapons/armour not yet equippable (Phase 3 deliverable). Health potions bump ch.potions for dungeon-run integration.'] }] },
             { version: 'v0.0.15', title: 'NPCs + Quest System (Phase 2D)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['4 overworld NPCs added: Mira (campsite, kill-rats-3 quest), Old Eron (milestone, kill-bandit-1 quest), Pilgrim + Forager (flavour wanderers, no quests).', 'Per-zone NPC sprites: drawOverworldNPC() with traveller/hermit/wanderer types. Idle bob + quest indicator (! available, ? turn-in).', 'Wandering NPC movement: 3.5s timer, walkable-tile aware, anchor-based with random direction + edge-pull.', 'Dialog overlay UI: greeting/available/accepted/turn-in/done stages, mobile-friendly tap targets, ESC/close, gates player input while open.', 'Quest registry: kill-rats-3 (rat ×3, +30G/+50XP), kill-bandit-1 (bandit ×1, +60G/+100XP). Mob death increments matching active quests; turn-in grants reward + can level up.', 'Quest log overlay accessible from main menu (Quest Log button); shows active quests with progress + completed grayed-out.', 'Persistence: character.npcQuests separate from legacy quests array; reconciled on every zone-enter.'] }] },
             { version: 'v0.0.14', title: 'Overworld Mobs (Phase 2C)', date: '2026-05-09', sections: [{ heading: 'Combat', items: ['3 mob types: Rat (8 HP / 2 dmg / sight 4 / +6 XP / +2 G), Slime (12 HP / 3 dmg / sight 3 / +12 XP / +4 G), Bandit (18 HP / 5 dmg / sight 5 / +25 XP / +9 G).', '5 mobs placed in Verdant Reach (2 rats, 2 slimes, 1 bandit) on grass tiles off the path; none in player spawn sight range.', 'AI state machine: idle (anchor wander) → aggro (! flash) → chasing (greedy step) → combat (bump) → dead (loot+xp). Returns to idle if player escapes sight+4.', 'Bump combat: walking into a mob deals 5 + 1.5×level damage; mob retaliates with its damage stat. Floating damage numbers (yellow dealt, red taken). Mob HP bar shows when wounded; canvas-wide red flash on player damage.', 'Player HP bar in non-hub zones; on death player respawns at hub spawn with full HP (no XP/gold loss for now). Wander timer gated to non-town biomes; fully off in hub and dungeon.'] }] },
             { version: 'v0.0.13', title: 'First Overworld Zone (Phase 2B)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['Verdant Reach overworld zone added — 18×24 grassland with winding stone path from hub Gate to top of map; tree border, scattered rocks/flowers/tall grass, one campsite landmark, one milestone marker.', 'Hub Gate tiles (4/5/6, row 14) now port player to overworld_grasslands at (12,17). Return gate at (12,17) ports back to hub at (5,12). Re-entry guard prevents ping-pong loops.', 'New tile drawing for grassland biome: tree (10), rock (11), flower patch (12), milestone (13), campsite firepit with ember pulse (14), tall grass with sway (15).', 'isWalkable() helper made zone-agnostic — handles all 16 tile types correctly.'] }] },
@@ -3240,7 +3332,7 @@
           el.innerHTML+=`<div style="margin-top:12px;border-top:2px solid #2a1a4a;padding-top:12px"><div style="font-size:1rem;color:#c084fc;margin-bottom:10px;letter-spacing:0.04em">&#9917; LICH SANCTUM</div><div style="border:4px solid ${_lichCleared?'#c084fc':'#334'};padding:14px;background:rgba(0,20,36,0.9);opacity:${_lichCleared?1:0.45}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:1.5rem;color:${_lichCleared?'#c084fc':'#334'};text-transform:uppercase;letter-spacing:0.05em">The Lich Sanctum</span>${_lichCleared?'<span style="color:#4ade80;font-size:0.9rem">&#10003; Unlocked</span>':'<span style="color:#f87171;font-size:0.9rem">Clear the Realm Boss first</span>'}</div><div style="color:#a8d8c0;font-size:0.9rem;margin-bottom:6px">Boss: LICH KING &nbsp;&middot;&nbsp; HP: 180 &nbsp;&middot;&nbsp; Phase 2 at 50%</div><div style="color:#c084fc;font-size:0.85rem;margin-bottom:10px">&#9670; Prestige II completion — Lich King drops no loot, only glory</div><button ${_lichCleared?'':'disabled'} onclick="gameState._difficulty='boss2';gameState._isLichDungeon=true;startGame()" class="btn-pixel text-base px-5 py-2" style="width:100%;${_lichCleared?'':'opacity:0.4;cursor:not-allowed;'}">${_lichCleared?'ENTER SANCTUM':'LOCKED'}</button></div></div>`;
           el.innerHTML+=`<div style="margin-top:4px;border-top:2px solid #2a1a4a;padding-top:12px"><div style="font-size:1rem;color:#a78bfa;margin-bottom:10px;letter-spacing:0.04em">&#9760; DEEP FLOORS</div><div style="border:4px solid ${_dbc};padding:14px;background:rgba(0,20,36,0.9);opacity:${_deepLocked?0.55:1}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:1.5rem;color:${_dbc};text-transform:uppercase;letter-spacing:0.05em">&#9888; Veteran Only &mdash; Floors 4&ndash;6</span>${_deepLocked?'<span style="color:#f87171;font-size:0.9rem">Level 8+ required</span>':'<span style="color:#4ade80;font-size:0.9rem">&#10003; Unlocked</span>'}</div><div style="color:#a8d8c0;font-size:0.9rem;margin-bottom:6px">Enemy HP: 1.15&ndash;1.32&times; &nbsp;&middot;&nbsp; Enemy DMG: 1.15&ndash;1.32&times;</div><div style="color:#a78bfa;font-size:0.85rem;margin-bottom:10px">&#9670; Golems &amp; Liches spawn &mdash; deep dungeon scaling active</div><button ${_deepLocked?'disabled':''} onclick="gameState._difficulty='normal';gameState._isBossDungeon=false;gameState._runMaxFloor=6;gameState._deepFloorStart=4;startGame()" class="btn-pixel text-base px-5 py-2" style="width:100%;${_deepLocked?'opacity:0.4;cursor:not-allowed;':''}">${_deepLocked?'LOCKED':'DESCEND'}</button></div></div>`;
         }
-        function createCharacter(name, cls) { const b=CLASS_BASE[cls]; const ch={name,class:cls,level:1,xp:0,gold:0,potions:0,maxHp:b.maxHp,attack:b.attack,defense:b.defense,crit:b.crit,xpBonus:b.xpBonus,gear:{weapon:null,armour:null},quests:_freshQuests(3),npcQuests:{active:{},completed:{}}}; saveCharacter(ch); return ch; }
+        function createCharacter(name, cls) { const b=CLASS_BASE[cls]; const ch={name,class:cls,level:1,xp:0,gold:0,potions:0,maxHp:b.maxHp,attack:b.attack,defense:b.defense,crit:b.crit,xpBonus:b.xpBonus,gear:{weapon:null,armour:null},inventory:[],quests:_freshQuests(3),npcQuests:{active:{},completed:{}}}; saveCharacter(ch); return ch; }
         let _selectedClass=null;
         function selectClass(cls) { _selectedClass=cls; ['warrior','rogue','mage'].forEach(c=>{ const btn=document.getElementById('cc-cls-'+c); if(btn){ btn.style.background=c===cls?'rgba(0, 180, 216,0.22)':'rgba(0,24,37,0.85)'; btn.style.borderColor=c===cls?'#90e0ef':'#00b4d8'; } }); }
         function confirmCharacterCreation() { const nameEl=document.getElementById('cc-name'); const name=nameEl?nameEl.value.trim():''; const errEl=document.getElementById('cc-error'); if(!name||!_selectedClass){ if(errEl) errEl.classList.remove('hidden'); return; } if(errEl) errEl.classList.add('hidden'); createCharacter(name,_selectedClass); showHub(); }
@@ -3683,6 +3775,171 @@
               ctx2d.quadraticCurveTo((bx+tipX)/2 + sway*0.5, (baseY+tipY)/2, tipX, tipY);
               ctx2d.stroke();
             }
+          } else if(t === 16) {
+            // Weapon shop (Phase 2E) — small wooden building, dark stone base,
+            // pitched plank roof, crossed swords sign hanging out front, small
+            // anvil silhouette beside the door.
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.92, tw*0.4, th*0.05, 0, 0, Math.PI*2); ctx2d.fill();
+            // Stone base / wall
+            ctx2d.fillStyle = '#2a2018';
+            ctx2d.fillRect(px + tw*0.1, py + th*0.32, tw*0.8, th*0.56);
+            // Wooden plank texture (vertical lines)
+            ctx2d.fillStyle = '#1a1208';
+            for(let i=1;i<5;i++) ctx2d.fillRect(px + tw*(0.1 + i*0.16), py + th*0.32, Math.max(1, tw*0.01), th*0.56);
+            // Pitched plank roof
+            ctx2d.fillStyle = '#3a1c08';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx, py + th*0.08);
+            ctx2d.lineTo(px + tw*0.04, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.96, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            // Roof shadow underside
+            ctx2d.fillStyle = '#1f0e04';
+            ctx2d.fillRect(px + tw*0.06, py + th*0.32, tw*0.88, Math.max(1, th*0.04));
+            // Door (dark arched)
+            ctx2d.fillStyle = '#0a0604';
+            ctx2d.fillRect(cx - tw*0.1, py + th*0.6, tw*0.2, th*0.28);
+            ctx2d.beginPath(); ctx2d.arc(cx, py + th*0.6, tw*0.1, Math.PI, 0); ctx2d.fill();
+            // Hanging sign post (right side)
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(px + tw*0.74, py + th*0.36, Math.max(1, tw*0.025), th*0.16);
+            // Sign plate
+            ctx2d.fillStyle = '#5a3a1a';
+            ctx2d.fillRect(px + tw*0.66, py + th*0.42, tw*0.18, th*0.12);
+            // Crossed swords on sign — cyan glow blades
+            ctx2d.strokeStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 4;
+            ctx2d.lineWidth = Math.max(1.2, tw*0.025);
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.69, py + th*0.44); ctx2d.lineTo(px + tw*0.81, py + th*0.52);
+            ctx2d.moveTo(px + tw*0.81, py + th*0.44); ctx2d.lineTo(px + tw*0.69, py + th*0.52);
+            ctx2d.stroke();
+            ctx2d.shadowBlur = 0;
+            // Anvil silhouette beside door (left)
+            ctx2d.fillStyle = '#1a1d22';
+            ctx2d.fillRect(px + tw*0.16, py + th*0.74, tw*0.14, th*0.06);
+            ctx2d.fillRect(px + tw*0.18, py + th*0.7, tw*0.1, th*0.05);
+            // Anvil top horn (small triangle)
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.13, py + th*0.72);
+            ctx2d.lineTo(px + tw*0.18, py + th*0.7);
+            ctx2d.lineTo(px + tw*0.18, py + th*0.74);
+            ctx2d.closePath(); ctx2d.fill();
+            // Anvil highlight
+            ctx2d.fillStyle = '#3a3f48';
+            ctx2d.fillRect(px + tw*0.18, py + th*0.7, tw*0.1, Math.max(1, th*0.012));
+          } else if(t === 17) {
+            // Armour shop (Phase 2E) — same building shell, blue-grey palette,
+            // shield-and-helmet sign, mannequin silhouette in window.
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.92, tw*0.4, th*0.05, 0, 0, Math.PI*2); ctx2d.fill();
+            // Stone wall body — cool blue-grey
+            ctx2d.fillStyle = '#1a2a36';
+            ctx2d.fillRect(px + tw*0.1, py + th*0.32, tw*0.8, th*0.56);
+            // Stone block joints
+            ctx2d.fillStyle = '#0d1820';
+            for(let i=1;i<4;i++) ctx2d.fillRect(px + tw*0.1, py + th*(0.32 + i*0.14), tw*0.8, Math.max(1, th*0.012));
+            // Pitched slate roof
+            ctx2d.fillStyle = '#2a3a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx, py + th*0.08);
+            ctx2d.lineTo(px + tw*0.04, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.96, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            // Roof slate highlight
+            ctx2d.fillStyle = '#3a4a5a';
+            ctx2d.fillRect(px + tw*0.08, py + th*0.32, tw*0.84, Math.max(1, th*0.025));
+            // Door
+            ctx2d.fillStyle = '#060a10';
+            ctx2d.fillRect(cx - tw*0.1, py + th*0.6, tw*0.2, th*0.28);
+            ctx2d.beginPath(); ctx2d.arc(cx, py + th*0.6, tw*0.1, Math.PI, 0); ctx2d.fill();
+            // Window with mannequin silhouette (left of door)
+            ctx2d.fillStyle = '#0a1a2a';
+            ctx2d.fillRect(px + tw*0.16, py + th*0.46, tw*0.18, th*0.18);
+            ctx2d.strokeStyle = '#3a4a5a'; ctx2d.lineWidth = 1;
+            ctx2d.strokeRect(px + tw*0.16, py + th*0.46, tw*0.18, th*0.18);
+            // Mannequin silhouette inside window — head + chestplate
+            ctx2d.fillStyle = '#3a4a5a';
+            ctx2d.beginPath(); ctx2d.arc(px + tw*0.25, py + th*0.52, tw*0.03, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillRect(px + tw*0.21, py + th*0.55, tw*0.08, th*0.08);
+            // Hanging sign post (right of door)
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(px + tw*0.74, py + th*0.36, Math.max(1, tw*0.025), th*0.16);
+            // Sign plate
+            ctx2d.fillStyle = '#3a4a5a';
+            ctx2d.fillRect(px + tw*0.66, py + th*0.42, tw*0.18, th*0.12);
+            // Shield-and-helmet glyph on sign (cyan)
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 3;
+            // Tiny shield (kite shape)
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.71, py + th*0.45);
+            ctx2d.lineTo(px + tw*0.76, py + th*0.45);
+            ctx2d.lineTo(px + tw*0.76, py + th*0.5);
+            ctx2d.lineTo(px + tw*0.735, py + th*0.53);
+            ctx2d.lineTo(px + tw*0.71, py + th*0.5);
+            ctx2d.closePath(); ctx2d.fill();
+            // Helmet dome
+            ctx2d.beginPath(); ctx2d.arc(px + tw*0.79, py + th*0.49, tw*0.025, Math.PI, 0); ctx2d.fill();
+            ctx2d.fillRect(px + tw*0.77, py + th*0.49, tw*0.04, th*0.025);
+            ctx2d.shadowBlur = 0;
+          } else if(t === 18) {
+            // Potion shop (Phase 2E) — same building shell, warm purple palette,
+            // bubbling cauldron sign, glowing window.
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.92, tw*0.4, th*0.05, 0, 0, Math.PI*2); ctx2d.fill();
+            // Stone wall body — slightly purple-tinted
+            ctx2d.fillStyle = '#2a1a3a';
+            ctx2d.fillRect(px + tw*0.1, py + th*0.32, tw*0.8, th*0.56);
+            // Joints
+            ctx2d.fillStyle = '#1a0e2a';
+            for(let i=1;i<4;i++) ctx2d.fillRect(px + tw*0.1, py + th*(0.32 + i*0.14), tw*0.8, Math.max(1, th*0.012));
+            // Tiled roof — purple slate
+            ctx2d.fillStyle = '#3a2a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx, py + th*0.08);
+            ctx2d.lineTo(px + tw*0.04, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.96, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.fillStyle = '#5a3a7a';
+            ctx2d.fillRect(px + tw*0.08, py + th*0.32, tw*0.84, Math.max(1, th*0.025));
+            // Door
+            ctx2d.fillStyle = '#0a0410';
+            ctx2d.fillRect(cx - tw*0.1, py + th*0.6, tw*0.2, th*0.28);
+            ctx2d.beginPath(); ctx2d.arc(cx, py + th*0.6, tw*0.1, Math.PI, 0); ctx2d.fill();
+            // Glowing window — pulses gently with Date.now phase
+            const _potPulse = 0.6 + 0.4 * Math.sin(Date.now()/500 + col*0.4 + row*0.6);
+            ctx2d.fillStyle = `rgba(192,132,252,${0.5 + 0.4 * _potPulse})`;
+            ctx2d.shadowColor = '#a855f7'; ctx2d.shadowBlur = 8 * _potPulse + 4;
+            ctx2d.fillRect(px + tw*0.16, py + th*0.46, tw*0.18, th*0.18);
+            ctx2d.shadowBlur = 0;
+            // Window cross panes
+            ctx2d.fillStyle = '#1a0e2a';
+            ctx2d.fillRect(px + tw*0.245, py + th*0.46, Math.max(1, tw*0.012), th*0.18);
+            ctx2d.fillRect(px + tw*0.16, py + th*0.545, tw*0.18, Math.max(1, th*0.012));
+            // Hanging sign post
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(px + tw*0.74, py + th*0.36, Math.max(1, tw*0.025), th*0.16);
+            // Sign plate
+            ctx2d.fillStyle = '#5a3a7a';
+            ctx2d.fillRect(px + tw*0.66, py + th*0.42, tw*0.18, th*0.12);
+            // Cauldron silhouette + bubbling potion top
+            ctx2d.fillStyle = '#1a0e2a';
+            // Cauldron body
+            ctx2d.beginPath();
+            ctx2d.ellipse(px + tw*0.75, py + th*0.5, tw*0.05, th*0.035, 0, 0, Math.PI*2);
+            ctx2d.fill();
+            ctx2d.fillRect(px + tw*0.7, py + th*0.48, tw*0.1, th*0.04);
+            // Cauldron rim
+            ctx2d.fillStyle = '#3a2a4a';
+            ctx2d.fillRect(px + tw*0.7, py + th*0.475, tw*0.1, Math.max(1, th*0.012));
+            // Bubble glow
+            ctx2d.fillStyle = '#c084fc'; ctx2d.shadowColor = '#a855f7'; ctx2d.shadowBlur = 4;
+            ctx2d.beginPath(); ctx2d.arc(px + tw*0.74, py + th*0.46, tw*0.012, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(px + tw*0.78, py + th*0.45, tw*0.012, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
           }
           ctx2d.restore();
         }
@@ -4139,6 +4396,53 @@
             ctx2d.fillRect(-3.5*u, 3*u, 2*u, 2*u);
             ctx2d.fillRect(1.5*u, 3*u, 2*u, 2*u);
 
+          } else if (npc.type === 'travelling-merchant') {
+            // Phase 2E — wandering trader silhouette: hooded figure with an
+            // oversized backpack stuffed with rolled blankets, a coin pouch
+            // dangling at the belt, and a walking stick. Distinct from the
+            // hub Merchant (no awning, no glowing eyes) so it reads as "in
+            // transit, not at home." Backpack visibly bulges to the side.
+            // Big backpack (sticks well off the right side)
+            ctx2d.fillStyle = '#3a2410';
+            ctx2d.fillRect(3*u, -6*u, 7*u, 11*u);
+            // Backpack straps wrapping over shoulder
+            ctx2d.fillStyle = '#1a0f06';
+            ctx2d.fillRect(2*u, -6*u, 1.5*u, 11*u);
+            ctx2d.fillRect(3*u, -6*u, 7*u, 1*u);
+            // Bedroll on top of pack
+            ctx2d.fillStyle = '#7a3a1a';
+            ctx2d.fillRect(3*u, -8*u, 7*u, 2*u);
+            ctx2d.fillStyle = '#5a2d10';
+            ctx2d.fillRect(3*u, -7*u, 7*u, Math.max(1, 0.6*u));
+            // Robe / cloak (deep brown-purple)
+            ctx2d.fillStyle = '#2a1a3a';
+            ctx2d.fillRect(-5*u, -10*u, 9*u, 20*u);
+            // Robe trim
+            ctx2d.fillStyle = '#1a0f2a';
+            ctx2d.fillRect(-5*u, 8*u, 9*u, 2*u);
+            // Hood
+            ctx2d.fillStyle = '#1a0f2a';
+            ctx2d.beginPath(); ctx2d.arc(-1*u, -10*u, 4.5*u, Math.PI, 0); ctx2d.fill();
+            ctx2d.fillRect(-5.5*u, -10*u, 9*u, 4*u);
+            // Face shadow
+            ctx2d.fillStyle = '#000';
+            ctx2d.fillRect(-3.5*u, -8*u, 5*u, 4*u);
+            // Subtle eye glints (gold for "trader")
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(-2.5*u, -6.5*u, 1*u, 1*u);
+            ctx2d.fillRect(0.5*u, -6.5*u, 1*u, 1*u);
+            ctx2d.shadowBlur = 0;
+            // Coin pouch on belt (left side)
+            ctx2d.fillStyle = '#5a3a1a';
+            ctx2d.beginPath(); ctx2d.arc(-4*u, 3*u, 2*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(-4.5*u, 2.5*u, 1*u, 1*u);
+            // Walking stick (left, long)
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(-7*u, -11*u, 1*u, 19*u);
+            // Stick knot at top
+            ctx2d.fillStyle = '#5a2d10';
+            ctx2d.fillRect(-7.5*u, -11*u, 2*u, 1.2*u);
+
           } else {
             // wanderer / pilgrim — robed figure, hood up, walking staff.
             // Robe (deep teal)
@@ -4188,6 +4492,17 @@
               ctx2d.fillText(glyph, px + tw/2, py - th*0.2 + bob2);
               ctx2d.restore();
             }
+          }
+          // Phase 2E: shop NPCs (travelling merchant) get a gold "$" glyph.
+          if (npc.isShop) {
+            const bob3 = Math.sin(Date.now()/360 + phase) * th*0.05;
+            ctx2d.save();
+            ctx2d.font = `bold ${Math.round(th*0.55)}px VT323,monospace`;
+            ctx2d.fillStyle = '#fde047';
+            ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 4;
+            ctx2d.textAlign = 'center'; ctx2d.textBaseline = 'middle';
+            ctx2d.fillText('$', px + tw/2, py - th*0.2 + bob3);
+            ctx2d.restore();
           }
         }
         // ─── Phase 2C: mob AI / state machine ─────────────────────────────
@@ -4445,6 +4760,10 @@
             // someone and seeing them shuffle off mid-sentence is jarring.
             const dlg = document.getElementById('dialog-overlay');
             if (dlg && !dlg.classList.contains('hidden')) return;
+            // Phase 2E: same gate for the shop overlay — we don't want the
+            // travelling merchant teleporting around behind the shop UI.
+            const sov = document.getElementById('shopov-overlay');
+            if (sov && !sov.classList.contains('hidden')) return;
             let moved = false;
             for (const npc of zone.npcs) {
               if (!Number.isFinite(npc.anchorX) || !Number.isFinite(npc.anchorY)) continue;
@@ -4532,17 +4851,19 @@
               // Tile screen coords are camera-relative.
               const px=(col-camera.x)*tw, py=(row-camera.y)*th;
               const isBuilding=t===4||t===5||t===6||t===7;
+              const isShop=t===16||t===17||t===18;
               ctx2d.fillStyle=WORLD_TILE_COLORS[t]||'#0a2e1a';
               ctx2d.fillRect(px,py,tw+0.5,th+0.5);
               // Skip per-tile stroke on grass/path so cobblestone reads as a continuous strip.
-              if(isBuilding || t===2 || t===3) {
-                ctx2d.strokeStyle=isBuilding?'#00b4d8':'#000a10';
+              if(isBuilding || isShop || t===2 || t===3) {
+                ctx2d.strokeStyle=(isBuilding||isShop)?'#00b4d8':'#000a10';
                 ctx2d.lineWidth=1;
                 ctx2d.strokeRect(px+0.5,py+0.5,tw-1,th-1);
               }
               // All decorated tile types route through drawWorldBuilding
-              // (covers 0-9 hub tiles + 10-15 grassland additions).
-              if(t>=0 && t<=15){
+              // (covers 0-9 hub tiles, 10-15 grassland additions, and
+              // 16/17/18 Phase 2E specialist shop facades).
+              if(t>=0 && t<=18){
                 drawWorldBuilding(ctx2d,t,px,py,tw,th,col,row);
               }
             }
@@ -4671,6 +4992,18 @@
             // Phase 2D: overworld — if player is adjacent (Manhattan ≤ 1) to
             // a non-busy NPC, show a "Talk" prompt. Pressing the centre
             // action button opens the dialog overlay (centerBtnAction).
+            // Phase 2E: shop tiles take precedence — adjacency to a 16/17/18
+            // tile shows a "Trade at <Shop Name>" prompt; specialist shops
+            // beat NPC prompt if both are in range.
+            const _shopKind = _findAdjacentShopKind();
+            if (_shopKind) {
+              const _label = _shopKind === 'weapon' ? 'the Argent Forge'
+                           : _shopKind === 'armour' ? 'the Ironcrest Armoury'
+                           : 'the Murmuring Cauldron';
+              prompt.textContent = '▶ Trade at ' + _label;
+              prompt.style.display = 'block';
+              return;
+            }
             const adj = _findAdjacentNPC();
             if (adj) {
               prompt.textContent = '▶ Talk to ' + (adj.name || 'NPC');
@@ -4679,6 +5012,26 @@
               prompt.style.display = 'none';
             }
           }
+        }
+        // Phase 2E helper — return the shop kind ('weapon' / 'armour' /
+        // 'potion') if the player is on, or directly adjacent to (Manhattan
+        // ≤ 1), one of the specialist shop tiles in the current zone. Used
+        // by centerBtnAction + the interaction prompt.
+        function _findAdjacentShopKind() {
+          const zone = currentZone();
+          if (!zone || zone.biome === 'town') return null;
+          // Check own + 4 cardinal neighbours.
+          const offsets = [[0,0],[1,0],[-1,0],[0,1],[0,-1]];
+          for (const [dx, dy] of offsets) {
+            const x = worldPlayer.x + dx, y = worldPlayer.y + dy;
+            if (x < 0 || y < 0 || y >= zone.rows) continue;
+            const row = zone.map[y]; if (!row) continue;
+            const t = row[x];
+            if (t === 16) return 'weapon';
+            if (t === 17) return 'armour';
+            if (t === 18) return 'potion';
+          }
+          return null;
         }
         // Phase 2D: helper — return the closest live NPC within 1 tile of the
         // player (Manhattan), or null. Same-tile counts. Used by both the
@@ -4699,6 +5052,9 @@
           if (_dlg && !_dlg.classList.contains('hidden')) return;
           const _ql = document.getElementById('questlog-overlay');
           if (_ql && !_ql.classList.contains('hidden')) return;
+          // Phase 2E: pause movement while the shop overlay is open.
+          const _sov = document.getElementById('shopov-overlay');
+          if (_sov && !_sov.classList.contains('hidden')) return;
           const zone = currentZone();
           const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
           // Bounds now driven by the active zone's dimensions, not the
@@ -4766,6 +5122,8 @@
           if (_dlg && !_dlg.classList.contains('hidden')) return;
           const _ql = document.getElementById('questlog-overlay');
           if (_ql && !_ql.classList.contains('hidden')) return;
+          const _sov = document.getElementById('shopov-overlay');
+          if (_sov && !_sov.classList.contains('hidden')) return;
           if (!document.getElementById('start-hub').classList.contains('hidden')) {
             // Phase 2A: INTERACTION_ZONES is hub-only (Gate / Armory / Tavern /
             // Merchant / Scribe). Future zones will need their own interact
@@ -4775,7 +5133,12 @@
               const zone = INTERACTION_ZONES[key];
               if (zone) { if (zone.panel === 'dungeonselect') playGateRumble(); showStartPanel(zone.panel); return; }
             } else {
-              // Phase 2D: overworld — adjacent NPC opens the dialog overlay.
+              // Phase 2E: overworld — if standing on or adjacent to a shop
+              // tile (16/17/18), open the matching specialist shop overlay.
+              const _shopKind = _findAdjacentShopKind();
+              if (_shopKind) { openShopOverlay(_shopKind); return; }
+              // Phase 2D: overworld — adjacent NPC opens the dialog overlay
+              // (or routes to the shop overlay for travelling merchants).
               const adj = _findAdjacentNPC();
               if (adj) { openNpcDialog(adj); return; }
             }
@@ -4810,6 +5173,12 @@
         }
         function openNpcDialog(npc) {
           if (!npc) return;
+          // Phase 2E: shop NPCs (currently the travelling merchant) skip the
+          // greeting/quest flow and open the shop overlay directly.
+          if (npc.isShop) {
+            openShopOverlay(npc.shopKind || 'travelling', npc.shopItems);
+            return;
+          }
           _activeDialogNpcId = npc.id;
           const ov = document.getElementById('dialog-overlay');
           if (!ov) return;
@@ -4993,6 +5362,197 @@
           }
           el.innerHTML = html;
         }
+        // ─── Phase 2E: shop overlay + travelling merchant ─────────────────
+        // openShopOverlay(kind, [items]) where kind ∈ 'weapon'|'armour'|
+        // 'potion'|'travelling'. For specialist shops, items are derived from
+        // SHOP_ITEMS by kind; for travelling, callers pass a 4-item id list.
+        let _activeShopKind = null;
+        let _activeShopItems = [];
+        function openShopOverlay(kind, items) {
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          if (!ch) return;
+          _activeShopKind = kind;
+          // Resolve item id list per shop kind.
+          if (Array.isArray(items)) {
+            _activeShopItems = items.slice();
+          } else if (kind === 'weapon') {
+            _activeShopItems = _weaponShopItemsFor(ch.class);
+          } else if (kind === 'armour') {
+            _activeShopItems = ['arm-light', 'arm-medium', 'arm-heavy'];
+          } else if (kind === 'potion') {
+            _activeShopItems = ['potion-health-1', 'potion-mana-1', 'elixir-regen', 'elixir-damage'];
+          } else {
+            _activeShopItems = [];
+          }
+          const ov = document.getElementById('shopov-overlay');
+          if (!ov) return;
+          renderShopOverlay();
+          ov.classList.remove('hidden');
+        }
+        function closeShopOverlay() {
+          const ov = document.getElementById('shopov-overlay');
+          if (ov) ov.classList.add('hidden');
+          _activeShopKind = null;
+          _activeShopItems = [];
+          try { drawWorldMap(); } catch(e){}
+        }
+        function renderShopOverlay() {
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          if (!ch) return;
+          if (!ch.inventory || !Array.isArray(ch.inventory)) ch.inventory = [];
+          const def = SHOP_DEFS[_activeShopKind] || { name:'Shop', flavour:'' };
+          const nameEl = document.getElementById('shopov-name');
+          const flavEl = document.getElementById('shopov-flavour');
+          const goldEl = document.getElementById('shopov-gold');
+          const elc = document.getElementById('shopov-content');
+          if (!nameEl || !elc) return;
+          nameEl.textContent = def.name;
+          if (flavEl) flavEl.textContent = def.flavour || '';
+          if (goldEl) goldEl.textContent = (ch.gold || 0) + ' G';
+          // Mark items as "owned" when they're consumed-stack items at cap, or
+          // unique items already in inventory. For weapons/armour we let the
+          // player buy multiple copies (Phase 3 will add equip/inventory mgmt).
+          const _hasItem = (id) => ch.inventory.some(it => it.id === id);
+          const _potionCount = ch.potions || 0;
+          let html = '';
+          if (!_activeShopItems.length) {
+            html = `<div style="color:#3a5a6a;text-align:center;padding:24px">Nothing for sale today.</div>`;
+          } else {
+            for (const id of _activeShopItems) {
+              const it = SHOP_ITEMS[id];
+              if (!it) continue;
+              // State per item: 'owned-cap' (potion at 3), 'afford', 'broke'.
+              let state = 'afford';
+              let stateLabel = '';
+              if (it.kind === 'health-potion' && _potionCount >= 3) {
+                state = 'owned-cap';
+                stateLabel = `Full (${_potionCount}/3)`;
+              } else if (it.slot === 'misc' && _hasItem(id)) {
+                state = 'owned-cap';
+                stateLabel = 'Owned';
+              } else if ((ch.gold || 0) < it.price) {
+                state = 'broke';
+                stateLabel = `Need ${it.price} G`;
+              }
+              const btnHtml = state === 'afford'
+                ? `<button onclick="buyShopItem('${id}')" style="margin-top:6px;background:#00b4d8;color:#000;border:none;padding:4px 12px;cursor:pointer;font-family:'VT323',monospace;font-size:0.95rem;letter-spacing:0.04em">BUY</button>`
+                : `<div style="margin-top:6px;color:${state==='broke'?'#f87171':'#3a5a6a'};font-size:0.78rem">${stateLabel}</div>`;
+              html += `<div style="background:#001020;border:2px solid #002030;border-radius:5px;padding:10px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">`
+                   +   `<canvas data-shop-item-icon="${it.icon}" width="40" height="40" style="image-rendering:pixelated;width:40px;height:40px;flex-shrink:0;background:#000a10;border:1px solid #002030;border-radius:3px"></canvas>`
+                   +   `<div style="flex:1;min-width:0">`
+                   +     `<div style="color:#fff;font-size:1.05rem">${it.name}</div>`
+                   +     `<div style="color:#00b4d8;font-size:0.8rem;margin-top:2px">${it.desc || ''}</div>`
+                   +   `</div>`
+                   +   `<div style="text-align:right;flex-shrink:0">`
+                   +     `<div style="color:#fde047;font-size:1rem">${it.price} G</div>`
+                   +     btnHtml
+                   +   `</div>`
+                   + `</div>`;
+            }
+          }
+          elc.innerHTML = html;
+          // Paint per-item icon canvases (post-insert).
+          elc.querySelectorAll('canvas[data-shop-item-icon]').forEach(c => {
+            const x = c.getContext('2d');
+            x.clearRect(0, 0, c.width, c.height);
+            try { drawIcon(x, c.getAttribute('data-shop-item-icon'), 0, 0, c.width); } catch(e){}
+          });
+        }
+        function buyShopItem(id) {
+          const it = SHOP_ITEMS[id];
+          if (!it) return;
+          const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+          if (!ch) return;
+          if (!ch.inventory || !Array.isArray(ch.inventory)) ch.inventory = [];
+          if ((ch.gold || 0) < it.price) return;
+          // Health-potion stack cap (matches Phase 1 hub merchant logic).
+          if (it.kind === 'health-potion' && (ch.potions || 0) >= 3) return;
+          // Misc unique-item duplicate check.
+          if (it.slot === 'misc' && ch.inventory.some(x => x.id === id)) return;
+          ch.gold -= it.price;
+          // Health-potion routes to ch.potions (carries into dungeon runs).
+          if (it.kind === 'health-potion') {
+            ch.potions = Math.min(3, (ch.potions || 0) + 1);
+          }
+          // Add to inventory bag with timestamp + a copy of relevant props.
+          ch.inventory.push({
+            id: it.id,
+            name: it.name,
+            icon: it.icon,
+            slot: it.slot,
+            kind: it.kind || null,
+            gear: it.gear || null,
+            cls: it.cls || null,
+            tier: it.tier || null,
+            qty: 1,
+            t: Date.now()
+          });
+          saveCharacter(ch);
+          // Soft chime + UI feedback.
+          try { playSynth(880, 'sine', 0.12, 0.06); setTimeout(()=>playSynth(660,'sine',0.12,0.05), 80); } catch(e){}
+          // Update HUD gold.
+          try {
+            const gEl = document.getElementById('hub-hero-gold');
+            if (gEl) gEl.textContent = ch.gold + ' G';
+          } catch(e){}
+          renderShopOverlay();
+        }
+        // ─── Phase 2E: travelling-merchant spawning ───────────────────────
+        // 40% chance to appear in the overworld each switchZone() entry.
+        // Inventory is randomised — 4 distinct items pulled from
+        // TRAVELLING_POOL. Position is a random walkable, unoccupied tile
+        // anywhere on the map (excluding gate tile + immediate spawn).
+        function _pickRandomWalkableTile(zone, avoid) {
+          const out = [];
+          for (let y = 0; y < zone.rows; y++) {
+            for (let x = 0; x < zone.cols; x++) {
+              const t = zone.map[y] ? zone.map[y][x] : -1;
+              if (!isWalkable(t)) continue;
+              if (t === 3) continue;            // never on gate
+              if (t === 16 || t === 17 || t === 18) continue;  // never on shop tile
+              // Don't sit on the player's spawn or on any existing mob/NPC.
+              if (avoid && avoid.x === x && avoid.y === y) continue;
+              if (Array.isArray(zone.npcs) && zone.npcs.some(n => n.tileX === x && n.tileY === y)) continue;
+              if (Array.isArray(zone.mobs) && zone.mobs.some(m => m.state !== 'dead' && m.tileX === x && m.tileY === y)) continue;
+              out.push({ x, y });
+            }
+          }
+          if (!out.length) return null;
+          return out[Math.floor(Math.random() * out.length)];
+        }
+        function _shuffleArray(a) {
+          const out = a.slice();
+          for (let i = out.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const tmp = out[i]; out[i] = out[j]; out[j] = tmp;
+          }
+          return out;
+        }
+        function _maybeSpawnTravellingMerchant(zone) {
+          if (!zone || zone.biome === 'town') return;
+          if (!Array.isArray(zone.npcs)) zone.npcs = [];
+          // Always purge any prior travelling merchant (they don't persist
+          // across visits — each entry rerolls the encounter).
+          zone.npcs = zone.npcs.filter(n => n.id !== 'travelling-merchant');
+          if (Math.random() >= 0.4) return;  // 60% no-show
+          const tile = _pickRandomWalkableTile(zone, zone.spawn);
+          if (!tile) return;
+          // Pick 4 distinct items from the pool.
+          const pool = _shuffleArray(TRAVELLING_POOL).slice(0, 4);
+          zone.npcs.push({
+            id: 'travelling-merchant',
+            type: 'travelling-merchant',
+            tileX: tile.x, tileY: tile.y,
+            name: 'Travelling Merchant',
+            // Marked as "shop" stage — openNpcDialog short-circuits to the
+            // shop overlay instead of running the dialog flow.
+            isShop: true,
+            shopKind: 'travelling',
+            shopItems: pool,
+            quest: null,
+            dialog: { greeting: '"Coin in hand, friend? I have wares."' }
+          });
+        }
         function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); currentZoneId='hub'; WORLD_MAP=ZONES.hub.map; worldPlayer={x:ZONES.hub.spawn.x,y:ZONES.hub.spawn.y}; resetCamera(); SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); /* Phase 2C: hub return resets overworld hero HP and stops mob wander loop. */ refreshOverworldHero(); stopMobWanderTimer(); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();startHubAnim();renderHubHudIcons();},0); }
         function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('XP_character'); _selectedClass=null; showStartPanel('charcreate'); }
         function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if((gameState._isBossDungeon||gameState._isLichDungeon)&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
@@ -5001,7 +5561,21 @@
         function finishEndgame() { const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
         function newGamePlus() { const ch=loadCharacter(); if(!ch) return; const b=CLASS_BASE[ch.class]; ch.prestige=(ch.prestige||0)+1; ch.level=1; ch.xp=0; ch.maxHp=b.maxHp; ch.attack=b.attack; ch.defense=b.defense; ch.crit=b.crit||0; ch.xpBonus=b.xpBonus||1; ch.gear={weapon:null,armour:null}; ch.quests=_freshQuests(3); saveCharacter(ch); const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); gameState._pendingLootDrop=null; _explrLog(`${ch.name} began Prestige ${ch.prestige}!`); showHub(); }
         // ──────────────────────────────────────────────────────────────────────
-        function renderCharSheet() { const ch=loadCharacter(); const el=document.getElementById('charsheet-content'); if(!el||!ch) return; const CC={warrior:'#60a5fa',rogue:'#4ade80',mage:'#c084fc'}; const CI={warrior:'&#9876;',rogue:'&#10022;',mage:'&#9672;'}; const cc=CC[ch.class]||'#90e0ef'; const ci=CI[ch.class]||'?'; const xpNext=ch.level*100; const xpPct=Math.min(100,Math.round(ch.xp/xpNext*100)); const wpn=ch.gear&&ch.gear.weapon; const arm=ch.gear&&ch.gear.armour; const atkB=wpn?(wpn.atkBonus||0):0; const defB=arm?(arm.defBonus||0):0; const hpB=arm?(arm.hpBonus||0):0; const baseAtk=Math.round(18*ch.attack)+atkB; const baseDef=Math.round(Math.max(0,(ch.defense-1.0)*5))+defB; const totalHp=ch.maxHp+hpB; const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const gs=(label,item)=>{ if(!item) return `<div style="display:flex;justify-content:space-between;border:2px solid #000a10;padding:6px 8px"><span style="color:#00b4d8">${label}</span><span style="color:#333;font-size:0.85em">Empty</span></div>`; const rx=rc[item.rarity]||'#a8d8c0'; const bx=[]; if(item.atkBonus) bx.push(`+${item.atkBonus} ATK`); if(item.defBonus) bx.push(`+${item.defBonus} DEF`); if(item.hpBonus) bx.push(`+${item.hpBonus} HP`); return `<div style="display:flex;justify-content:space-between;align-items:center;border:2px solid #000a10;padding:6px 8px;gap:8px"><span style="color:#00b4d8">${label}</span><div style="text-align:right"><div style="color:${rx};font-size:0.9em">${item.name}</div><div style="color:#fff;font-size:0.75em;opacity:0.65">${bx.join(' · ')||'—'}</div></div></div>`; }; el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><span style="font-size:2rem;color:${cc}">${ci}</span><div><div style="font-size:1.4rem;color:#fff;line-height:1">${ch.name}</div><div style="font-size:1rem;color:${cc};text-transform:uppercase;letter-spacing:0.05em">${ch.class}</div>${(ch.prestige||0)>0?`<div style="font-size:0.7rem;color:#fde047;border:1px solid #fde047;padding:1px 5px;margin-top:3px;display:inline-block;letter-spacing:0.1em">&#9733; PRESTIGE ${ch.prestige}</div>`:''}</div><div style="margin-left:auto;text-align:right"><div style="color:#90e0ef">Level ${ch.level}</div><div style="color:#fde047;font-size:0.85rem">${ch.gold} G</div></div></div><div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#00b4d8;margin-bottom:3px"><span>XP to Next Level</span><span>${ch.xp} / ${xpNext}</span></div><div style="height:8px;background:#001830;border:2px solid #00b4d8;overflow:hidden"><div style="height:100%;width:${xpPct}%;background:#90e0ef"></div></div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Stats</div><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Max HP</span><span style="color:#fff">${totalHp}${hpB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+hpB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Attack</span><span style="color:#fff">${baseAtk}${atkB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+atkB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Armour Start</span><span style="color:#fff">${baseDef}${defB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+defB+')</span>':''}</span></div>${ch.class==='rogue'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Crit Chance</span><span style="color:#fff">${Math.round(ch.crit*100)}%</span></div>`:''}${ch.class==='mage'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">XP Bonus</span><span style="color:#fff">+${Math.round((ch.xpBonus-1)*100)}%</span></div>`:''}</div></div><div><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Gear</div><div style="display:flex;flex-direction:column;gap:5px">${gs('Weapon',wpn)}${gs('Armour',arm)}</div></div>`; }
+        function renderCharSheet() { const ch=loadCharacter(); const el=document.getElementById('charsheet-content'); if(!el||!ch) return; const CC={warrior:'#60a5fa',rogue:'#4ade80',mage:'#c084fc'}; const CI={warrior:'&#9876;',rogue:'&#10022;',mage:'&#9672;'}; const cc=CC[ch.class]||'#90e0ef'; const ci=CI[ch.class]||'?'; const xpNext=ch.level*100; const xpPct=Math.min(100,Math.round(ch.xp/xpNext*100)); const wpn=ch.gear&&ch.gear.weapon; const arm=ch.gear&&ch.gear.armour; const atkB=wpn?(wpn.atkBonus||0):0; const defB=arm?(arm.defBonus||0):0; const hpB=arm?(arm.hpBonus||0):0; const baseAtk=Math.round(18*ch.attack)+atkB; const baseDef=Math.round(Math.max(0,(ch.defense-1.0)*5))+defB; const totalHp=ch.maxHp+hpB; const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const gs=(label,item)=>{ if(!item) return `<div style="display:flex;justify-content:space-between;border:2px solid #000a10;padding:6px 8px"><span style="color:#00b4d8">${label}</span><span style="color:#333;font-size:0.85em">Empty</span></div>`; const rx=rc[item.rarity]||'#a8d8c0'; const bx=[]; if(item.atkBonus) bx.push(`+${item.atkBonus} ATK`); if(item.defBonus) bx.push(`+${item.defBonus} DEF`); if(item.hpBonus) bx.push(`+${item.hpBonus} HP`); return `<div style="display:flex;justify-content:space-between;align-items:center;border:2px solid #000a10;padding:6px 8px;gap:8px"><span style="color:#00b4d8">${label}</span><div style="text-align:right"><div style="color:${rx};font-size:0.9em">${item.name}</div><div style="color:#fff;font-size:0.75em;opacity:0.65">${bx.join(' · ')||'—'}</div></div></div>`; };
+        // Phase 2E: inventory listing — items bought from the new specialist
+        // shops + travelling merchant land in ch.inventory[]. Equip/use is
+        // deferred to Phase 3, so for now we show name + brief tag (Equip
+        // pending / unused) per row. Health potions are tracked separately
+        // via ch.potions and stay out of this list to avoid double-display.
+        const inv=Array.isArray(ch.inventory)?ch.inventory:[];
+        const invHtml = inv.length
+          ? inv.map(it=>{
+              const stats=[]; if(it.gear){ if(it.gear.atkBonus) stats.push('+'+it.gear.atkBonus+' ATK'); if(it.gear.defBonus) stats.push('+'+it.gear.defBonus+' DEF'); if(it.gear.hpBonus) stats.push('+'+it.gear.hpBonus+' HP'); }
+              const tag = it.slot==='consumable'?'Consumable (use in dungeon)' : it.slot==='weapon'?'Weapon — equip in Phase 3' : it.slot==='armour'?'Armour — equip in Phase 3' : 'Misc';
+              return `<div style="display:flex;align-items:center;gap:8px;border:1px solid #002030;background:#000c14;padding:5px 8px;margin-top:4px"><div style="flex:1"><div style="color:#fff;font-size:0.95rem">${it.name}</div><div style="color:#00b4d8;font-size:0.72rem">${tag}${stats.length?' · '+stats.join(' · '):''}</div></div></div>`;
+            }).join('')
+          : `<div style="color:#3a5a6a;font-size:0.78rem;padding:6px 0">Empty. Visit shops in Verdant Reach.</div>`;
+        el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><span style="font-size:2rem;color:${cc}">${ci}</span><div><div style="font-size:1.4rem;color:#fff;line-height:1">${ch.name}</div><div style="font-size:1rem;color:${cc};text-transform:uppercase;letter-spacing:0.05em">${ch.class}</div>${(ch.prestige||0)>0?`<div style="font-size:0.7rem;color:#fde047;border:1px solid #fde047;padding:1px 5px;margin-top:3px;display:inline-block;letter-spacing:0.1em">&#9733; PRESTIGE ${ch.prestige}</div>`:''}</div><div style="margin-left:auto;text-align:right"><div style="color:#90e0ef">Level ${ch.level}</div><div style="color:#fde047;font-size:0.85rem">${ch.gold} G</div></div></div><div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#00b4d8;margin-bottom:3px"><span>XP to Next Level</span><span>${ch.xp} / ${xpNext}</span></div><div style="height:8px;background:#001830;border:2px solid #00b4d8;overflow:hidden"><div style="height:100%;width:${xpPct}%;background:#90e0ef"></div></div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Stats</div><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Max HP</span><span style="color:#fff">${totalHp}${hpB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+hpB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Attack</span><span style="color:#fff">${baseAtk}${atkB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+atkB+')</span>':''}</span></div><div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Armour Start</span><span style="color:#fff">${baseDef}${defB>0?' <span style="color:#4ade80;font-size:0.8em">(+'+defB+')</span>':''}</span></div>${ch.class==='rogue'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">Crit Chance</span><span style="color:#fff">${Math.round(ch.crit*100)}%</span></div>`:''}${ch.class==='mage'?`<div style="display:flex;justify-content:space-between"><span style="color:#00b4d8">XP Bonus</span><span style="color:#fff">+${Math.round((ch.xpBonus-1)*100)}%</span></div>`:''}</div></div><div style="margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #000a10"><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Gear</div><div style="display:flex;flex-direction:column;gap:5px">${gs('Weapon',wpn)}${gs('Armour',arm)}</div></div><div><div style="color:#00b4d8;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Inventory <span style="color:#90e0ef;font-size:0.75rem">(${inv.length})</span></div>${invHtml}</div>`; }
         const EXPLR_LOOT_TABLES = {
           warrior: {
             weapon: [ {name:'Iron Sword',rarity:'Common',atkBonus:5,defBonus:0,hpBonus:0},{name:'Steel Sword',rarity:'Uncommon',atkBonus:9,defBonus:0,hpBonus:0},{name:'Enchanted Blade',rarity:'Rare',atkBonus:14,defBonus:0,hpBonus:0},{name:"Realm's Edge",rarity:'Legendary',atkBonus:22,defBonus:3,hpBonus:0} ],
