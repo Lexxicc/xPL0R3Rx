@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.20</title>
+    <title>XPL0R3R v0.0.21</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.20</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.21</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.20</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.21</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -2138,6 +2138,10 @@
             } else {
               startMobWanderTimer();
               if (typeof startNpcWanderTimer === 'function') startNpcWanderTimer();
+              // Phase 5: keep the rAF tick alive in overworld for weather +
+              // day-night smoothness. Skipped for side-dungeons (cave/ruin).
+              if (typeof zoneId === 'string' && zoneId.indexOf('side_') !== 0 &&
+                  typeof startHubAnim === 'function') startHubAnim();
             }
           } catch(e){}
           drawWorldMap();
@@ -2525,16 +2529,19 @@
         let audioCtx = null, mainGain = null, musicGain = null, musicNodes = [], musicArpTimeout = null, arpStepIndex = 0, bossHeartbeatTimeout = null, arpDelay = null, arpFeedback = null;
         function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); mainGain = audioCtx.createGain(); mainGain.gain.value = 0.14; mainGain.connect(audioCtx.destination); musicGain = audioCtx.createGain(); musicGain.gain.value = gameState._musicVolume; musicGain.connect(audioCtx.destination); }
         function playSynth(f, t, d, v=0.1, dec=true) { if (!audioCtx || !gameState.sfxEnabled) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=t; o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.setValueAtTime(v, audioCtx.currentTime); if(dec) g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+d); o.connect(g); g.connect(mainGain); o.start(); o.stop(audioCtx.currentTime+d); }
-        // Hub idle animation loop — only ticks while the hub panel is visible.
-        // Drives ripples on water tiles, signpost bob, and NPC idle bob.
+        // Hub idle animation loop — ticks while the hub panel is visible
+        // (hub OR overworld). Drives ripples on water tiles, signpost bob,
+        // NPC idle bob, Phase 5 weather/day-night/firefly atmosphere, and
+        // Phase 5 chimney smoke. Side-dungeons fall back on tick-driven
+        // redraws (mob/npc wander); overlays still render via drawWorldMap.
         let _hubAnimRaf = null, _hubAnimLastFrame = 0;
         function _hubAnimTick(ts) {
           const hub = document.getElementById('start-hub');
           if(!hub || hub.classList.contains('hidden')) { _hubAnimRaf = null; return; }
-          // Phase 2A: gate the rAF redraw to the hub zone. Future zones may
-          // want their own tick (mob movement, weather), so we don't want the
-          // hub's NPC-bob loop ticking inside, say, a forest zone.
-          if(currentZoneId !== 'hub') { _hubAnimRaf = null; return; }
+          // Phase 5: tick continues in overworld zones too so weather +
+          // day-night animate smoothly. Side-dungeons skip the rAF redraw
+          // (no atmospheric overlays inside caves/ruins).
+          if(typeof currentZoneId === 'string' && currentZoneId.indexOf('side_') === 0) { _hubAnimRaf = null; return; }
           // Throttle to ~15fps — idle anim doesn't need 60fps and saves battery.
           if(ts - _hubAnimLastFrame > 66) {
             _hubAnimLastFrame = ts;
@@ -2597,7 +2604,26 @@
             // is allocated lazily in initBiomeParticles() and reused; pool
             // size kept small (~40) for mobile perf. Each particle:
             //   { x, y, vx, vy, life, max, size }
-            biomeParticles: []
+            biomeParticles: [],
+            // ── Phase 5: visual atmosphere ────────────────────────────────
+            // Overworld weather — 'clear' / 'rain' / 'leaves' / 'mist'. Cycled
+            // automatically every 30-60s (see _maybeCycleWeather). Particles
+            // pool is allocated lazily in initOverworldWeatherParticles() and
+            // reused as weather changes. Hub stays clear unless 'mist' (hub
+            // gets a gentle mist wash for cosy-town feel; rain/leaves skip
+            // hub to keep the town palette clean).
+            overworldWeather: 'clear',
+            overworldWeatherParticles: [],
+            _weatherCycleAt: 0,
+            // dayNightPhase ∈ [0, 1) — 0 = dawn, 0.25 = day, 0.5 = dusk,
+            // 0.75 = night. Drives full-canvas tint overlay in overworld.
+            // Hub is always pinned to ~0.25 (day) for always-bright town feel;
+            // dungeons skip the overlay entirely.
+            dayNightPhase: 0.25,
+            _dayNightStart: 0,
+            // Firefly pool — only spawned/drawn when phase is in night band
+            // and player is in an overworld zone. Pool of 8 max.
+            fireflies: []
         };
 
         // ─── Phase 4: dungeon biome palettes ─────────────────────────────
@@ -3148,6 +3174,348 @@
             }
             ctx.restore();
             ctx.globalAlpha = 1;
+        }
+
+        // ─── Phase 5: overworld weather / atmosphere ────────────────────
+        // Pool size kept small for mobile perf (target <80 particles total
+        // across overworld weather + dungeon biome particles + fireflies).
+        const _OVERWORLD_WEATHER_POOL = 40;
+        // Cycle weather every 30-60s while in an overworld (non-town,
+        // non-dungeon) zone. Hub is allowed to mist but never rain/leaf.
+        const _WEATHER_OPTIONS = ['clear', 'clear', 'rain', 'leaves', 'mist'];
+        function _spawnWeatherParticle(p, kind, W, H) {
+            if (kind === 'rain') {
+                p.x = Math.random() * (W + 60) - 30;
+                p.y = -Math.random() * H * 0.4;
+                p.vx = -0.4;                     // slight wind slant
+                p.vy = 6 + Math.random() * 3;
+                p.size = 1;
+                p.max = 90 + Math.floor(Math.random() * 40);
+            } else if (kind === 'leaves') {
+                p.x = -10 - Math.random() * 40;
+                p.y = Math.random() * H;
+                p.vx = 0.6 + Math.random() * 0.8;
+                p.vy = 0.15 + Math.random() * 0.3;
+                p.size = 2 + (Math.random() < 0.4 ? 1 : 0);
+                p.max = 260 + Math.floor(Math.random() * 160);
+                // colour picked once at spawn so a leaf doesn't shimmer
+                // mid-flight; tint between green and rust.
+                const _g = Math.random();
+                p.col = _g < 0.4 ? '#7a4d1e'
+                      : _g < 0.7 ? '#b8732a'
+                      : _g < 0.9 ? '#3e6a2e'
+                                 : '#d4a648';
+                p.phase = Math.random() * Math.PI * 2;
+            } else { // 'mist'
+                p.x = Math.random() * W;
+                p.y = Math.random() * H;
+                p.vx = 0.20 + Math.random() * 0.25;
+                p.vy = (Math.random() - 0.5) * 0.05;
+                p.size = 22 + Math.floor(Math.random() * 18);
+                p.max = 320 + Math.floor(Math.random() * 200);
+            }
+            p.life = p.max;
+        }
+        function initOverworldWeatherParticles() {
+            const kind = gameState.overworldWeather;
+            if (!kind || kind === 'clear') {
+                gameState.overworldWeatherParticles = [];
+                return;
+            }
+            const wc = document.getElementById('world-canvas');
+            const W = wc ? wc.width : 480;
+            const H = wc ? wc.height : 480;
+            // Mist uses a smaller pool than rain (each puff is large).
+            const poolSize = (kind === 'mist') ? 14 : _OVERWORLD_WEATHER_POOL;
+            const arr = [];
+            for (let i = 0; i < poolSize; i++) {
+                const p = { kind };
+                _spawnWeatherParticle(p, kind, W, H);
+                p.life = Math.floor(Math.random() * p.max);
+                arr.push(p);
+            }
+            gameState.overworldWeatherParticles = arr;
+        }
+        // Auto-cycle weather while overworld is on screen. Called from
+        // drawWorldMap; cheap timestamp check, only re-rolls every 30-60s.
+        function _maybeCycleWeather() {
+            const now = performance.now();
+            if (!gameState._weatherCycleAt) {
+                gameState._weatherCycleAt = now + 30000 + Math.random() * 30000;
+                return;
+            }
+            if (now < gameState._weatherCycleAt) return;
+            // Pick a different weather than the current one when possible.
+            let pick = _WEATHER_OPTIONS[Math.floor(Math.random() * _WEATHER_OPTIONS.length)];
+            if (pick === gameState.overworldWeather && Math.random() < 0.6) {
+                pick = _WEATHER_OPTIONS[(Math.floor(Math.random() * _WEATHER_OPTIONS.length))];
+            }
+            gameState.overworldWeather = pick;
+            gameState._weatherCycleAt = now + 30000 + Math.random() * 30000;
+            initOverworldWeatherParticles();
+        }
+        // Render weather particles + a subtle dim overlay for rain. Called
+        // by drawWorldMap on overworld zones (and 'mist' on hub). Uses
+        // ctx2d (the world-canvas context) — does not touch dungeon ctx.
+        function updateAndDrawOverworldWeather(ctx2d, W, H) {
+            const kind = gameState.overworldWeather;
+            if (!kind || kind === 'clear') return;
+            // Lazy-init or re-init when canvas dims change drastically.
+            if (!gameState.overworldWeatherParticles ||
+                gameState.overworldWeatherParticles.length === 0 ||
+                gameState.overworldWeatherParticles[0].kind !== kind) {
+                initOverworldWeatherParticles();
+            }
+            ctx2d.save();
+            // Rain: subtle blue-grey desaturate wash on entire scene.
+            if (kind === 'rain') {
+                ctx2d.fillStyle = 'rgba(60,90,130,0.10)';
+                ctx2d.fillRect(0, 0, W, H);
+            }
+            const list = gameState.overworldWeatherParticles;
+            for (let i = 0; i < list.length; i++) {
+                const p = list[i];
+                p.x += p.vx; p.y += p.vy; p.life--;
+                if (kind === 'leaves') {
+                    // wave motion — slight vertical bob
+                    p.phase += 0.07;
+                    p.y += Math.sin(p.phase) * 0.18;
+                }
+                // Recycle off-screen / expired
+                if (p.life <= 0 ||
+                    p.x < -40 || p.x > W + 40 ||
+                    p.y < -40 || p.y > H + 40) {
+                    _spawnWeatherParticle(p, kind, W, H);
+                    continue;
+                }
+                if (kind === 'rain') {
+                    ctx2d.strokeStyle = 'rgba(170,200,230,0.55)';
+                    ctx2d.lineWidth = 1;
+                    ctx2d.beginPath();
+                    ctx2d.moveTo(p.x, p.y);
+                    ctx2d.lineTo(p.x - 2, p.y + 7);
+                    ctx2d.stroke();
+                } else if (kind === 'leaves') {
+                    ctx2d.fillStyle = p.col || '#8a5a2a';
+                    ctx2d.globalAlpha = Math.max(0, Math.min(1, 0.7 * (p.life / p.max)));
+                    ctx2d.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+                    ctx2d.globalAlpha = 1;
+                } else if (kind === 'mist') {
+                    const lr = p.life / p.max;
+                    // Soft puff — radial gradient via two stacked circles.
+                    ctx2d.globalAlpha = 0.22 * Math.min(1, lr * 1.4) * (1 - lr * 0.3);
+                    ctx2d.fillStyle = '#cad7e0';
+                    ctx2d.beginPath();
+                    ctx2d.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx2d.fill();
+                    ctx2d.globalAlpha = 0.10 * Math.min(1, lr * 1.4);
+                    ctx2d.fillStyle = '#ffffff';
+                    ctx2d.beginPath();
+                    ctx2d.arc(p.x - p.size * 0.2, p.y - p.size * 0.15, p.size * 0.6, 0, Math.PI * 2);
+                    ctx2d.fill();
+                    ctx2d.globalAlpha = 1;
+                }
+            }
+            ctx2d.restore();
+            ctx2d.globalAlpha = 1;
+        }
+        // Day-night cycle: phase ∈ [0,1). Real-time: 1 cycle / 5 minutes of
+        // overworld play. Hub is forced to ~0.25 (day) so the town never
+        // dims. Dungeons skip the overlay entirely (called via drawWorldMap
+        // only).
+        const _DAY_NIGHT_CYCLE_MS = 300000;  // 5 minutes
+        function _advanceDayNight() {
+            const now = performance.now();
+            if (!gameState._dayNightStart) {
+                gameState._dayNightStart = now;
+            }
+            const elapsed = now - gameState._dayNightStart;
+            gameState.dayNightPhase = (elapsed % _DAY_NIGHT_CYCLE_MS) / _DAY_NIGHT_CYCLE_MS;
+        }
+        // Returns the tint colour {r,g,b,a} for current dayNightPhase.
+        // Smooth interpolation between 4 keys: dawn → day → dusk → night.
+        function _dayNightTint() {
+            // Hub pinned to day — no tint.
+            if (currentZoneId === 'hub') return null;
+            const ph = gameState.dayNightPhase || 0;
+            // Key tints (RGBA). Day is 0 alpha (no overlay).
+            // Dawn warm orange, dusk cool purple, night dark blue.
+            const KEYS = [
+                { p: 0.00, r: 255, g: 170, b:  90, a: 0.18 }, // dawn
+                { p: 0.18, r: 255, g: 220, b: 170, a: 0.05 }, // dawn→day fade
+                { p: 0.30, r: 255, g: 255, b: 255, a: 0.00 }, // day
+                { p: 0.55, r: 200, g: 140, b: 220, a: 0.12 }, // dusk
+                { p: 0.70, r:  80, g:  60, b: 140, a: 0.28 }, // dusk→night fade
+                { p: 0.85, r:  20, g:  35, b:  85, a: 0.34 }, // night peak
+                { p: 1.00, r: 255, g: 170, b:  90, a: 0.18 }  // wrap → dawn
+            ];
+            let a = KEYS[0], b = KEYS[KEYS.length - 1];
+            for (let i = 0; i < KEYS.length - 1; i++) {
+                if (ph >= KEYS[i].p && ph <= KEYS[i+1].p) { a = KEYS[i]; b = KEYS[i+1]; break; }
+            }
+            const span = (b.p - a.p) || 1;
+            const t = (ph - a.p) / span;
+            return {
+                r: Math.round(a.r + (b.r - a.r) * t),
+                g: Math.round(a.g + (b.g - a.g) * t),
+                b: Math.round(a.b + (b.b - a.b) * t),
+                a: a.a + (b.a - a.a) * t
+            };
+        }
+        function drawDayNightOverlay(ctx2d, W, H) {
+            const tint = _dayNightTint();
+            if (!tint || tint.a <= 0.001) return;
+            ctx2d.save();
+            // Multiply gives us a cool dim that doesn't wash colours out.
+            ctx2d.globalCompositeOperation = 'multiply';
+            ctx2d.fillStyle = `rgba(${tint.r},${tint.g},${tint.b},${tint.a.toFixed(3)})`;
+            ctx2d.fillRect(0, 0, W, H);
+            ctx2d.restore();
+        }
+        // Returns true when current dayNightPhase falls in the night band.
+        // Used to gate fireflies + lore-shrine night glow.
+        function _isNight() {
+            if (currentZoneId === 'hub') return false;
+            const ph = gameState.dayNightPhase || 0;
+            return ph >= 0.62 && ph <= 0.92;
+        }
+        // ─── Phase 5: fireflies (night-only, overworld grass/tall-grass tiles)
+        // Pool: max 8. Each firefly anchored to a tile, pulses + drifts.
+        function _seedFireflies(zone, W, H) {
+            const list = gameState.fireflies;
+            if (!Array.isArray(list)) { gameState.fireflies = []; return; }
+            // Clamp pool size — drop excess if zone changed.
+            while (list.length > 8) list.pop();
+            // Spawn 4-8 fireflies on tiles 0/15 (grass / tall grass) when
+            // currently in night and currently in an overworld zone.
+            const target = 6;
+            if (list.length >= target) return;
+            const candidates = [];
+            for (let r = 0; r < zone.rows; r++) {
+                const row = zone.map[r];
+                if (!row) continue;
+                for (let c = 0; c < zone.cols; c++) {
+                    const tv = row[c];
+                    if (tv === 0 || tv === 15) candidates.push([c, r]);
+                }
+            }
+            if (!candidates.length) return;
+            while (list.length < target) {
+                const [cx, cy] = candidates[Math.floor(Math.random() * candidates.length)];
+                list.push({
+                    tileX: cx, tileY: cy,
+                    ox: (Math.random() - 0.5) * 0.7,
+                    oy: (Math.random() - 0.5) * 0.7,
+                    phase: Math.random() * Math.PI * 2,
+                    drift: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        function updateAndDrawFireflies(ctx2d, zone, startCol, endCol, startRow, endRow, tw, th) {
+            if (!_isNight()) {
+                // Drop pool to free memory when day comes.
+                if (gameState.fireflies && gameState.fireflies.length) gameState.fireflies = [];
+                return;
+            }
+            const wc = document.getElementById('world-canvas');
+            // Reseed when fewer than half the fireflies are in viewport so
+            // the player always has a few visible glints.
+            const list0 = gameState.fireflies || [];
+            let inView = 0;
+            for (const f of list0) {
+                if (f.tileX >= startCol && f.tileX < endCol &&
+                    f.tileY >= startRow && f.tileY < endRow) inView++;
+            }
+            if (inView < 3) {
+                gameState.fireflies = [];
+            }
+            _seedFireflies(zone, wc ? wc.width : 480, wc ? wc.height : 480);
+            const list = gameState.fireflies;
+            ctx2d.save();
+            for (const f of list) {
+                if (f.tileX < startCol || f.tileX >= endCol) continue;
+                if (f.tileY < startRow || f.tileY >= endRow) continue;
+                f.phase += 0.05; f.drift += 0.012;
+                f.ox += Math.cos(f.drift) * 0.008;
+                f.oy += Math.sin(f.drift * 1.3) * 0.006;
+                // Re-anchor if drifts off tile.
+                if (Math.abs(f.ox) > 0.45) f.ox *= -0.7;
+                if (Math.abs(f.oy) > 0.45) f.oy *= -0.7;
+                const fx = (f.tileX - camera.x + 0.5 + f.ox) * tw;
+                const fy = (f.tileY - camera.y + 0.5 + f.oy) * th;
+                const pulse = 0.55 + 0.45 * Math.sin(f.phase);
+                ctx2d.globalAlpha = 0.35 + 0.4 * pulse;
+                ctx2d.fillStyle = '#fff8b0';
+                ctx2d.shadowBlur = 6; ctx2d.shadowColor = '#fde047';
+                ctx2d.fillRect(Math.floor(fx) - 1, Math.floor(fy) - 1, 2, 2);
+                ctx2d.shadowBlur = 0;
+            }
+            ctx2d.globalAlpha = 1;
+            ctx2d.restore();
+        }
+        // ─── Phase 5: hub chimney smoke ──────────────────────────────────
+        // Tavern (col 5, row 10) + Merchant (col 8, row 10) get rooftop
+        // smoke plumes. Slow, sparse, light. Only drawn when zoneId='hub'.
+        // Plumes are derived from a phase-driven sine — no particle pool
+        // for the smoke (simpler + cheaper than a full particle system).
+        function drawHubChimneySmoke(ctx2d, tw, th) {
+            const STACKS = [
+                { col: 5, row: 10, dx: 0.30, dy: -0.05 },  // tavern
+                { col: 8, row: 10, dx: 0.20, dy: -0.10 }   // merchant
+            ];
+            const t = (performance.now() / 1000);
+            ctx2d.save();
+            for (const s of STACKS) {
+                if (s.col < camera.x || s.col >= camera.x + 40) continue;
+                if (s.row < camera.y || s.row >= camera.y + 40) continue;
+                const baseX = (s.col - camera.x + s.dx) * tw;
+                const baseY = (s.row - camera.y + s.dy) * th;
+                // 4 puffs per chimney, staggered over the loop period.
+                for (let i = 0; i < 4; i++) {
+                    const tt = ((t + i * 0.9) % 3.6) / 3.6;  // 0..1 lifecycle
+                    const yOff = -tt * th * 1.4;             // rise upwards
+                    const xOff = Math.sin(tt * 4 + i) * tw * 0.18;
+                    const r = tw * (0.10 + tt * 0.16);
+                    const a = (1 - tt) * 0.35 * (i === 0 ? 1 : 0.85);
+                    ctx2d.globalAlpha = Math.max(0, a);
+                    ctx2d.fillStyle = '#9ba8b3';
+                    ctx2d.beginPath();
+                    ctx2d.arc(baseX + xOff, baseY + yOff, r, 0, Math.PI * 2);
+                    ctx2d.fill();
+                    ctx2d.globalAlpha = Math.max(0, a * 0.6);
+                    ctx2d.fillStyle = '#cad3da';
+                    ctx2d.beginPath();
+                    ctx2d.arc(baseX + xOff - r * 0.25, baseY + yOff - r * 0.2, r * 0.55, 0, Math.PI * 2);
+                    ctx2d.fill();
+                }
+            }
+            ctx2d.globalAlpha = 1;
+            ctx2d.restore();
+        }
+        // ─── Phase 5: water sparkles ──────────────────────────────────────
+        // Every few seconds a hub water tile gets a brief specular sparkle.
+        // Cheap: only iterates current zone's water tiles (pond is small).
+        function drawWaterSparkles(ctx2d, zone, startCol, endCol, startRow, endRow, tw, th) {
+            const t = performance.now() / 1000;
+            for (let r = startRow; r < endRow; r++) {
+                const row = zone.map[r];
+                if (!row) continue;
+                for (let c = startCol; c < endCol; c++) {
+                    if (row[c] !== 2) continue;
+                    // deterministic per-tile phase + 2.4s period
+                    const ph = ((c * 17 + r * 31) & 0xFF) / 256;
+                    const k = (t * 0.42 + ph) % 1;
+                    if (k < 0.10 || k > 0.16) continue;
+                    const sx = (c - camera.x + 0.5 + Math.sin(ph * 9) * 0.25) * tw;
+                    const sy = (r - camera.y + 0.5 + Math.cos(ph * 11) * 0.25) * th;
+                    ctx2d.save();
+                    ctx2d.globalAlpha = 0.85;
+                    ctx2d.fillStyle = '#ffffff';
+                    ctx2d.fillRect(Math.floor(sx) - 1, Math.floor(sy), 2, 1);
+                    ctx2d.fillRect(Math.floor(sx), Math.floor(sy) - 1, 1, 2);
+                    ctx2d.restore();
+                }
+            }
         }
 
         function drawTile(type, x, y, wx, wy) {
@@ -4007,6 +4375,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.21', title: 'Visual Atmosphere (Phase 5 — full roadmap complete)', date: '2026-05-09', sections: [{ heading: 'Polish', items: ['Overworld weather: clear/rain/leaves/mist cycle every 30-60s. Rain = slanted blue-grey lines + canvas wash. Leaves = green/brown drift with sine bob. Mist = stacked translucent grey puffs. Hub limited to mist only.', 'Day-night cycle: 5-minute full cycle, 7 keyframes (dawn warm orange → day clear → dusk purple → dusk-fade → night peak deep blue). Multiply-blend overlay; hub stays at day.', 'Ambient details: hub chimney smoke at tavern + merchant; deterministic water sparkles on pond tiles; subtle tree sway; gate banner flap; fireflies that spawn on night-time grass tiles (pool of 6).', 'Lore shrines glow stronger purple at night.', 'Performance: ~50-particle peak count on overworld at night, throttled at 15fps tick.', 'PHASE 5 COMPLETE — entire EXP 5-phase roadmap shipped (Hub completion → Above-world expansion → Player polish → Dungeon biomes → Atmosphere).'] }] },
             { version: 'v0.0.20', title: 'Dungeon Biome Variation (Phase 4)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['DUNGEON_BIOMES registry: standard / frost / ash / rune palettes (wall/mortar/edgeGlow/floor/accent/particle).', 'drawTile() WALL branches: frost (ice blocks + shimmer), ash (scorched + ember-cracks), rune (glowing glyphs with pulse). FLOOR branches: frost (ice + reflective specular), ash (cracked earth + ember spots), rune (arcane circles + pulse). Standard preserved byte-identical.', 'Ambient particle layer (40-particle pool): snow drifts down (frost), embers float up (ash), violet sparks scatter (rune). Standard biome has no particles.', 'BIOME selector row added to dungeon-select panel — 4 buttons with selected-state highlight. Flag persists across runs.', 'BFS wallDepth fade preserved across all biomes. Mob types reused (no biome-themed enemies in this phase — flagged for future).'] }] },
             { version: 'v0.0.19', title: 'Player Polish (Phase 3)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['Walk-cycle: 4 directions × 4 frames (2 distinct walk poses + face/eye/weapon-side variants per direction). Direction tracked via player.facing, frameTick advances on every move.', 'Equipped-gear visual: armour tier (none/light/medium/heavy) drives torso width + shoulder pads + chest plate + rivets. Weapon (sword/dagger/staff) drawn on facing-aware hip side, with arcane-orb glow on staves.', 'Equip/unequip flow in character sheet inventory: per-row EQUIP button. Class-mismatched weapons get disabled button with reason. Equip mirrors into ch.gear slot — existing damage/HP/DEF code paths pick up bonuses with no extra wiring.', 'Idle polish: 1.2s sine bob + slower torso-only breath, suppressed while moving. Look-around eye-shift every 6s when stationary. Class palettes (warrior cyan, rogue green, mage purple).', 'Hub + overworld player sprite updated; dungeon sprite intentionally out of scope (different art system).'] }] },
             { version: 'v0.0.18', title: 'Collectibles + Lore Shrines (Phase 2G — Phase 2 complete)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['8 collectibles in Verdant Reach: 3 gold piles (small/medium), 2 herbs, 1 rune shard, 2 potions. Auto-pickup on walk-over with floating reward text. Persisted via character.collectiblesPicked — never respawn.', '4 lore shrines in overworld + 2 in side-dungeons (Bone Inscription in Cave of Fangs, Altar Stone in Ancient Ruin). Each shrine has unique atmospheric worldbuilding text; first reading grants +25 XP.', 'Shrine UI: dedicated #lore-overlay with violet theme, scrollable lore text, READ tag on subsequent reads.', 'Discoveries tracker added to character sheet: shrines read X/Y, collectibles found X/Y, side-dungeons cleared X/Y, plus % explored aggregate.', 'Persistence: character.shrinesRead, character.collectiblesPicked, character.sideDungeonsCleared. Side-dungeon entities use composite keys (dungeonId__shrineId) so they survive dungeon regeneration.'] }] },
@@ -4497,6 +4866,29 @@
             ctx2d.shadowBlur=0; ctx2d.strokeStyle='rgba(144,224,239,0.6)'; ctx2d.lineWidth=1;
             const r1=tw*0.22, r2=tw*0.36;
             [0,Math.PI/2,Math.PI,Math.PI*3/2].forEach(a=>{ ctx2d.beginPath(); ctx2d.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1); ctx2d.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2); ctx2d.stroke(); });
+            // Phase 5: banner above the gate — cyan flag flapping to wind.
+            // Wave amplitude scales with row offset so the trailing edge
+            // ripples while the staff stays put.
+            const _ft = performance.now()/360 + col*0.4;
+            ctx2d.fillStyle = '#3d1f08';                         // staff
+            ctx2d.fillRect(px + tw*0.10, py - th*0.04, Math.max(1, tw*0.04), th*0.42);
+            ctx2d.fillStyle = '#0e7490';                         // flag dark
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.14, py - th*0.02);
+            for (let s = 0; s <= 4; s++) {
+              const tx = px + tw*0.14 + tw*0.09*s;
+              const ty = py + th*0.02 + Math.sin(_ft + s*0.8) * th*0.025;
+              ctx2d.lineTo(tx, ty);
+            }
+            ctx2d.lineTo(px + tw*0.14 + tw*0.36, py + th*0.16);
+            for (let s = 4; s >= 0; s--) {
+              const tx = px + tw*0.14 + tw*0.09*s;
+              const ty = py + th*0.18 + Math.sin(_ft + s*0.8 + 0.5) * th*0.025;
+              ctx2d.lineTo(tx, ty);
+            }
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.fillStyle = '#22d3ee';                         // flag highlight
+            ctx2d.fillRect(px + tw*0.16, py + th*0.06, tw*0.10, Math.max(1, th*0.02));
           } else if(t === 4) {
             ctx2d.fillStyle='#142820'; ctx2d.fillRect(px+tw*.08,py+th*.18,tw*.84,th*.74);
             ctx2d.fillRect(px+tw*.08,py+th*.08,tw*.2,th*.12); ctx2d.fillRect(px+tw*.38,py+th*.08,tw*.2,th*.12); ctx2d.fillRect(px+tw*.68,py+th*.08,tw*.2,th*.12);
@@ -4599,9 +4991,12 @@
           } else if(t === 10) {
             // Tree (impassable) — pine/oak silhouette. Hash drives canopy
             // shape variants, slight lean, and trunk crack frequency.
+            // Phase 5: very subtle wind-driven canopy sway (~±2px).
             const h = _hubTileHash(col, row);
             const variant = h & 3;          // 0/1 = pine, 2 = oak, 3 = wide oak
-            const lean = ((h >> 2) & 1) ? 1 : -1;
+            const _baseLean = ((h >> 2) & 1) ? 1 : -1;
+            const _swayT = performance.now()/1100 + col*0.21 + row*0.13;
+            const lean = _baseLean + Math.sin(_swayT) * 0.4;
             // Ground shadow
             ctx2d.fillStyle = 'rgba(0,0,0,0.4)';
             ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.88, tw*0.34, th*0.06, 0, 0, Math.PI*2); ctx2d.fill();
@@ -6584,6 +6979,34 @@
             );
           }
 
+          // ─── Phase 5: ambient atmospheric layer ─────────────────────────
+          // Draw order matters — water sparkles + chimney smoke sit BELOW
+          // weather + day-night so a heavy rain still subtly dims the smoke.
+          // Side-dungeons (cave/ruin) opt out — they have their own dungeon
+          // biome particle system.
+          const _isSideDungeon = (typeof currentZoneId === 'string' && currentZoneId.indexOf('side_') === 0);
+          if (!_isSideDungeon) {
+            try { drawWaterSparkles(ctx2d, zone, startCol, endCol, startRow, endRow, tw, th); } catch(e){}
+            if (currentZoneId === 'hub') {
+              try { drawHubChimneySmoke(ctx2d, tw, th); } catch(e){}
+            }
+            // Day-night phase advance + firefly seeding/draw (overworld only)
+            try { _advanceDayNight(); } catch(e){}
+            if (currentZoneId !== 'hub') {
+              try { updateAndDrawFireflies(ctx2d, zone, startCol, endCol, startRow, endRow, tw, th); } catch(e){}
+            }
+            // Weather: cycle in overworld; hub gets a quiet 'mist' allowance
+            // but no rain/leaves (keeps town palette clean).
+            if (currentZoneId !== 'hub') {
+              try { _maybeCycleWeather(); } catch(e){}
+              try { updateAndDrawOverworldWeather(ctx2d, wc.width, wc.height); } catch(e){}
+            } else if (gameState.overworldWeather === 'mist') {
+              try { updateAndDrawOverworldWeather(ctx2d, wc.width, wc.height); } catch(e){}
+            }
+            // Day-night tint last (multiply over whole canvas).
+            try { drawDayNightOverlay(ctx2d, wc.width, wc.height); } catch(e){}
+          }
+
           // ─── Phase 2C: floating combat numbers (overworld only) ─────────
           if (currentZoneId !== 'hub' && overworldFloatNums.length) {
             const remaining = [];
@@ -7074,10 +7497,13 @@
           ctx2d.arc(cx, cy - th*0.20, Math.max(1, tw*0.022), 0, Math.PI*2);
           ctx2d.fill();
           ctx2d.shadowBlur = 0;
-          // Subtle ground glow halo (lavender)
-          ctx2d.fillStyle = `rgba(192,132,252,${0.08 + 0.10 * pulse})`;
+          // Subtle ground glow halo (lavender). Phase 5: at night the halo
+          // gets a stronger purple-on-blue presence so shrines/landmarks
+          // anchor the dim canvas with a touch of mystery.
+          const _nb = (typeof _isNight === 'function' && _isNight()) ? 1 : 0;
+          ctx2d.fillStyle = `rgba(192,132,252,${0.08 + 0.10 * pulse + 0.18 * _nb})`;
           ctx2d.beginPath();
-          ctx2d.ellipse(cx, cy + th*0.36, tw*0.36, th*0.10, 0, 0, Math.PI*2);
+          ctx2d.ellipse(cx, cy + th*0.36, tw*(0.36 + 0.10*_nb), th*(0.10 + 0.04*_nb), 0, 0, Math.PI*2);
           ctx2d.fill();
           // Read indicator (small dim glyph in upper-right corner if read)
           try {
