@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.11</title>
+    <title>XPL0R3R v0.0.12</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -724,7 +724,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.11</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.12</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1187,7 +1187,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.11</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.12</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1576,23 +1576,88 @@
         //  7 Scribe's Tower (impassable; interact from below)
         //  8 stone well (passable, decorative — small pixel-art well with hanging bucket)
         //  9 signpost (passable, decorative — wooden post with engraved cyan glyph)
-        const WORLD_MAP = [
-          [0,0,0,0,0,0,0,0,0,2,2],
-          [0,7,7,0,0,0,0,0,0,2,2],
-          [0,7,7,0,0,0,0,0,0,2,0],
-          [0,7,7,0,0,0,0,0,0,0,0],
-          [0,7,7,0,0,9,0,0,0,0,0],
-          [0,0,0,0,0,0,8,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,5,5,5,0,0,0,0],
-          [0,4,4,4,5,5,5,6,6,6,0],
-          [0,4,4,4,5,5,5,6,6,6,0],
-          [0,4,4,4,5,5,5,6,6,6,0],
-          [1,1,1,1,1,1,1,1,1,1,1],
-          [1,1,1,1,1,1,1,1,1,1,1],
-          [1,1,1,1,1,1,1,1,1,1,1],
-          [0,0,0,0,3,3,3,0,0,0,0]
-        ];
+        // ── Phase 2A: multi-zone data structure ─────────────────────────────
+        // The hub is now one zone in a ZONES registry. Each zone owns its own
+        // tile grid, dimensions, spawn point, biome tag, and connection list.
+        // Phase 2B will populate `connections` with gate destinations; for now
+        // the hub has none, so tryZoneTransition() is a safe no-op.
+        const ZONES = {
+          hub: {
+            id: 'hub',
+            name: 'Town Hub',
+            map: [
+              [0,0,0,0,0,0,0,0,0,2,2],
+              [0,7,7,0,0,0,0,0,0,2,2],
+              [0,7,7,0,0,0,0,0,0,2,0],
+              [0,7,7,0,0,0,0,0,0,0,0],
+              [0,7,7,0,0,9,0,0,0,0,0],
+              [0,0,0,0,0,0,8,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,5,5,5,0,0,0,0],
+              [0,4,4,4,5,5,5,6,6,6,0],
+              [0,4,4,4,5,5,5,6,6,6,0],
+              [0,4,4,4,5,5,5,6,6,6,0],
+              [1,1,1,1,1,1,1,1,1,1,1],
+              [1,1,1,1,1,1,1,1,1,1,1],
+              [1,1,1,1,1,1,1,1,1,1,1],
+              [0,0,0,0,3,3,3,0,0,0,0]
+            ],
+            cols: 11,
+            rows: 15,
+            spawn: { x: 5, y: 12 },
+            biome: 'town',
+            connections: []   // Phase 2B will add { fromX, fromY, toZone, toX, toY }
+          }
+        };
+        let currentZoneId = 'hub';
+        function currentZone() { return ZONES[currentZoneId]; }
+        // Legacy alias — repointed by switchZone() so existing code that reads
+        // WORLD_MAP[row][col] still works without change.
+        let WORLD_MAP = ZONES.hub.map;
+        // Viewport camera (tile-space). For the hub this clamps to (0,0) since
+        // the whole map fits the canvas, so behaviour is identical to pre-2A.
+        const camera = { x: 0, y: 0 };
+        function resetCamera() { camera.x = 0; camera.y = 0; }
+        function updateCamera() {
+          const zone = currentZone();
+          // VIEW_WIDTH/HEIGHT are dungeon-canvas constants. The hub uses
+          // world-canvas (sized to fit the whole grid), so we read the live
+          // world-canvas dims when we have them; otherwise fall back to zone
+          // dims so tiny zones never produce negative clamps.
+          const wc = document.getElementById('world-canvas');
+          const tw = wc && zone.cols ? wc.width / zone.cols : 0;
+          const th = wc && zone.rows ? wc.height / zone.rows : 0;
+          const viewW = tw > 0 ? Math.max(1, Math.floor(wc.width / tw)) : zone.cols;
+          const viewH = th > 0 ? Math.max(1, Math.floor(wc.height / th)) : zone.rows;
+          camera.x = Math.max(0, Math.min(Math.max(0, zone.cols - viewW), worldPlayer.x - Math.floor(viewW / 2)));
+          camera.y = Math.max(0, Math.min(Math.max(0, zone.rows - viewH), worldPlayer.y - Math.floor(viewH / 2)));
+        }
+        // Guard prevents an immediate re-trigger on the destination's gate tile
+        // when arriving via switchZone().
+        let _zoneSwitchGuard = false;
+        function switchZone(zoneId, entryX, entryY) {
+          if (!ZONES[zoneId]) return;
+          currentZoneId = zoneId;
+          WORLD_MAP = ZONES[zoneId].map;          // repoint legacy alias
+          worldPlayer.x = entryX;
+          worldPlayer.y = entryY;
+          _zoneSwitchGuard = true;                // prevent immediate re-trigger
+          resetCamera();
+          updateCamera();
+          drawWorldMap();
+        }
+        function tryZoneTransition(playerTileX, playerTileY) {
+          const zone = currentZone();
+          const row = zone.map[playerTileY];
+          const t = row ? row[playerTileX] : undefined;
+          if (t === 3) {  // gate tile
+            const gate = zone.connections.find(c => c.fromX === playerTileX && c.fromY === playerTileY);
+            if (gate && ZONES[gate.toZone] && !_zoneSwitchGuard) {
+              switchZone(gate.toZone, gate.toX, gate.toY);
+            }
+          }
+          _zoneSwitchGuard = false;  // clear after each move
+        }
         // Base fills (drawn first, then drawWorldBuilding paints detail on top).
         const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
@@ -1635,6 +1700,10 @@
         function _hubAnimTick(ts) {
           const hub = document.getElementById('start-hub');
           if(!hub || hub.classList.contains('hidden')) { _hubAnimRaf = null; return; }
+          // Phase 2A: gate the rAF redraw to the hub zone. Future zones may
+          // want their own tick (mob movement, weather), so we don't want the
+          // hub's NPC-bob loop ticking inside, say, a forest zone.
+          if(currentZoneId !== 'hub') { _hubAnimRaf = null; return; }
           // Throttle to ~15fps — idle anim doesn't need 60fps and saves battery.
           if(ts - _hubAnimLastFrame > 66) {
             _hubAnimLastFrame = ts;
@@ -2806,6 +2875,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.12', title: 'Multi-Zone Infrastructure (Phase 2A)', date: '2026-05-09', sections: [{ heading: 'Refactor', items: ['ZONES registry replaces single WORLD_MAP — currentZoneId / currentZone() accessors. WORLD_MAP kept as legacy alias, repointed by switchZone().', 'Zone-transition logic: tryZoneTransition() fires after every move; if player is on a gate tile (3) with a connection entry, switchZone() ports them to the destination. _zoneSwitchGuard prevents ping-pong loops.', 'Camera/viewport scrolling: camera{x,y} clamped to map bounds, drawWorldMap iterates camera-relative ranges + culls out-of-window content. Hub clamps to (0,0) — visually identical to v0.0.11.'] }] },
             { version: 'v0.0.11', title: 'Hub Completion (Phase 1)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['New tile types: grass tufts (0), cobblestone path (1), animated water/pond (2), stone well (8), arrow signpost (9). Water added to top-right; well at (6,5); signpost at (5,4).', 'NPC sprites added for all 5 hub buildings (Gate guard, Armorer, Tavern keeper, Merchant, Scribe) — pixel-art canvas, idle bob via Date.now phase offset, ~15fps animation loop gated to hub visibility.', 'HUD/inventory icon library: drawIcon() with 12 types (potions, gold, class glyphs, shield, key, star, scroll). Hub HUD strip + shop cards now use canvas pixel-art icons instead of text/emoji.'] }] },
             { version: 'v0.0.10', title: 'Mobile Layout Fix', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Start overlay and body safe-area padding corrected for pointer:coarse devices.'] }] },
             { version: 'v0.0.9', title: 'Viewport Refit', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Left/right borders 1.6vw from screen edges; top/bottom 3vw; mobile controls repositioned to match.'] }] },
@@ -3341,17 +3411,34 @@
         function drawWorldMap() {
           const wc = document.getElementById('world-canvas');
           if (!wc) return;
-          const W = 11, H = 15;
+          const zone = currentZone();
+          const W = zone.cols, H = zone.rows;
+          // Canvas is sized to the parent width and the zone aspect ratio.
+          // For the hub (11×15) this matches today's behaviour; for bigger
+          // zones in 2B+ this still produces a fixed-aspect viewport that the
+          // camera scrolls within.
           const cw = wc.parentElement ? wc.parentElement.clientWidth : 400;
           wc.width = cw;
           wc.height = Math.round(cw * H / W);
           const ctx2d = wc.getContext('2d');
           const tw = cw / W, th = wc.height / H;
+          // Recompute camera against the now-known canvas dims, then derive
+          // the visible window and cull tiles outside it. For the hub the
+          // viewport equals the whole grid, so the loop bounds come out 0..W
+          // / 0..H exactly as before.
+          updateCamera();
+          const viewW = Math.max(1, Math.floor(wc.width / tw));
+          const viewH = Math.max(1, Math.floor(wc.height / th));
+          const startCol = camera.x;
+          const startRow = camera.y;
+          const endCol = Math.min(W, startCol + viewW);
+          const endRow = Math.min(H, startRow + viewH);
           ctx2d.clearRect(0, 0, wc.width, wc.height);
-          for(let row=0;row<H;row++){
-            for(let col=0;col<W;col++){
+          for(let row=startRow;row<endRow;row++){
+            for(let col=startCol;col<endCol;col++){
               const t=WORLD_MAP[row][col];
-              const px=col*tw, py=row*th;
+              // Tile screen coords are camera-relative.
+              const px=(col-camera.x)*tw, py=(row-camera.y)*th;
               const isBuilding=t===4||t===5||t===6||t===7;
               ctx2d.fillStyle=WORLD_TILE_COLORS[t]||'#0a2e1a';
               ctx2d.fillRect(px,py,tw+0.5,th+0.5);
@@ -3367,58 +3454,84 @@
               }
             }
           }
-          // NPCs — anchored to passable tiles next to each of the 5 hub buildings.
-          // {col,row,type,phase} — phase staggers idle bob so they don't all sync.
-          const HUB_NPCS = [
-            {col:4, row:13, type:'guard',    phase:0.0}, // Gate guard — path above gate runes
-            {col:2, row:10, type:'armorer',  phase:1.1}, // Armorer — left edge of Armory facade
-            {col:5, row:10, type:'tavern',   phase:2.2}, // Tavern keeper — Tavern facade centre
-            {col:8, row:10, type:'merchant', phase:3.3}, // Merchant — Merchant facade centre
-            {col:3, row:2,  type:'scribe',   phase:4.4}  // Scribe — grass tile just right of the Scribe's Tower
-          ];
-          for(const npc of HUB_NPCS){
-            drawHubNPC(ctx2d, npc.type, npc.col*tw, npc.row*th, tw, th, npc.phase);
-          }
-          for(const sh of SHRINE_TILES){
-            if(!sh.revealed){ if(Math.abs(worldPlayer.y-sh.row)+Math.abs(worldPlayer.x-sh.col)<=1) sh.revealed=true; }
-            if(sh.revealed&&!sh.used){
-              ctx2d.fillStyle='rgba(42,26,74,0.75)'; ctx2d.fillRect(sh.col*tw,sh.row*th,tw+0.5,th+0.5);
-              ctx2d.font=`bold ${Math.round(th*0.6)}px VT323,monospace`; ctx2d.fillStyle='#c084fc';
-              ctx2d.textAlign='center'; ctx2d.textBaseline='middle';
-              ctx2d.fillText('?',sh.col*tw+tw/2,sh.row*th+th/2);
+          // Hub-only fixtures — NPCs, shrines. Gated so they don't bleed into
+          // future zones that share the same draw pipeline.
+          if (currentZoneId === 'hub') {
+            // NPCs — anchored to passable tiles next to each of the 5 hub buildings.
+            // {col,row,type,phase} — phase staggers idle bob so they don't all sync.
+            const HUB_NPCS = [
+              {col:4, row:13, type:'guard',    phase:0.0}, // Gate guard — path above gate runes
+              {col:2, row:10, type:'armorer',  phase:1.1}, // Armorer — left edge of Armory facade
+              {col:5, row:10, type:'tavern',   phase:2.2}, // Tavern keeper — Tavern facade centre
+              {col:8, row:10, type:'merchant', phase:3.3}, // Merchant — Merchant facade centre
+              {col:3, row:2,  type:'scribe',   phase:4.4}  // Scribe — grass tile just right of the Scribe's Tower
+            ];
+            for(const npc of HUB_NPCS){
+              // Cull NPCs outside the viewport.
+              if(npc.col < startCol || npc.col >= endCol || npc.row < startRow || npc.row >= endRow) continue;
+              drawHubNPC(ctx2d, npc.type, (npc.col-camera.x)*tw, (npc.row-camera.y)*th, tw, th, npc.phase);
+            }
+            for(const sh of SHRINE_TILES){
+              if(!sh.revealed){ if(Math.abs(worldPlayer.y-sh.row)+Math.abs(worldPlayer.x-sh.col)<=1) sh.revealed=true; }
+              if(sh.revealed&&!sh.used){
+                if(sh.col < startCol || sh.col >= endCol || sh.row < startRow || sh.row >= endRow) continue;
+                const sx=(sh.col-camera.x)*tw, sy=(sh.row-camera.y)*th;
+                ctx2d.fillStyle='rgba(42,26,74,0.75)'; ctx2d.fillRect(sx,sy,tw+0.5,th+0.5);
+                ctx2d.font=`bold ${Math.round(th*0.6)}px VT323,monospace`; ctx2d.fillStyle='#c084fc';
+                ctx2d.textAlign='center'; ctx2d.textBaseline='middle';
+                ctx2d.fillText('?',sx+tw/2,sy+th/2);
+              }
             }
           }
-          drawHubPlayer(ctx2d, worldPlayer.x * tw + tw/2, worldPlayer.y * th + th/2, Math.min(tw, th));
+          drawHubPlayer(ctx2d, (worldPlayer.x-camera.x) * tw + tw/2, (worldPlayer.y-camera.y) * th + th/2, Math.min(tw, th));
           const prompt = document.getElementById('hub-interact-prompt');
           if (!prompt) return;
-          const key = `${worldPlayer.y},${worldPlayer.x}`;
-          const zone = INTERACTION_ZONES[key];
-          if (zone) { prompt.textContent = '▶ Enter ' + zone.name; prompt.style.display = 'block'; }
-          else { prompt.style.display = 'none'; }
+          // Hub-only interaction prompts — gated so future zones don't fire
+          // the hub's "Enter THE GATE / THE ARMORY / ..." labels by accident.
+          if (currentZoneId === 'hub') {
+            const key = `${worldPlayer.y},${worldPlayer.x}`;
+            const zone = INTERACTION_ZONES[key];
+            if (zone) { prompt.textContent = '▶ Enter ' + zone.name; prompt.style.display = 'block'; }
+            else { prompt.style.display = 'none'; }
+          } else {
+            prompt.style.display = 'none';
+          }
         }
         function worldPlayerMove(dx, dy) {
           if (document.getElementById('start-hub').classList.contains('hidden')) return;
+          const zone = currentZone();
           const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
-          if (nx < 0 || nx > 10 || ny < 0 || ny > 14) return;
-          const t = WORLD_MAP[ny][nx];
+          // Bounds now driven by the active zone's dimensions, not the
+          // hardcoded 11×15 hub size.
+          if (nx < 0 || nx >= zone.cols || ny < 0 || ny >= zone.rows) return;
+          const t = zone.map[ny][nx];
           // 2 = water (impassable), 4-7 = building tiles. 8 (well) and 9 (signpost) are passable decorative tiles.
           if (t === 2 || t === 4 || t === 5 || t === 6 || t === 7) return;
           worldPlayer.x = nx; worldPlayer.y = ny;
+          updateCamera();
+          // Phase 2A: gate-tile zone transitions. Hub has no connections yet,
+          // so this is a no-op until 2B populates ZONES.hub.connections.
+          tryZoneTransition(worldPlayer.x, worldPlayer.y);
           drawWorldMap();
           playFootstep();
         }
         function centerBtnAction() {
           if (!document.getElementById('start-hub').classList.contains('hidden')) {
-            const key = `${worldPlayer.y},${worldPlayer.x}`;
-            const zone = INTERACTION_ZONES[key];
-            if (zone) { if (zone.panel === 'dungeonselect') playGateRumble(); showStartPanel(zone.panel); return; }
+            // Phase 2A: INTERACTION_ZONES is hub-only (Gate / Armory / Tavern /
+            // Merchant / Scribe). Future zones will need their own interact
+            // tables, so we gate this lookup behind currentZoneId === 'hub'.
+            if (currentZoneId === 'hub') {
+              const key = `${worldPlayer.y},${worldPlayer.x}`;
+              const zone = INTERACTION_ZONES[key];
+              if (zone) { if (zone.panel === 'dungeonselect') playGateRumble(); showStartPanel(zone.panel); return; }
+            }
             const _sh=SHRINE_TILES.find(s=>s.row===worldPlayer.y&&s.col===worldPlayer.x&&s.revealed&&!s.used);
             if(_sh){ _sh.used=true; const _buff=['hp','gold','potion'][Math.floor(Math.random()*3)]; gameState._hubBuff=_buff; let _desc=''; if(_buff==='hp'){_desc='+25 Max HP this run';}else if(_buff==='gold'){const _sc=loadCharacter();if(_sc){_sc.gold=(_sc.gold||0)+30;saveCharacter(_sc);}_desc='+30 Gold';}else{const _sc=loadCharacter();if(_sc){_sc.potions=Math.min(3,(_sc.potions||0)+1);saveCharacter(_sc);}_desc='+1 Potion';} const _pr=document.getElementById('hub-interact-prompt'); if(_pr){_pr.textContent='◆ Shrine: '+_desc;_pr.style.display='block';setTimeout(()=>{_pr.style.display='none';},2000);} drawWorldMap(); return; }
             return;
           }
           swingFlail();
         }
-        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); worldPlayer={x:5,y:12}; SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();startHubAnim();renderHubHudIcons();},0); }
+        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); currentZoneId='hub'; WORLD_MAP=ZONES.hub.map; worldPlayer={x:ZONES.hub.spawn.x,y:ZONES.hub.spawn.y}; resetCamera(); SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();startHubAnim();renderHubHudIcons();},0); }
         function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('XP_character'); _selectedClass=null; showStartPanel('charcreate'); }
         function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if((gameState._isBossDungeon||gameState._isLichDungeon)&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
         function finishRunSummary() { const rs=get('run-summary'); if(rs) rs.classList.add('hidden'); get('start-overlay').classList.remove('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
