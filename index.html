@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.10</title>
+    <title>XPL0R3R v0.0.11</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -724,7 +724,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.10</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.11</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -969,17 +969,26 @@
                                 <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Hero</div>
                                 <div id="hub-hero-name" style="font-family:'VT323',monospace;font-size:1.7rem;color:#90e0ef;text-transform:uppercase;line-height:1.1">HERO</div>
                             </div>
-                            <div class="border-l-2 border-[#000a10] pl-3">
-                                <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Class</div>
-                                <div id="hub-hero-class" style="font-family:'VT323',monospace;font-size:1.4rem;color:#e2e8f0;text-transform:uppercase;line-height:1.1">—</div>
+                            <div class="border-l-2 border-[#000a10] pl-3 flex items-center gap-2">
+                                <canvas id="hub-icon-class" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
+                                <div>
+                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Class</div>
+                                    <div id="hub-hero-class" style="font-family:'VT323',monospace;font-size:1.4rem;color:#e2e8f0;text-transform:uppercase;line-height:1.1">—</div>
+                                </div>
                             </div>
-                            <div class="border-l-2 border-[#000a10] pl-3">
-                                <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Level</div>
-                                <div id="hub-hero-level" style="font-family:'VT323',monospace;font-size:1.4rem;color:#fde047;line-height:1.1">1</div>
+                            <div class="border-l-2 border-[#000a10] pl-3 flex items-center gap-2">
+                                <canvas id="hub-icon-level" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
+                                <div>
+                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Level</div>
+                                    <div id="hub-hero-level" style="font-family:'VT323',monospace;font-size:1.4rem;color:#fde047;line-height:1.1">1</div>
+                                </div>
                             </div>
-                            <div class="border-l-2 border-[#000a10] pl-3 ml-auto">
-                                <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Gold</div>
-                                <div id="hub-hero-gold" style="font-family:'VT323',monospace;font-size:1.4rem;color:#eab308;line-height:1.1">0g</div>
+                            <div class="border-l-2 border-[#000a10] pl-3 ml-auto flex items-center gap-2">
+                                <canvas id="hub-icon-gold" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
+                                <div>
+                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Gold</div>
+                                    <div id="hub-hero-gold" style="font-family:'VT323',monospace;font-size:1.4rem;color:#eab308;line-height:1.1">0g</div>
+                                </div>
                             </div>
                         </div>
                         <!-- World map scene -->
@@ -1178,7 +1187,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.10</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.11</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1556,13 +1565,24 @@
         const TILES = { FLOOR: 0, WALL: 1, WATER: 2, LAVA: 3, PLANT: 4, CRACKED: 5 };
         const SPRITES = { SLIME: 'S', SKELETON: 'K', GHOST: 'G', GOLEM: 'O', LICH: 'L', GOLD: 'G', POTION: 'P', SHIELD: 'S', CHALICE: 'C', STAIRS: 'H', BOSS: '', KEY: 'K', CHEST: 'C', DAMAGEBUFF: 'D', MERCHANT: 'M' };
 
+        // Tile legend:
+        //  0 grass (passable, decorated with deterministic tufts)
+        //  1 stone path / cobblestone (passable)
+        //  2 water/pond (impassable, animated ripples)
+        //  3 gate portal rune (passable; transitions to dungeon-select)
+        //  4 Armory building (impassable; interact from below)
+        //  5 Tavern building (impassable; interact from below)
+        //  6 Merchant building (impassable; interact from below)
+        //  7 Scribe's Tower (impassable; interact from below)
+        //  8 stone well (passable, decorative — small pixel-art well with hanging bucket)
+        //  9 signpost (passable, decorative — wooden post with engraved cyan glyph)
         const WORLD_MAP = [
-          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,2,2],
+          [0,7,7,0,0,0,0,0,0,2,2],
+          [0,7,7,0,0,0,0,0,0,2,0],
           [0,7,7,0,0,0,0,0,0,0,0],
-          [0,7,7,0,0,0,0,0,0,0,0],
-          [0,7,7,0,0,0,0,0,0,0,0],
-          [0,7,7,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,7,7,0,0,9,0,0,0,0,0],
+          [0,0,0,0,0,0,8,0,0,0,0],
           [0,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,5,5,5,0,0,0,0],
           [0,4,4,4,5,5,5,6,6,6,0],
@@ -1573,7 +1593,8 @@
           [1,1,1,1,1,1,1,1,1,1,1],
           [0,0,0,0,3,3,3,0,0,0,0]
         ];
-        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#001018',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a'};
+        // Base fills (drawn first, then drawWorldBuilding paints detail on top).
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
@@ -1608,6 +1629,27 @@
         let audioCtx = null, mainGain = null, musicGain = null, musicNodes = [], musicArpTimeout = null, arpStepIndex = 0, bossHeartbeatTimeout = null, arpDelay = null, arpFeedback = null;
         function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); mainGain = audioCtx.createGain(); mainGain.gain.value = 0.14; mainGain.connect(audioCtx.destination); musicGain = audioCtx.createGain(); musicGain.gain.value = gameState._musicVolume; musicGain.connect(audioCtx.destination); }
         function playSynth(f, t, d, v=0.1, dec=true) { if (!audioCtx || !gameState.sfxEnabled) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=t; o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.setValueAtTime(v, audioCtx.currentTime); if(dec) g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+d); o.connect(g); g.connect(mainGain); o.start(); o.stop(audioCtx.currentTime+d); }
+        // Hub idle animation loop — only ticks while the hub panel is visible.
+        // Drives ripples on water tiles, signpost bob, and NPC idle bob.
+        let _hubAnimRaf = null, _hubAnimLastFrame = 0;
+        function _hubAnimTick(ts) {
+          const hub = document.getElementById('start-hub');
+          if(!hub || hub.classList.contains('hidden')) { _hubAnimRaf = null; return; }
+          // Throttle to ~15fps — idle anim doesn't need 60fps and saves battery.
+          if(ts - _hubAnimLastFrame > 66) {
+            _hubAnimLastFrame = ts;
+            try { drawWorldMap(); } catch(e){}
+          }
+          _hubAnimRaf = requestAnimationFrame(_hubAnimTick);
+        }
+        function startHubAnim() {
+          if(_hubAnimRaf) return;
+          _hubAnimLastFrame = 0;
+          _hubAnimRaf = requestAnimationFrame(_hubAnimTick);
+        }
+        function stopHubAnim() {
+          if(_hubAnimRaf) { cancelAnimationFrame(_hubAnimRaf); _hubAnimRaf = null; }
+        }
         let hubAmbienceOsc = null, hubAmbienceGain = null, hubAmbienceRunning = false;
         function startHubAmbience() { if (hubAmbienceRunning) return; if (!audioCtx) initAudio(); if (!audioCtx) return; hubAmbienceOsc = audioCtx.createOscillator(); hubAmbienceGain = audioCtx.createGain(); hubAmbienceOsc.type = 'triangle'; hubAmbienceOsc.frequency.value = 60; hubAmbienceGain.gain.value = 0.018; hubAmbienceOsc.connect(hubAmbienceGain); hubAmbienceGain.connect(mainGain); hubAmbienceOsc.start(); hubAmbienceRunning = true; }
         function stopHubAmbience() { if (!hubAmbienceRunning) return; try { hubAmbienceOsc.stop(); hubAmbienceOsc.disconnect(); hubAmbienceGain.disconnect(); } catch(e){} hubAmbienceOsc = null; hubAmbienceGain = null; hubAmbienceRunning = false; }
@@ -2764,6 +2806,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.11', title: 'Hub Completion (Phase 1)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['New tile types: grass tufts (0), cobblestone path (1), animated water/pond (2), stone well (8), arrow signpost (9). Water added to top-right; well at (6,5); signpost at (5,4).', 'NPC sprites added for all 5 hub buildings (Gate guard, Armorer, Tavern keeper, Merchant, Scribe) — pixel-art canvas, idle bob via Date.now phase offset, ~15fps animation loop gated to hub visibility.', 'HUD/inventory icon library: drawIcon() with 12 types (potions, gold, class glyphs, shield, key, star, scroll). Hub HUD strip + shop cards now use canvas pixel-art icons instead of text/emoji.'] }] },
             { version: 'v0.0.10', title: 'Mobile Layout Fix', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Start overlay and body safe-area padding corrected for pointer:coarse devices.'] }] },
             { version: 'v0.0.9', title: 'Viewport Refit', date: '2026-05-06', sections: [{ heading: 'Updates', items: ['Left/right borders 1.6vw from screen edges; top/bottom 3vw; mobile controls repositioned to match.'] }] },
             { version: 'v0.0.8', title: 'Version Bump', date: '2026-05-05', sections: [{ heading: 'Updates', items: ['Title updated to XPL0R3R; wall tile brick pattern added.'] }] },
@@ -2877,10 +2920,65 @@
           ctx2d.globalAlpha=1;
           ctx2d.restore();
         }
-        function drawWorldBuilding(ctx2d, t, px, py, tw, th) {
+        // Deterministic per-tile hash for grass/path texture variation (matches drawTile cobble pattern).
+        function _hubTileHash(wx, wy) { return ((wx*0x1f3d + wy*0x4b6f) ^ (wx*wy*7)) & 0xFFFF; }
+        function drawWorldBuilding(ctx2d, t, px, py, tw, th, col, row) {
           const cx = px + tw/2, cy = py + th/2;
           ctx2d.save();
-          if(t === 3) {
+          if(t === 0) {
+            // Grass — deterministic tufts on existing grass fill.
+            const h = _hubTileHash(col, row);
+            const tufts = 2 + (h & 1); // 2-3 tufts per tile
+            for(let i=0;i<tufts;i++){
+              const hx = (h >> (i*4)) & 0xF;
+              const hy = (h >> (i*4+2)) & 0xF;
+              const tx = px + tw*(0.15 + (hx/16)*0.7);
+              const ty = py + th*(0.2 + (hy/16)*0.7);
+              ctx2d.fillStyle = (h>>(i*3))&1 ? '#1a4a2a' : '#143a20';
+              ctx2d.fillRect(tx, ty, Math.max(1,tw*0.06), Math.max(1,th*0.04));
+              ctx2d.fillStyle = '#2d6a35';
+              ctx2d.fillRect(tx + tw*0.02, ty - th*0.03, Math.max(1,tw*0.03), Math.max(1,th*0.04));
+            }
+          } else if(t === 1) {
+            // Stone path / cobblestone — irregular blocks, dark mortar grid, top-edge highlight.
+            const h = _hubTileHash(col, row);
+            const cols = 3, rows = 2;
+            for(let cy2=0; cy2<rows; cy2++){
+              for(let cx2=0; cx2<cols; cx2++){
+                const idx = cy2*cols + cx2;
+                const shade = ((h >> (idx*2)) & 3);
+                ctx2d.fillStyle = shade===0 ? '#243a32' : shade===1 ? '#1f3328' : shade===2 ? '#2a4438' : '#1a2e26';
+                const bx = px + tw*(cx2/cols) + 1;
+                const by = py + th*(cy2/rows) + 1;
+                ctx2d.fillRect(bx, by, tw/cols - 2, th/rows - 2);
+              }
+            }
+            // Mortar joints (dark) — vertical
+            ctx2d.fillStyle = '#0a1a14';
+            for(let i=1;i<cols;i++) ctx2d.fillRect(px + tw*(i/cols) - 1, py, 2, th);
+            for(let i=1;i<rows;i++) ctx2d.fillRect(px, py + th*(i/rows) - 1, tw, 2);
+            // Top highlight
+            ctx2d.fillStyle = 'rgba(144,224,239,0.08)';
+            ctx2d.fillRect(px, py, tw, Math.max(1,th*0.06));
+          } else if(t === 2) {
+            // Water/pond — dark teal pool with two animated concentric ripples (impassable).
+            const phase = (Date.now() / 1400 + (col*0.31 + row*0.17)) % 1;
+            // Base pool gradient feel (already filled). Add deeper centre.
+            ctx2d.fillStyle = '#06182a';
+            ctx2d.beginPath(); ctx2d.arc(cx, cy, tw*0.42, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#0e2a40';
+            ctx2d.beginPath(); ctx2d.arc(cx, cy, tw*0.32, 0, Math.PI*2); ctx2d.fill();
+            // Two ripples expanding/fading
+            ctx2d.strokeStyle = `rgba(144,224,239,${0.55 * (1-phase)})`;
+            ctx2d.lineWidth = 1;
+            ctx2d.beginPath(); ctx2d.arc(cx, cy, tw*0.08 + tw*0.32*phase, 0, Math.PI*2); ctx2d.stroke();
+            const phase2 = (phase + 0.5) % 1;
+            ctx2d.strokeStyle = `rgba(72,202,228,${0.4 * (1-phase2)})`;
+            ctx2d.beginPath(); ctx2d.arc(cx, cy, tw*0.08 + tw*0.32*phase2, 0, Math.PI*2); ctx2d.stroke();
+            // Surface glint
+            ctx2d.fillStyle = 'rgba(144,224,239,0.35)';
+            ctx2d.fillRect(cx - tw*0.18, cy - th*0.08, tw*0.12, Math.max(1,th*0.03));
+          } else if(t === 3) {
             ctx2d.strokeStyle='#00b4d8'; ctx2d.lineWidth=2; ctx2d.shadowColor='#90e0ef'; ctx2d.shadowBlur=6;
             ctx2d.beginPath(); ctx2d.arc(cx,cy,tw*0.38,0,Math.PI*2); ctx2d.stroke();
             ctx2d.beginPath(); ctx2d.arc(cx,cy,tw*0.2,0,Math.PI*2); ctx2d.stroke();
@@ -2922,6 +3020,321 @@
             ctx2d.fillStyle='#fff0ff'; ctx2d.fillRect(cx-tw*.09,py+th*.41,tw*.18,tw*.025); ctx2d.fillRect(cx-tw*.012,py+th*.33,tw*.025,tw*.18);
             ctx2d.fillStyle='#060a10'; ctx2d.fillRect(cx-tw*.1,py+th*.72,tw*.2,th*.2);
             ctx2d.beginPath(); ctx2d.arc(cx,py+th*.72,tw*.1,Math.PI,0); ctx2d.fill();
+          } else if(t === 8) {
+            // Stone well — round curb, dark water surface, two posts, peaked wood roof, hanging rope + bucket.
+            // Round stone curb (top-down ellipse + rim highlight)
+            ctx2d.fillStyle = '#3a3a44';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, cy + th*0.18, tw*0.32, th*0.18, 0, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#1a1a22';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, cy + th*0.18, tw*0.24, th*0.12, 0, 0, Math.PI*2); ctx2d.fill();
+            // Dark water surface inside well
+            ctx2d.fillStyle = '#001a2a';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, cy + th*0.18, tw*0.18, th*0.08, 0, 0, Math.PI*2); ctx2d.fill();
+            // Curb rim highlight
+            ctx2d.strokeStyle = '#4a4a55'; ctx2d.lineWidth = 1;
+            ctx2d.beginPath(); ctx2d.ellipse(cx, cy + th*0.14, tw*0.3, th*0.16, 0, Math.PI, 0); ctx2d.stroke();
+            // Two posts holding up the roof
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(cx - tw*0.26, cy - th*0.28, tw*0.05, th*0.46);
+            ctx2d.fillRect(cx + tw*0.21, cy - th*0.28, tw*0.05, th*0.46);
+            // Peaked wooden roof
+            ctx2d.fillStyle = '#5a2d10';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx, cy - th*0.42);
+            ctx2d.lineTo(cx - tw*0.34, cy - th*0.22);
+            ctx2d.lineTo(cx + tw*0.34, cy - th*0.22);
+            ctx2d.closePath(); ctx2d.fill();
+            // Roof shadow underside
+            ctx2d.fillStyle = '#3a1c08';
+            ctx2d.fillRect(cx - tw*0.32, cy - th*0.24, tw*0.64, Math.max(1,th*0.04));
+            // Crossbar
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(cx - tw*0.22, cy - th*0.18, tw*0.44, Math.max(1,th*0.04));
+            // Hanging rope
+            ctx2d.strokeStyle = '#a0805a'; ctx2d.lineWidth = 1;
+            ctx2d.beginPath(); ctx2d.moveTo(cx, cy - th*0.16); ctx2d.lineTo(cx, cy + th*0.04); ctx2d.stroke();
+            // Bucket
+            ctx2d.fillStyle = '#2d1808';
+            ctx2d.fillRect(cx - tw*0.06, cy + th*0.02, tw*0.12, th*0.1);
+            ctx2d.fillStyle = '#3d2410';
+            ctx2d.fillRect(cx - tw*0.06, cy + th*0.02, tw*0.12, Math.max(1,th*0.02));
+          } else if(t === 9) {
+            // Signpost — wooden post with arrow plaque + cyan engraved glyph. Subtle bob.
+            const bob = Math.sin(Date.now()/900 + col*0.7 + row*0.3) * th*0.01;
+            // Post
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(cx - tw*0.04, cy - th*0.1 + bob, tw*0.08, th*0.5);
+            // Post highlight
+            ctx2d.fillStyle = '#5a2d10';
+            ctx2d.fillRect(cx - tw*0.04, cy - th*0.1 + bob, Math.max(1,tw*0.02), th*0.5);
+            // Arrow plaque (right-pointing)
+            ctx2d.fillStyle = '#5a2d10';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.22, cy - th*0.22 + bob);
+            ctx2d.lineTo(cx + tw*0.18, cy - th*0.22 + bob);
+            ctx2d.lineTo(cx + tw*0.28, cy - th*0.1 + bob);
+            ctx2d.lineTo(cx + tw*0.18, cy + th*0.02 + bob);
+            ctx2d.lineTo(cx - tw*0.22, cy + th*0.02 + bob);
+            ctx2d.closePath(); ctx2d.fill();
+            // Plaque shadow line
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(cx - tw*0.22, cy - th*0.06 + bob, tw*0.44, Math.max(1,th*0.02));
+            // Engraved cyan glyph (small rune)
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 4;
+            ctx2d.fillRect(cx - tw*0.06, cy - th*0.16 + bob, tw*0.04, Math.max(1,th*0.02));
+            ctx2d.fillRect(cx - tw*0.06, cy - th*0.1 + bob, tw*0.04, Math.max(1,th*0.02));
+            ctx2d.fillRect(cx - tw*0.04, cy - th*0.13 + bob, tw*0.08, Math.max(1,th*0.02));
+            ctx2d.fillRect(cx + tw*0.06, cy - th*0.16 + bob, Math.max(1,tw*0.02), th*0.08);
+            ctx2d.shadowBlur = 0;
+          }
+          ctx2d.restore();
+        }
+        // Hub NPC sprites (~16-24px tall, pixel-art style). type ∈ {guard, armorer, tavern, merchant, scribe}.
+        function drawHubNPC(ctx2d, type, px, py, tw, th, phase) {
+          const cx = px + tw/2;
+          const baseY = py + th*0.55;
+          const bob = Math.sin(Date.now()/600 + phase) * th*0.025;
+          const u = Math.min(tw, th) / 32; // pixel scale
+          ctx2d.save();
+          ctx2d.translate(cx, baseY + bob);
+          // Common ground shadow
+          ctx2d.fillStyle = 'rgba(0,0,0,0.35)';
+          ctx2d.beginPath(); ctx2d.ellipse(0, 8*u, 6*u, 2*u, 0, 0, Math.PI*2); ctx2d.fill();
+          if(type === 'guard') {
+            // Armoured silhouette + halberd
+            // Halberd shaft
+            ctx2d.fillStyle = '#3d1f08'; ctx2d.fillRect(7*u, -16*u, 1.5*u, 24*u);
+            // Halberd head (axe blade)
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 3;
+            ctx2d.beginPath(); ctx2d.moveTo(8*u,-16*u); ctx2d.lineTo(13*u,-14*u); ctx2d.lineTo(13*u,-10*u); ctx2d.lineTo(8*u,-12*u); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Body — chest plate dark steel
+            ctx2d.fillStyle = '#2a3a4a'; ctx2d.fillRect(-5*u, -4*u, 10*u, 10*u);
+            // Pauldrons
+            ctx2d.fillStyle = '#1a2a36'; ctx2d.fillRect(-7*u, -4*u, 3*u, 4*u); ctx2d.fillRect(4*u, -4*u, 3*u, 4*u);
+            // Helmet
+            ctx2d.fillStyle = '#1a2a36'; ctx2d.fillRect(-4*u, -12*u, 8*u, 8*u);
+            // Visor slit
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.fillRect(-3*u, -9*u, 6*u, 1*u);
+            // Helmet plume
+            ctx2d.fillStyle = '#c92a2a'; ctx2d.fillRect(-1*u, -15*u, 2*u, 4*u);
+            // Legs
+            ctx2d.fillStyle = '#1a2a36'; ctx2d.fillRect(-4*u, 6*u, 3*u, 4*u); ctx2d.fillRect(1*u, 6*u, 3*u, 4*u);
+          } else if(type === 'armorer') {
+            // Leather apron + hammer
+            // Head/face
+            ctx2d.fillStyle = '#c89060'; ctx2d.fillRect(-3*u, -12*u, 6*u, 6*u);
+            // Hair/beard dark
+            ctx2d.fillStyle = '#2a1a10'; ctx2d.fillRect(-3*u, -12*u, 6*u, 2*u); ctx2d.fillRect(-3*u, -7*u, 6*u, 1*u);
+            // Body — leather apron brown
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(-5*u, -6*u, 10*u, 10*u);
+            // Apron strap
+            ctx2d.fillStyle = '#3a2410'; ctx2d.fillRect(-5*u, -6*u, 10*u, 1*u);
+            // Arms
+            ctx2d.fillStyle = '#c89060'; ctx2d.fillRect(-6*u, -5*u, 2*u, 5*u); ctx2d.fillRect(4*u, -5*u, 2*u, 5*u);
+            // Hammer in right hand
+            ctx2d.fillStyle = '#3d1f08'; ctx2d.fillRect(5*u, -2*u, 1.5*u, 6*u);
+            ctx2d.fillStyle = '#5a5a64'; ctx2d.fillRect(3*u, -2*u, 5*u, 2.5*u);
+            // Legs
+            ctx2d.fillStyle = '#2a1a10'; ctx2d.fillRect(-4*u, 4*u, 3*u, 5*u); ctx2d.fillRect(1*u, 4*u, 3*u, 5*u);
+          } else if(type === 'tavern') {
+            // Apron + frothing beer mug
+            // Head
+            ctx2d.fillStyle = '#d8a070'; ctx2d.fillRect(-3*u, -12*u, 6*u, 6*u);
+            // Hair
+            ctx2d.fillStyle = '#5a2d10'; ctx2d.fillRect(-3*u, -13*u, 6*u, 2*u);
+            // Body — tunic
+            ctx2d.fillStyle = '#7a3a1a'; ctx2d.fillRect(-5*u, -6*u, 10*u, 10*u);
+            // Apron white
+            ctx2d.fillStyle = '#d8c8b0'; ctx2d.fillRect(-4*u, -3*u, 8*u, 7*u);
+            // Apron stain
+            ctx2d.fillStyle = '#a06030'; ctx2d.fillRect(-1*u, 1*u, 2*u, 1*u);
+            // Arms
+            ctx2d.fillStyle = '#d8a070'; ctx2d.fillRect(-6*u, -5*u, 2*u, 5*u); ctx2d.fillRect(4*u, -5*u, 2*u, 5*u);
+            // Beer mug raised in right hand
+            ctx2d.fillStyle = '#c08030'; ctx2d.fillRect(5*u, -8*u, 4*u, 5*u);
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(5.5*u, -7*u, 3*u, 3.5*u);
+            // Foam
+            ctx2d.fillStyle = '#f8f4e8'; ctx2d.fillRect(5*u, -9*u, 4*u, 2*u);
+            // Mug handle
+            ctx2d.strokeStyle = '#c08030'; ctx2d.lineWidth = 1;
+            ctx2d.beginPath(); ctx2d.arc(9.5*u, -5.5*u, 1.5*u, -Math.PI/2, Math.PI/2); ctx2d.stroke();
+            // Legs
+            ctx2d.fillStyle = '#3a1c08'; ctx2d.fillRect(-4*u, 4*u, 3*u, 5*u); ctx2d.fillRect(1*u, 4*u, 3*u, 5*u);
+          } else if(type === 'merchant') {
+            // Hooded, glowing eyes, coin purse
+            // Cloak silhouette
+            ctx2d.fillStyle = '#2a1a3a'; ctx2d.fillRect(-6*u, -12*u, 12*u, 22*u);
+            // Hood (rounded top)
+            ctx2d.fillStyle = '#1a0e2a';
+            ctx2d.beginPath(); ctx2d.arc(0, -10*u, 5*u, Math.PI, 0); ctx2d.fill();
+            ctx2d.fillRect(-5*u, -10*u, 10*u, 4*u);
+            // Face shadow
+            ctx2d.fillStyle = '#000010'; ctx2d.fillRect(-3*u, -8*u, 6*u, 4*u);
+            // Glowing eyes
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 4;
+            ctx2d.fillRect(-2.5*u, -6.5*u, 1.5*u, 1*u); ctx2d.fillRect(1*u, -6.5*u, 1.5*u, 1*u);
+            ctx2d.shadowBlur = 0;
+            // Coin purse
+            ctx2d.fillStyle = '#5a3a1a';
+            ctx2d.beginPath(); ctx2d.arc(5*u, 2*u, 2.5*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(4*u, 1*u, 2*u, 1*u);
+            // Cloak hem flare
+            ctx2d.fillStyle = '#1a0e2a'; ctx2d.fillRect(-7*u, 8*u, 14*u, 3*u);
+          } else if(type === 'scribe') {
+            // Robe, hood, glowing arcane eye, scroll
+            // Robe
+            ctx2d.fillStyle = '#3a2a4a'; ctx2d.fillRect(-5*u, -10*u, 10*u, 20*u);
+            // Hood
+            ctx2d.fillStyle = '#2a1a3a';
+            ctx2d.beginPath(); ctx2d.arc(0, -10*u, 4.5*u, Math.PI, 0); ctx2d.fill();
+            ctx2d.fillRect(-4.5*u, -10*u, 9*u, 4*u);
+            // Face shadow
+            ctx2d.fillStyle = '#000018'; ctx2d.fillRect(-3*u, -8*u, 6*u, 4*u);
+            // Single glowing arcane eye (cyclops-style cyan glow)
+            ctx2d.fillStyle = '#c084fc'; ctx2d.shadowColor = '#a855f7'; ctx2d.shadowBlur = 5;
+            ctx2d.fillRect(-1*u, -6.5*u, 2*u, 1.5*u);
+            ctx2d.shadowBlur = 0;
+            // Robe trim purple
+            ctx2d.fillStyle = '#5a3a7a'; ctx2d.fillRect(-5*u, 8*u, 10*u, 2*u);
+            // Scroll in arms
+            ctx2d.fillStyle = '#d8c8b0'; ctx2d.fillRect(-3*u, -1*u, 6*u, 2.5*u);
+            ctx2d.fillStyle = '#a08868'; ctx2d.fillRect(-3*u, -1*u, 1*u, 2.5*u); ctx2d.fillRect(2*u, -1*u, 1*u, 2.5*u);
+            // Belt
+            ctx2d.fillStyle = '#1a0e2a'; ctx2d.fillRect(-5*u, 1.5*u, 10*u, 1.5*u);
+          }
+          ctx2d.restore();
+        }
+        // Pixel-art HUD / inventory icons. type drives shape; size in px.
+        function drawIcon(ctx2d, type, x, y, size) {
+          const u = size / 16; // base unit (16x16 pixel grid)
+          ctx2d.save();
+          ctx2d.translate(x, y);
+          if(type === 'health' || type === 'potion-red') {
+            // Red potion bottle
+            ctx2d.fillStyle = '#3a1810'; ctx2d.fillRect(6*u, 1*u, 4*u, 2*u); // cork
+            ctx2d.fillStyle = '#5a3a20'; ctx2d.fillRect(5*u, 3*u, 6*u, 1*u); // collar
+            ctx2d.fillStyle = '#c92a2a'; ctx2d.fillRect(4*u, 5*u, 8*u, 9*u); // bottle
+            ctx2d.fillStyle = '#f04848'; ctx2d.fillRect(5*u, 6*u, 2*u, 7*u); // liquid highlight
+            ctx2d.fillStyle = '#ff8a8a'; ctx2d.fillRect(5*u, 6*u, 1*u, 3*u); // shine
+            ctx2d.fillStyle = '#000'; ctx2d.fillRect(4*u, 14*u, 8*u, 1*u); // base shadow
+          } else if(type === 'mana' || type === 'potion-blue') {
+            ctx2d.fillStyle = '#3a1810'; ctx2d.fillRect(6*u, 1*u, 4*u, 2*u);
+            ctx2d.fillStyle = '#5a3a20'; ctx2d.fillRect(5*u, 3*u, 6*u, 1*u);
+            ctx2d.fillStyle = '#1e6acc'; ctx2d.fillRect(4*u, 5*u, 8*u, 9*u);
+            ctx2d.fillStyle = '#48c0ff'; ctx2d.fillRect(5*u, 6*u, 2*u, 7*u);
+            ctx2d.fillStyle = '#a8e0ff'; ctx2d.fillRect(5*u, 6*u, 1*u, 3*u);
+            ctx2d.fillStyle = '#000'; ctx2d.fillRect(4*u, 14*u, 8*u, 1*u);
+          } else if(type === 'potion-purple') {
+            ctx2d.fillStyle = '#3a1810'; ctx2d.fillRect(6*u, 1*u, 4*u, 2*u);
+            ctx2d.fillStyle = '#5a3a20'; ctx2d.fillRect(5*u, 3*u, 6*u, 1*u);
+            ctx2d.fillStyle = '#7a3aac'; ctx2d.fillRect(4*u, 5*u, 8*u, 9*u);
+            ctx2d.fillStyle = '#c084fc'; ctx2d.fillRect(5*u, 6*u, 2*u, 7*u);
+            ctx2d.fillStyle = '#e8c0ff'; ctx2d.fillRect(5*u, 6*u, 1*u, 3*u);
+            ctx2d.fillStyle = '#000'; ctx2d.fillRect(4*u, 14*u, 8*u, 1*u);
+          } else if(type === 'gold' || type === 'coin') {
+            ctx2d.fillStyle = '#c08010';
+            ctx2d.beginPath(); ctx2d.arc(8*u, 8*u, 6*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 3;
+            ctx2d.beginPath(); ctx2d.arc(8*u, 8*u, 4.5*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Etched G
+            ctx2d.fillStyle = '#c08010';
+            ctx2d.fillRect(6*u, 6*u, 4*u, 1*u); ctx2d.fillRect(6*u, 6*u, 1*u, 4*u);
+            ctx2d.fillRect(6*u, 9*u, 4*u, 1*u); ctx2d.fillRect(9*u, 8*u, 1*u, 2*u);
+            // Shine
+            ctx2d.fillStyle = '#fff8c0'; ctx2d.fillRect(5*u, 4*u, 2*u, 1*u);
+          } else if(type === 'coin-stack') {
+            ctx2d.fillStyle = '#c08010'; ctx2d.fillRect(2*u, 12*u, 12*u, 2*u);
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(2*u, 11*u, 12*u, 1*u);
+            ctx2d.fillStyle = '#c08010'; ctx2d.fillRect(3*u, 9*u, 10*u, 2*u);
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(3*u, 8*u, 10*u, 1*u);
+            ctx2d.fillStyle = '#c08010'; ctx2d.fillRect(4*u, 6*u, 8*u, 2*u);
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(4*u, 5*u, 8*u, 1*u);
+            ctx2d.fillStyle = '#fff8c0'; ctx2d.fillRect(5*u, 5*u, 1*u, 1*u);
+          } else if(type === 'class-warrior' || type === 'sword') {
+            // Sword vertical
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(7*u, 2*u, 2*u, 9*u); // blade
+            ctx2d.shadowBlur = 0;
+            ctx2d.fillStyle = '#48cae4'; ctx2d.fillRect(7*u, 2*u, 1*u, 9*u); // blade highlight
+            ctx2d.fillStyle = '#3a2a4a'; ctx2d.fillRect(4*u, 11*u, 8*u, 1*u); // crossguard
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(7*u, 12*u, 2*u, 3*u); // grip
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(7*u, 14*u, 2*u, 1*u); // pommel gold
+            ctx2d.fillStyle = '#fff'; ctx2d.fillRect(7*u, 2*u, 1*u, 1*u); // tip shine
+          } else if(type === 'class-rogue' || type === 'dagger') {
+            // Dagger (smaller, leaning)
+            ctx2d.fillStyle = '#48cae4'; ctx2d.shadowColor = '#90e0ef'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(6*u, 4*u, 2*u, 6*u);
+            ctx2d.shadowBlur = 0;
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.fillRect(6*u, 4*u, 1*u, 6*u);
+            ctx2d.fillStyle = '#3a2a4a'; ctx2d.fillRect(4*u, 10*u, 6*u, 1*u);
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(6*u, 11*u, 2*u, 3*u);
+            // Drop of poison
+            ctx2d.fillStyle = '#4ade80'; ctx2d.shadowColor = '#22c55e'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(7*u, 3*u, 1*u, 1*u);
+            ctx2d.shadowBlur = 0;
+          } else if(type === 'class-mage' || type === 'staff') {
+            // Staff with arcane orb
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(7*u, 6*u, 2*u, 9*u); // shaft
+            ctx2d.fillStyle = '#7a5a2a'; ctx2d.fillRect(7*u, 6*u, 1*u, 9*u);
+            ctx2d.fillStyle = '#c084fc'; ctx2d.shadowColor = '#a855f7'; ctx2d.shadowBlur = 5;
+            ctx2d.beginPath(); ctx2d.arc(8*u, 4*u, 3*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            ctx2d.fillStyle = '#fff0ff'; ctx2d.fillRect(7*u, 3*u, 1*u, 1*u); // orb shine
+            // Wrap around orb base
+            ctx2d.fillStyle = '#3a1a4a'; ctx2d.fillRect(6*u, 6*u, 4*u, 1*u);
+          } else if(type === 'shield') {
+            ctx2d.fillStyle = '#2a3a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(3*u, 3*u); ctx2d.lineTo(13*u, 3*u);
+            ctx2d.lineTo(13*u, 9*u); ctx2d.lineTo(8*u, 14*u); ctx2d.lineTo(3*u, 9*u);
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.fillStyle = '#1a2a36';
+            ctx2d.fillRect(3*u, 3*u, 10*u, 1*u);
+            // Boss
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 2;
+            ctx2d.beginPath(); ctx2d.arc(8*u, 7*u, 1.5*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Vertical band
+            ctx2d.fillStyle = '#90e0ef';
+            ctx2d.fillRect(7.5*u, 4*u, 1*u, 9*u);
+          } else if(type === 'key') {
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 3;
+            ctx2d.beginPath(); ctx2d.arc(4*u, 8*u, 3*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            ctx2d.fillStyle = '#0a0a0a'; ctx2d.beginPath(); ctx2d.arc(4*u, 8*u, 1.2*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#fde047'; ctx2d.fillRect(7*u, 7*u, 7*u, 2*u);
+            // Teeth
+            ctx2d.fillRect(11*u, 9*u, 1*u, 2*u);
+            ctx2d.fillRect(13*u, 9*u, 1*u, 2*u);
+          } else if(type === 'star' || type === 'level' || type === 'xp') {
+            ctx2d.fillStyle = '#fde047'; ctx2d.shadowColor = '#ffcc00'; ctx2d.shadowBlur = 4;
+            const cx2 = 8*u, cy2 = 8*u, R = 6*u, r = 2.5*u;
+            ctx2d.beginPath();
+            for(let i=0;i<10;i++){
+              const ang = -Math.PI/2 + i*Math.PI/5;
+              const rad = i%2===0 ? R : r;
+              const px2 = cx2 + Math.cos(ang)*rad, py2 = cy2 + Math.sin(ang)*rad;
+              if(i===0) ctx2d.moveTo(px2, py2); else ctx2d.lineTo(px2, py2);
+            }
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            ctx2d.fillStyle = '#fff8c0'; ctx2d.fillRect(7*u, 5*u, 1*u, 1*u);
+          } else if(type === 'scroll') {
+            // Top roll
+            ctx2d.fillStyle = '#a08868'; ctx2d.fillRect(2*u, 3*u, 12*u, 1*u);
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(2*u, 3*u, 1*u, 1*u); ctx2d.fillRect(13*u, 3*u, 1*u, 1*u);
+            // Parchment
+            ctx2d.fillStyle = '#d8c8b0'; ctx2d.fillRect(3*u, 4*u, 10*u, 8*u);
+            // Text lines
+            ctx2d.fillStyle = '#5a3a1a';
+            ctx2d.fillRect(4*u, 6*u, 8*u, 1*u);
+            ctx2d.fillRect(4*u, 8*u, 6*u, 1*u);
+            ctx2d.fillRect(4*u, 10*u, 7*u, 1*u);
+            // Bottom roll
+            ctx2d.fillStyle = '#a08868'; ctx2d.fillRect(2*u, 12*u, 12*u, 1*u);
+            ctx2d.fillStyle = '#5a3a1a'; ctx2d.fillRect(2*u, 12*u, 1*u, 1*u); ctx2d.fillRect(13*u, 12*u, 1*u, 1*u);
           }
           ctx2d.restore();
         }
@@ -2942,11 +3355,29 @@
               const isBuilding=t===4||t===5||t===6||t===7;
               ctx2d.fillStyle=WORLD_TILE_COLORS[t]||'#0a2e1a';
               ctx2d.fillRect(px,py,tw+0.5,th+0.5);
-              ctx2d.strokeStyle=isBuilding?'#00b4d8':'#000a10';
-              ctx2d.lineWidth=1;
-              ctx2d.strokeRect(px+0.5,py+0.5,tw-1,th-1);
-              if(t===3||t===4||t===5||t===6||t===7){ drawWorldBuilding(ctx2d,t,px,py,tw,th); }
+              // Skip per-tile stroke on grass/path so cobblestone reads as a continuous strip.
+              if(isBuilding || t===2 || t===3) {
+                ctx2d.strokeStyle=isBuilding?'#00b4d8':'#000a10';
+                ctx2d.lineWidth=1;
+                ctx2d.strokeRect(px+0.5,py+0.5,tw-1,th-1);
+              }
+              // All decorated tile types route through drawWorldBuilding (now covers 0,1,2,3,4,5,6,7,8,9).
+              if(t===0||t===1||t===2||t===3||t===4||t===5||t===6||t===7||t===8||t===9){
+                drawWorldBuilding(ctx2d,t,px,py,tw,th,col,row);
+              }
             }
+          }
+          // NPCs — anchored to passable tiles next to each of the 5 hub buildings.
+          // {col,row,type,phase} — phase staggers idle bob so they don't all sync.
+          const HUB_NPCS = [
+            {col:4, row:13, type:'guard',    phase:0.0}, // Gate guard — path above gate runes
+            {col:2, row:10, type:'armorer',  phase:1.1}, // Armorer — left edge of Armory facade
+            {col:5, row:10, type:'tavern',   phase:2.2}, // Tavern keeper — Tavern facade centre
+            {col:8, row:10, type:'merchant', phase:3.3}, // Merchant — Merchant facade centre
+            {col:3, row:2,  type:'scribe',   phase:4.4}  // Scribe — grass tile just right of the Scribe's Tower
+          ];
+          for(const npc of HUB_NPCS){
+            drawHubNPC(ctx2d, npc.type, npc.col*tw, npc.row*th, tw, th, npc.phase);
           }
           for(const sh of SHRINE_TILES){
             if(!sh.revealed){ if(Math.abs(worldPlayer.y-sh.row)+Math.abs(worldPlayer.x-sh.col)<=1) sh.revealed=true; }
@@ -2970,6 +3401,7 @@
           const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
           if (nx < 0 || nx > 10 || ny < 0 || ny > 14) return;
           const t = WORLD_MAP[ny][nx];
+          // 2 = water (impassable), 4-7 = building tiles. 8 (well) and 9 (signpost) are passable decorative tiles.
           if (t === 2 || t === 4 || t === 5 || t === 6 || t === 7) return;
           worldPlayer.x = nx; worldPlayer.y = ny;
           drawWorldMap();
@@ -2986,7 +3418,7 @@
           }
           swingFlail();
         }
-        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); worldPlayer={x:5,y:12}; SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();},0); }
+        function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); worldPlayer={x:5,y:12}; SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();startHubAnim();renderHubHudIcons();},0); }
         function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('XP_character'); _selectedClass=null; showStartPanel('charcreate'); }
         function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if((gameState._isBossDungeon||gameState._isLichDungeon)&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
         function finishRunSummary() { const rs=get('run-summary'); if(rs) rs.classList.add('hidden'); get('start-overlay').classList.remove('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
@@ -3026,6 +3458,19 @@
             mage:    { label:'Linen Robes',   cost:80, gear:{ name:'Linen Robes',   rarity:'Common', slot:'armour', atkBonus:0, defBonus:1, hpBonus:6  } }
           }
         };
+        // Paints class glyph / level star / gold coin into the hub HUD strip canvases.
+        function renderHubHudIcons() {
+          const ch = loadCharacter(); if(!ch) return;
+          const _paint = (id, type) => {
+            const c = document.getElementById(id); if(!c) return;
+            const x = c.getContext('2d'); x.clearRect(0,0,c.width,c.height);
+            drawIcon(x, type, 0, 0, c.width);
+          };
+          const classIcon = ch.class === 'warrior' ? 'class-warrior' : ch.class === 'rogue' ? 'class-rogue' : 'class-mage';
+          _paint('hub-icon-class', classIcon);
+          _paint('hub-icon-level', 'star');
+          _paint('hub-icon-gold', 'gold');
+        }
         function renderHubShop() {
           const ch=loadCharacter(); const el=document.getElementById('shop-hub-content'); const gEl=document.getElementById('shop-hub-gold');
           if(!el||!ch) return;
@@ -3034,7 +3479,8 @@
           const wpnDef=HUB_SHOP_CATALOG.weapon[ch.class]; const armDef=HUB_SHOP_CATALOG.armour[ch.class];
           const equipped=(slot)=>ch.gear&&ch.gear[slot];
           const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'};
-          const card=(id,label,cost,body,canAfford,actionBtn)=>`<div style="background:#001020;border:2px solid #000a10;border-radius:6px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="color:#fff;font-size:1.1rem">${label}</div><div style="color:#00b4d8;font-size:0.8rem;margin-top:2px">${body}</div></div><div style="text-align:right;flex-shrink:0;margin-left:12px"><div style="color:#fde047;font-size:1rem">${cost} G</div>${actionBtn}</div></div></div>`;
+          // Cards now include a 40x40 canvas slot — populated post-render via _paintShopIcons.
+          const card=(id,label,cost,body,canAfford,actionBtn,iconType)=>`<div style="background:#001020;border:2px solid #000a10;border-radius:6px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="display:flex;align-items:center;gap:10px;flex:1"><canvas data-shop-icon="${iconType}" width="40" height="40" style="image-rendering:pixelated;width:40px;height:40px;flex-shrink:0;background:#000a10;border:1px solid #002030;border-radius:3px"></canvas><div><div style="color:#fff;font-size:1.1rem">${label}</div><div style="color:#00b4d8;font-size:0.8rem;margin-top:2px">${body}</div></div></div><div style="text-align:right;flex-shrink:0;margin-left:12px"><div style="color:#fde047;font-size:1rem">${cost} G</div>${actionBtn}</div></div></div>`;
           // Potion
           const potFull=potCount>=3; const potAfford=ch.gold>=HUB_SHOP_CATALOG.potion.cost;
           const potBtn=potFull?`<div style="color:#333;font-size:0.75rem;margin-top:4px">Full (${potCount}/3)</div>`
@@ -3055,9 +3501,16 @@
           const armBtn=armAfford?`<button onclick="buyHubItem('armour')" style="margin-top:4px;background:#00b4d8;color:#000;border:none;padding:2px 8px;cursor:pointer;font-family:'VT323',monospace;font-size:0.9rem">${armEquipped?'REPLACE':'BUY'}</button>`
             :`<div style="color:#f87171;font-size:0.75rem;margin-top:4px">Need ${armDef.cost} G</div>`;
           const armBody=`+${armDef.gear.defBonus} DEF, +${armDef.gear.hpBonus} HP${armEquipLine}`;
-          el.innerHTML=card('potion','Health Potion',HUB_SHOP_CATALOG.potion.cost,potBody,potAfford,potBtn)
-            +card('weapon',wpnDef.label,wpnDef.cost,wpnBody,wpnAfford,wpnBtn)
-            +card('armour',armDef.label,armDef.cost,armBody,armAfford,armBtn);
+          const wpnIcon = ch.class==='warrior' ? 'class-warrior' : ch.class==='rogue' ? 'class-rogue' : 'class-mage';
+          el.innerHTML=card('potion','Health Potion',HUB_SHOP_CATALOG.potion.cost,potBody,potAfford,potBtn,'potion-red')
+            +card('weapon',wpnDef.label,wpnDef.cost,wpnBody,wpnAfford,wpnBtn,wpnIcon)
+            +card('armour',armDef.label,armDef.cost,armBody,armAfford,armBtn,'shield');
+          // Paint icons into the canvases we just inserted.
+          el.querySelectorAll('canvas[data-shop-icon]').forEach(c=>{
+            const x = c.getContext('2d');
+            x.clearRect(0,0,c.width,c.height);
+            drawIcon(x, c.getAttribute('data-shop-icon'), 0, 0, c.width);
+          });
         }
         function buyHubItem(type) {
           const ch=loadCharacter(); if(!ch) return;
@@ -3073,7 +3526,7 @@
           saveCharacter(ch); renderHubShop();
           const gEl=document.getElementById('hub-hero-gold'); if(gEl) gEl.textContent=ch.gold+' G';
         }
-        function showStartPanel(name, fromPopstate=false) { if(name!=='hub') stopHubAmbience(); ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
+        function showStartPanel(name, fromPopstate=false) { if(name!=='hub'){ stopHubAmbience(); stopHubAnim(); } ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(name==='hub') startHubAnim(); if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
         history.replaceState({panel:'main'},'');
         window.addEventListener('popstate', function(e){ const ov=document.getElementById('start-overlay'); if(!ov) return; const _goHome=()=>{ if(loadCharacter()) showHub(); else showStartPanel('charcreate',true); }; if(!ov.classList.contains('hidden')){ _goHome(); } else if(gameState.gameStarted&&!gameState.isGameOver){ stopDungeonMusic(); cancelAnimationFrame(_rafId); gameState.gameStarted=false; gameState.menuOpen=false; get('menu-overlay').classList.add('hidden'); get('mobile-controls').classList.add('hidden'); ov.classList.remove('hidden'); _goHome(); } });
 
