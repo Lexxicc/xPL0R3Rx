@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.19</title>
+    <title>XPL0R3R v0.0.20</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.19</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.20</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.19</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.20</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -2585,7 +2585,55 @@
             journeyFloors: [], currentFloor: null, lastJourney: null,
             lastKillTime: 0, comboCount: 0, floatNums: [], timeWarnPlayed: false, floorCleared: false, lastDamageTime: 0, hiddenRooms: [],
             actionLog: [], challengeMode: false, challengerData: null, challengeSeed: null,
-            _lastBreakdown: null, _lastTotal: null, _lastTiming: null, _difficulty: 'normal', _isBossDungeon: false, _isLichDungeon: false
+            _lastBreakdown: null, _lastTotal: null, _lastTiming: null, _difficulty: 'normal', _isBossDungeon: false, _isLichDungeon: false,
+            // ── Phase 4: dungeon biome variation ──────────────────────────
+            // currentDungeonBiome controls which DUNGEON_BIOMES entry drives
+            // wall/floor palette + drawTile branches + ambient particles.
+            // 'standard' = the existing teal stone aesthetic (default).
+            // 'frost' / 'ash' / 'rune' = themed variants. Set per-run via
+            // the dungeon-select biome row before startGame() fires.
+            currentDungeonBiome: 'standard',
+            // Particle pool for dungeon ambience (snow/embers/sparks). Pool
+            // is allocated lazily in initBiomeParticles() and reused; pool
+            // size kept small (~40) for mobile perf. Each particle:
+            //   { x, y, vx, vy, life, max, size }
+            biomeParticles: []
+        };
+
+        // ─── Phase 4: dungeon biome palettes ─────────────────────────────
+        // Each biome supplies the palette + accent colours used by drawTile()
+        // for the WALL and FLOOR branches, plus the ambient-particle config.
+        // Adding a new biome = add an entry here + add WALL/FLOOR branches in
+        // drawTile() that read from BIOME (the active palette object).
+        const DUNGEON_BIOMES = {
+            standard: {
+                wallDeep:   '#00243a', wallMortar: '#000e1c', mortarHigh: '#003050',
+                edgeGlow:   '#00b4d8',
+                floorDark:  '#0a0d12', stoneMid:   '#1e2430', stoneLight: '#272e3e',
+                accent:     '#48cae4', particle:   null,        // no ambient particles in standard
+                particleKind: null
+            },
+            frost: {
+                wallDeep:   '#0a1428', wallMortar: '#040a18', mortarHigh: '#1a2742',
+                edgeGlow:   '#4fc3f7',
+                floorDark:  '#0a1828', stoneMid:   '#2a4a6e', stoneLight: '#4f80b8',
+                accent:     '#bdf2ff', particle:   '#ffffff',
+                particleKind: 'snow'
+            },
+            ash: {
+                wallDeep:   '#1a0808', wallMortar: '#0a0303', mortarHigh: '#3a1408',
+                edgeGlow:   '#f97316',
+                floorDark:  '#150404', stoneMid:   '#2e1a14', stoneLight: '#4a241a',
+                accent:     '#fbbf24', particle:   '#ff8030',
+                particleKind: 'ember'
+            },
+            rune: {
+                wallDeep:   '#1a0822', wallMortar: '#0a0312', mortarHigh: '#3a1a4a',
+                edgeGlow:   '#c026d3',
+                floorDark:  '#10081a', stoneMid:   '#2a1840', stoneLight: '#4a2a68',
+                accent:     '#a855f7', particle:   '#c084fc',
+                particleKind: 'spark'
+            }
         };
 
         // --- Challenge / anti-bot system ---
@@ -3009,8 +3057,168 @@
             loadFloor(gameState.runStartIndex + _deepStart - 1);
         }
 
+        // ─── Phase 4: biome ambient particle system ───────────────────────
+        // Pool of ~40 particles. Lifecycle: spawn at random (depending on
+        // biome) somewhere along the top/bottom edge, drift across the
+        // viewport, expire when life<=0 (or off-screen). Cheap so phones
+        // stay smooth. Particles are cosmetic ONLY and never touch gameplay.
+        const _BIOME_PARTICLE_POOL = 40;
+        function _spawnBiomeParticle(p, kind, W, H) {
+            // (Re-)initialise particle p in-place. Each kind has its own
+            // birth-position + velocity profile.
+            if (kind === 'snow') {
+                p.x = Math.random() * W;
+                p.y = -4 - Math.random() * 12;
+                p.vx = -0.15 + Math.random() * 0.30;
+                p.vy = 0.35 + Math.random() * 0.45;     // slow downward drift
+                p.size = 1 + Math.floor(Math.random() * 2);
+                p.max = 320 + Math.floor(Math.random() * 180);
+            } else if (kind === 'ember') {
+                p.x = Math.random() * W;
+                p.y = H + 4 + Math.random() * 16;
+                p.vx = -0.20 + Math.random() * 0.40;
+                p.vy = -(0.30 + Math.random() * 0.40);  // slow upward rise
+                p.size = 1 + Math.floor(Math.random() * 2);
+                p.max = 200 + Math.floor(Math.random() * 160);
+            } else { // 'spark'
+                p.x = Math.random() * W;
+                p.y = Math.random() * H;
+                const ang = Math.random() * Math.PI * 2;
+                const sp = 0.20 + Math.random() * 0.50;
+                p.vx = Math.cos(ang) * sp;
+                p.vy = Math.sin(ang) * sp;
+                p.size = 1;
+                p.max = 60 + Math.floor(Math.random() * 80);
+            }
+            p.life = p.max;
+        }
+        function initBiomeParticles() {
+            const BIOME = DUNGEON_BIOMES[gameState.currentDungeonBiome] || DUNGEON_BIOMES.standard;
+            if (!BIOME.particle || !BIOME.particleKind) {
+                gameState.biomeParticles = [];
+                return;
+            }
+            const W = canvas ? canvas.width : 480;
+            const H = canvas ? canvas.height : 480;
+            const arr = [];
+            for (let i = 0; i < _BIOME_PARTICLE_POOL; i++) {
+                const p = {};
+                _spawnBiomeParticle(p, BIOME.particleKind, W, H);
+                // Stagger initial life so they don't all expire at once
+                p.life = Math.floor(Math.random() * p.max);
+                arr.push(p);
+            }
+            gameState.biomeParticles = arr;
+        }
+        function updateAndDrawBiomeParticles() {
+            const BIOME = DUNGEON_BIOMES[gameState.currentDungeonBiome] || DUNGEON_BIOMES.standard;
+            if (!BIOME.particle || !BIOME.particleKind) return;
+            // Lazy-init if biome changed mid-run or particles weren't seeded.
+            if (!gameState.biomeParticles || gameState.biomeParticles.length !== _BIOME_PARTICLE_POOL) {
+                initBiomeParticles();
+            }
+            const W = canvas.width, H = canvas.height;
+            const kind = BIOME.particleKind;
+            const col = BIOME.particle;
+            ctx.save();
+            ctx.fillStyle = col;
+            for (let i = 0; i < gameState.biomeParticles.length; i++) {
+                const p = gameState.biomeParticles[i];
+                p.x += p.vx; p.y += p.vy; p.life--;
+                // Snowflakes wobble slightly horizontally
+                if (kind === 'snow') p.vx += (Math.random() - 0.5) * 0.04;
+                // Embers fade as they rise (life ratio drives alpha)
+                // Sparks fade out at end of life.
+                let alpha;
+                if (kind === 'snow') alpha = 0.55 + 0.35 * (p.life / p.max);
+                else if (kind === 'ember') alpha = 0.30 + 0.65 * (p.life / p.max);
+                else alpha = 0.85 * (p.life / p.max);
+                if (p.life <= 0 || p.x < -8 || p.x > W + 8 || p.y < -8 || p.y > H + 8) {
+                    _spawnBiomeParticle(p, kind, W, H);
+                    continue;
+                }
+                ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+                ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+                // Embers get a tiny bright core dot
+                if (kind === 'ember' && p.size > 1) {
+                    ctx.fillStyle = BIOME.accent;
+                    ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 1, 1);
+                    ctx.fillStyle = col;
+                }
+            }
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+
         function drawTile(type, x, y, wx, wy) {
-            if(type===TILES.WALL) { let d=gameState.wallDepth[wy][wx], f=Math.max(0, 1-(d-1)/4); if(f<=0){ctx.fillStyle='#000c14'; ctx.fillRect(x,y,32,32);} else { ctx.globalAlpha=f; ctx.fillStyle='#00243a'; ctx.fillRect(x,y,32,32); const _bo=(wy%2===0)?0:8; ctx.fillStyle='#000e1c'; ctx.fillRect(x,y+10,32,2); ctx.fillRect(x,y+21,32,2); ctx.fillRect(x+(_bo+16)%32,y,2,10); ctx.fillRect(x+_bo,y,2,10); ctx.fillRect(x+(_bo+8)%32,y+12,2,9); ctx.fillRect(x+(_bo+24)%32,y+12,2,9); ctx.fillRect(x+(_bo+16)%32,y+23,2,9); ctx.fillRect(x+_bo,y+23,2,9); ctx.fillStyle='#003050'; ctx.fillRect(x,y+1,32,1); ctx.fillRect(x,y+12,32,1); ctx.fillRect(x,y+23,32,1); ctx.strokeStyle='#00b4d8'; ctx.lineWidth=1; ctx.strokeRect(x+4,y+4,24,24); ctx.globalAlpha=1; } }
+            // Phase 4: BIOME palette + branch — non-standard biomes get
+            // bespoke wall/floor textures while sharing wallDepth fade logic.
+            const BIOME = DUNGEON_BIOMES[gameState.currentDungeonBiome] || DUNGEON_BIOMES.standard;
+            const BKEY = gameState.currentDungeonBiome || 'standard';
+            if(type===TILES.WALL) { let d=gameState.wallDepth[wy][wx], f=Math.max(0, 1-(d-1)/4); if(f<=0){ctx.fillStyle='#000c14'; ctx.fillRect(x,y,32,32);} else if(BKEY==='frost'){
+                // ── Frost wall: ice-block pattern. Larger 16×32 blocks, fewer
+                // mortar lines, a crystalline shimmer dot keyed off (wx,wy).
+                ctx.globalAlpha=f; ctx.fillStyle=BIOME.wallDeep; ctx.fillRect(x,y,32,32);
+                ctx.fillStyle=BIOME.wallMortar; ctx.fillRect(x,y+15,32,2);
+                const _ibo=(wy%2===0)?0:16; ctx.fillStyle=BIOME.wallMortar;
+                ctx.fillRect(x+(_ibo)%32,y,2,15); ctx.fillRect(x+(_ibo+16)%32,y+17,2,15);
+                ctx.fillStyle=BIOME.mortarHigh; ctx.fillRect(x+1,y+1,30,1); ctx.fillRect(x+1,y+18,30,1);
+                // Inner highlight — pale icy reflection along top of each block
+                ctx.fillStyle=BIOME.accent; ctx.globalAlpha=f*0.32; ctx.fillRect(x+3,y+3,12,1); ctx.fillRect(x+18,y+3,11,1);
+                ctx.fillRect(x+3,y+20,12,1); ctx.fillRect(x+18,y+20,11,1);
+                // Crystalline shimmer dot — deterministic per tile
+                const _sh = ((wx*73^wy*131)&0xFF);
+                if(_sh<70){ ctx.globalAlpha=f*0.85; ctx.fillStyle='#ffffff'; ctx.fillRect(x+6+(_sh&7),y+5+((_sh>>3)&7),1,1); ctx.fillRect(x+20+(_sh&5),y+22+((_sh>>3)&5),1,1); }
+                ctx.globalAlpha=f; ctx.strokeStyle=BIOME.edgeGlow; ctx.lineWidth=1; ctx.strokeRect(x+4,y+4,24,24); ctx.globalAlpha=1;
+            } else if(BKEY==='ash'){
+                // ── Ash wall: scorched stone with soot streaks + occasional
+                // hot ember-crack (bright orange line).
+                ctx.globalAlpha=f; ctx.fillStyle=BIOME.wallDeep; ctx.fillRect(x,y,32,32);
+                const _bo=(wy%2===0)?0:8; ctx.fillStyle=BIOME.wallMortar;
+                ctx.fillRect(x,y+10,32,2); ctx.fillRect(x,y+21,32,2);
+                ctx.fillRect(x+(_bo+16)%32,y,2,10); ctx.fillRect(x+_bo,y,2,10);
+                ctx.fillRect(x+(_bo+8)%32,y+12,2,9); ctx.fillRect(x+(_bo+24)%32,y+12,2,9);
+                ctx.fillRect(x+(_bo+16)%32,y+23,2,9); ctx.fillRect(x+_bo,y+23,2,9);
+                // Soot streaks — vertical dark smears
+                ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(x+5,y+2,1,28); ctx.fillRect(x+18,y+4,1,24);
+                ctx.fillStyle=BIOME.mortarHigh; ctx.fillRect(x,y+1,32,1); ctx.fillRect(x,y+12,32,1); ctx.fillRect(x,y+23,32,1);
+                // Hot ember-crack — deterministic per tile, glowing orange line
+                const _eh = ((wx*0x29^wy*0x53)&0xFF);
+                if(_eh<55){
+                    ctx.fillStyle=BIOME.edgeGlow; ctx.globalAlpha=f*0.9;
+                    ctx.fillRect(x+8+((_eh>>1)&7),y+6,1,5); ctx.fillRect(x+9+((_eh>>1)&7),y+11,1,3);
+                    ctx.globalAlpha=f*0.45; ctx.fillStyle=BIOME.accent; ctx.fillRect(x+8+((_eh>>1)&7),y+5,1,1);
+                }
+                ctx.globalAlpha=f; ctx.strokeStyle=BIOME.edgeGlow; ctx.lineWidth=1; ctx.strokeRect(x+4,y+4,24,24); ctx.globalAlpha=1;
+            } else if(BKEY==='rune'){
+                // ── Rune wall: deep violet stone with scattered glowing
+                // glyphs. Glyph presence is hash-deterministic per tile so
+                // the layout is stable across re-draws but varies spatially.
+                ctx.globalAlpha=f; ctx.fillStyle=BIOME.wallDeep; ctx.fillRect(x,y,32,32);
+                const _bo=(wy%2===0)?0:8; ctx.fillStyle=BIOME.wallMortar;
+                ctx.fillRect(x,y+10,32,2); ctx.fillRect(x,y+21,32,2);
+                ctx.fillRect(x+(_bo+16)%32,y,2,10); ctx.fillRect(x+_bo,y,2,10);
+                ctx.fillRect(x+(_bo+8)%32,y+12,2,9); ctx.fillRect(x+(_bo+24)%32,y+12,2,9);
+                ctx.fillRect(x+(_bo+16)%32,y+23,2,9); ctx.fillRect(x+_bo,y+23,2,9);
+                ctx.fillStyle=BIOME.mortarHigh; ctx.fillRect(x,y+1,32,1); ctx.fillRect(x,y+12,32,1); ctx.fillRect(x,y+23,32,1);
+                // Glowing rune glyph — deterministic per tile, ~25% chance
+                const _rh = ((wx*0x9E37^wy*0x85EB)&0xFF);
+                if(_rh<64){
+                    const _glyph = _rh & 3;  // pick 1 of 4 glyph shapes
+                    const _gx = x + 11 + ((_rh>>2)&3);
+                    const _gy = y + 11 + ((_rh>>4)&3);
+                    const _pulse = 0.55 + 0.45 * Math.sin((gameState.player.animTimer*0.06) + (wx+wy));
+                    ctx.globalAlpha = f * _pulse;
+                    ctx.fillStyle = BIOME.edgeGlow;
+                    ctx.shadowBlur = 6; ctx.shadowColor = BIOME.accent;
+                    if(_glyph===0){ ctx.fillRect(_gx,_gy+2,8,1); ctx.fillRect(_gx+3,_gy,1,5); ctx.fillRect(_gx+1,_gy+5,5,1); }
+                    else if(_glyph===1){ ctx.fillRect(_gx,_gy,1,8); ctx.fillRect(_gx+5,_gy,1,8); ctx.fillRect(_gx+1,_gy+3,4,1); }
+                    else if(_glyph===2){ ctx.fillRect(_gx,_gy,8,1); ctx.fillRect(_gx,_gy+6,8,1); ctx.fillRect(_gx+3,_gy+1,1,5); }
+                    else { ctx.fillRect(_gx,_gy+3,8,1); ctx.fillRect(_gx+1,_gy+1,1,5); ctx.fillRect(_gx+6,_gy+1,1,5); }
+                    ctx.shadowBlur = 0;
+                }
+                ctx.globalAlpha=f; ctx.strokeStyle=BIOME.edgeGlow; ctx.lineWidth=1; ctx.strokeRect(x+4,y+4,24,24); ctx.globalAlpha=1;
+            } else { ctx.globalAlpha=f; ctx.fillStyle=BIOME.wallDeep; ctx.fillRect(x,y,32,32); const _bo=(wy%2===0)?0:8; ctx.fillStyle=BIOME.wallMortar; ctx.fillRect(x,y+10,32,2); ctx.fillRect(x,y+21,32,2); ctx.fillRect(x+(_bo+16)%32,y,2,10); ctx.fillRect(x+_bo,y,2,10); ctx.fillRect(x+(_bo+8)%32,y+12,2,9); ctx.fillRect(x+(_bo+24)%32,y+12,2,9); ctx.fillRect(x+(_bo+16)%32,y+23,2,9); ctx.fillRect(x+_bo,y+23,2,9); ctx.fillStyle=BIOME.mortarHigh; ctx.fillRect(x,y+1,32,1); ctx.fillRect(x,y+12,32,1); ctx.fillRect(x,y+23,32,1); ctx.strokeStyle=BIOME.edgeGlow; ctx.lineWidth=1; ctx.strokeRect(x+4,y+4,24,24); ctx.globalAlpha=1; } }
             else if(type===TILES.WATER){
                 const t=gameState.player.animTimer;
                 ctx.fillStyle='#102e80'; ctx.fillRect(x,y,32,32);
@@ -3087,33 +3295,90 @@
                 ctx.globalAlpha=1;}
             }
             else {
-                // Stone floor — Minecraft-style cobblestone with per-tile variation
+                // Stone floor — Minecraft-style cobblestone with per-tile variation.
+                // Phase 4: per-biome floor variants (frost = ice, ash = cracked
+                // earth + ember spots, rune = arcane circle pulse). Standard
+                // = original cobblestone (back-compat).
                 const h = ((wx * 0x1f3d + wy * 0x4b6f) ^ (wx * wy * 7)) & 0xFFFF;
-                const bases = ['#1e2430','#1b2232','#20263a','#1a2234'];
-                const highs = ['#272e3e','#242c3e','#292f44','#23293a'];
-                const shads = ['#13171e','#121620','#14181e','#12151c'];
-                const b1=bases[h&3], b2=bases[(h>>2)&3], b3=bases[(h>>4)&3];
-                const hi1=highs[h&3], hi2=highs[(h>>2)&3], hi3=highs[(h>>4)&3];
-                const sh=shads[h&3];
-                // Mortar
-                ctx.fillStyle='#0a0d12'; ctx.fillRect(x,y,32,32);
-                // Top-left brick
-                ctx.fillStyle=b1; ctx.fillRect(x+1,y+1,13,13);
-                ctx.fillStyle=hi1; ctx.fillRect(x+1,y+1,13,2); ctx.fillRect(x+1,y+1,2,13);
-                ctx.fillStyle=sh; ctx.fillRect(x+13,y+2,1,12); ctx.fillRect(x+2,y+13,11,1);
-                // Top-right brick (offset y by 1)
-                ctx.fillStyle=b2; ctx.fillRect(x+16,y+2,15,12);
-                ctx.fillStyle=hi2; ctx.fillRect(x+16,y+2,15,2); ctx.fillRect(x+16,y+2,2,12);
-                ctx.fillStyle=sh; ctx.fillRect(x+30,y+3,1,11); ctx.fillRect(x+17,y+13,13,1);
-                // Bottom brick (full width, offset)
-                ctx.fillStyle=b3; ctx.fillRect(x+1,y+16,30,14);
-                ctx.fillStyle=hi3; ctx.fillRect(x+1,y+16,30,2); ctx.fillRect(x+1,y+16,2,14);
-                ctx.fillStyle=sh; ctx.fillRect(x+30,y+17,1,13); ctx.fillRect(x+2,y+29,28,1);
-                // Cracks — deterministic per tile
-                if(h&0x100){ ctx.fillStyle='#07090c'; ctx.fillRect(x+5,y+5,1,5); ctx.fillRect(x+6,y+9,2,1); }
-                if(h&0x200){ ctx.fillStyle='#07090c'; ctx.fillRect(x+20,y+4,3,1); ctx.fillRect(x+22,y+5,1,3); }
-                if(h&0x400){ ctx.fillStyle='#07090c'; ctx.fillRect(x+7,y+21,4,1); ctx.fillRect(x+9,y+20,1,4); }
-                if(h&0x800){ ctx.fillStyle='#07090c'; ctx.fillRect(x+22,y+23,1,4); ctx.fillRect(x+21,y+26,2,1); }
+                if(BKEY==='frost'){
+                    // Ice surface — light cyan base, subtle reflective highlight,
+                    // occasional ice-crack (deterministic per tile).
+                    ctx.fillStyle=BIOME.floorDark; ctx.fillRect(x,y,32,32);
+                    ctx.fillStyle=BIOME.stoneMid; ctx.fillRect(x+1,y+1,30,30);
+                    ctx.fillStyle=BIOME.stoneLight; ctx.fillRect(x+2,y+2,28,1); ctx.fillRect(x+2,y+2,1,28);
+                    // Reflective specular streak — diagonal pale highlight
+                    ctx.fillStyle=BIOME.accent; ctx.globalAlpha=0.35;
+                    ctx.fillRect(x+5+(h&3),y+8,8,1); ctx.fillRect(x+18,y+22+((h>>2)&3),6,1);
+                    ctx.globalAlpha=1;
+                    // Ice cracks
+                    if(h&0x100){ ctx.fillStyle='#04101e'; ctx.fillRect(x+6,y+10,1,5); ctx.fillRect(x+7,y+14,3,1); }
+                    if(h&0x400){ ctx.fillStyle='#04101e'; ctx.fillRect(x+20,y+18,1,4); ctx.fillRect(x+18,y+22,5,1); }
+                } else if(BKEY==='ash'){
+                    // Cracked earth — dark scorched stone with scattered
+                    // glowing ember spots that pulse subtly.
+                    ctx.fillStyle=BIOME.floorDark; ctx.fillRect(x,y,32,32);
+                    ctx.fillStyle=BIOME.stoneMid; ctx.fillRect(x+1,y+1,30,30);
+                    ctx.fillStyle=BIOME.stoneLight; ctx.fillRect(x+2,y+2,12,11); ctx.fillRect(x+18,y+16,12,11);
+                    // Cracks — heavy
+                    ctx.fillStyle='#0a0303';
+                    ctx.fillRect(x+8,y+3,1,8); ctx.fillRect(x+9,y+10,4,1);
+                    ctx.fillRect(x+14,y+18,1,9); ctx.fillRect(x+22,y+5,1,6);
+                    if(h&0x100){ ctx.fillRect(x+3,y+22,8,1); ctx.fillRect(x+10,y+22,1,5); }
+                    // Ember spots — bright orange dots (pulse via animTimer)
+                    const _ep = 0.55 + 0.45*Math.sin(gameState.player.animTimer*0.12 + (wx*0.7+wy*0.4));
+                    if(h&0x200){ ctx.fillStyle=BIOME.edgeGlow; ctx.globalAlpha=_ep; ctx.fillRect(x+10,y+11,2,2); ctx.globalAlpha=_ep*0.6; ctx.fillStyle=BIOME.accent; ctx.fillRect(x+10,y+11,1,1); ctx.globalAlpha=1; }
+                    if(h&0x800){ ctx.fillStyle=BIOME.edgeGlow; ctx.globalAlpha=_ep*0.85; ctx.fillRect(x+24,y+25,2,2); ctx.globalAlpha=_ep*0.5; ctx.fillStyle=BIOME.accent; ctx.fillRect(x+24,y+25,1,1); ctx.globalAlpha=1; }
+                } else if(BKEY==='rune'){
+                    // Arcane circle floor — concentric purple circles forming
+                    // a ritual pattern, with a subtle global pulse driven by
+                    // animTimer. Drawn over the stone base.
+                    ctx.fillStyle=BIOME.floorDark; ctx.fillRect(x,y,32,32);
+                    ctx.fillStyle=BIOME.stoneMid; ctx.fillRect(x+1,y+1,30,30);
+                    ctx.fillStyle=BIOME.stoneLight; ctx.fillRect(x+2,y+2,28,1); ctx.fillRect(x+2,y+2,1,28);
+                    const _rp = 0.55 + 0.45*Math.sin(gameState.player.animTimer*0.05 + (wx*0.3+wy*0.5));
+                    // Concentric arcane rings — only on a subset of tiles to
+                    // avoid visual clutter, but always pulse if drawn.
+                    if((h&0x300)===0x100 || (h&0x300)===0x200){
+                        ctx.save(); ctx.translate(x+16, y+16);
+                        ctx.globalAlpha = _rp * 0.6; ctx.strokeStyle = BIOME.accent; ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.arc(0,0,11,0,Math.PI*2); ctx.stroke();
+                        ctx.globalAlpha = _rp * 0.85; ctx.strokeStyle = BIOME.edgeGlow;
+                        ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.stroke();
+                        ctx.globalAlpha = _rp; ctx.fillStyle = BIOME.edgeGlow;
+                        ctx.fillRect(-1,-1,2,2);
+                        ctx.globalAlpha = 1; ctx.restore();
+                    } else {
+                        // Lesser tile — just a faint glyph dot
+                        if(h&0x400){ ctx.globalAlpha=_rp*0.5; ctx.fillStyle=BIOME.accent; ctx.fillRect(x+15,y+15,2,2); ctx.globalAlpha=1; }
+                    }
+                } else {
+                    // Standard cobblestone — original behaviour, untouched.
+                    const bases = ['#1e2430','#1b2232','#20263a','#1a2234'];
+                    const highs = ['#272e3e','#242c3e','#292f44','#23293a'];
+                    const shads = ['#13171e','#121620','#14181e','#12151c'];
+                    const b1=bases[h&3], b2=bases[(h>>2)&3], b3=bases[(h>>4)&3];
+                    const hi1=highs[h&3], hi2=highs[(h>>2)&3], hi3=highs[(h>>4)&3];
+                    const sh=shads[h&3];
+                    // Mortar
+                    ctx.fillStyle='#0a0d12'; ctx.fillRect(x,y,32,32);
+                    // Top-left brick
+                    ctx.fillStyle=b1; ctx.fillRect(x+1,y+1,13,13);
+                    ctx.fillStyle=hi1; ctx.fillRect(x+1,y+1,13,2); ctx.fillRect(x+1,y+1,2,13);
+                    ctx.fillStyle=sh; ctx.fillRect(x+13,y+2,1,12); ctx.fillRect(x+2,y+13,11,1);
+                    // Top-right brick (offset y by 1)
+                    ctx.fillStyle=b2; ctx.fillRect(x+16,y+2,15,12);
+                    ctx.fillStyle=hi2; ctx.fillRect(x+16,y+2,15,2); ctx.fillRect(x+16,y+2,2,12);
+                    ctx.fillStyle=sh; ctx.fillRect(x+30,y+3,1,11); ctx.fillRect(x+17,y+13,13,1);
+                    // Bottom brick (full width, offset)
+                    ctx.fillStyle=b3; ctx.fillRect(x+1,y+16,30,14);
+                    ctx.fillStyle=hi3; ctx.fillRect(x+1,y+16,30,2); ctx.fillRect(x+1,y+16,2,14);
+                    ctx.fillStyle=sh; ctx.fillRect(x+30,y+17,1,13); ctx.fillRect(x+2,y+29,28,1);
+                    // Cracks — deterministic per tile
+                    if(h&0x100){ ctx.fillStyle='#07090c'; ctx.fillRect(x+5,y+5,1,5); ctx.fillRect(x+6,y+9,2,1); }
+                    if(h&0x200){ ctx.fillStyle='#07090c'; ctx.fillRect(x+20,y+4,3,1); ctx.fillRect(x+22,y+5,1,3); }
+                    if(h&0x400){ ctx.fillStyle='#07090c'; ctx.fillRect(x+7,y+21,4,1); ctx.fillRect(x+9,y+20,1,4); }
+                    if(h&0x800){ ctx.fillStyle='#07090c'; ctx.fillRect(x+22,y+23,1,4); ctx.fillRect(x+21,y+26,2,1); }
+                }
             }
         }
 
@@ -3414,6 +3679,10 @@
             gameState.player.animTimer++; ctx.clearRect(0,0,canvas.width,canvas.height);
             let cx=Math.floor(gameState.player.x-VIEW_WIDTH/2), cy=Math.floor(gameState.player.y-VIEW_HEIGHT/2);
             for(let vy=0; vy<VIEW_HEIGHT; vy++) for(let vx=0; vx<VIEW_WIDTH; vx++){ let wx=cx+vx, wy=cy+vy; if(wx>=0&&wx<60&&wy>=0&&wy<60) drawTile(gameState.world[wy][wx], vx*32, vy*32, wx, wy); }
+            // Phase 4: ambient biome particles (snow/ember/spark) — purely
+            // visual; rendered after tiles so they sit over walls/floor but
+            // BEFORE items/enemies/player so foreground sprites stay clean.
+            updateAndDrawBiomeParticles();
             gameState.items.forEach(i=>{ let vx=i.x-cx, vy=i.y-cy; if(vx>=0&&vx<VIEW_WIDTH&&vy>=0&&vy<VIEW_HEIGHT){ /* SILVER DISABLED: if(i.type==='GOLD'){ drawSilverPile(ctx,vx*32,vy*32); } else */ if(i.type==='CHEST'){ drawChest(ctx,vx*32,vy*32); } else if(i.type==='DAMAGEBUFF'){ drawDamagePot(ctx,vx*32,vy*32); } else if(i.type==='SHIELDPOT'){ drawArmourPot(ctx,vx*32,vy*32); } else if(i.type==='POTION'){ drawHealthPot(ctx,vx*32,vy*32); } else if(i.type==='KEY'){ drawKey(ctx,vx*32,vy*32); } else if(i.type==='LUCKYCHARM'){ drawLuckyCharm(ctx,vx*32,vy*32); } else if(i.type==='STAIRS'){ drawHole(ctx,vx*32,vy*32); } else if(i.type==='CHALICE'){ drawChalice(ctx,vx*32,vy*32,gameState.player.animTimer); } else { ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillStyle='#90e0ef'; ctx.fillText(SPRITES[i.type], vx*32+16, vy*32+22); } } });
             gameState.enemies.forEach(e=>{ let vx=e.x-cx, vy=e.y-cy; if(vx>=0&&vx<VIEW_WIDTH&&vy>=0&&vy<VIEW_HEIGHT){ if(e.isLichKing){ ctx.font='24px VT323'; ctx.textAlign='center'; ctx.fillStyle='#c084fc'; ctx.fillText('Ψ',vx*32+16,vy*32+22); { let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32,vy*32-7,32,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32,vy*32-7,Math.ceil(32*p),5); } } else if(e.isBoss){ drawBossSprite(ctx,vx*32,vy*32); { let p=e.hp/e.maxHp; ctx.fillStyle='#7f1d1d'; ctx.fillRect(vx*32,vy*32-7,64,5); ctx.fillStyle='#66923d'; ctx.fillRect(vx*32,vy*32-7,Math.ceil(64*p),5); } } else if(e.isMerchant){ ctx.save(); ctx.globalAlpha=0.18+0.08*Math.sin(gameState.player.animTimer*0.15); ctx.fillStyle='#90e0ef'; ctx.beginPath(); ctx.arc(vx*32+16,vy*32+16,16,0,Math.PI*2); ctx.fill(); ctx.restore(); ctx.font='22px VT323'; ctx.textAlign='center'; ctx.fillText(e.sprite,vx*32+16,vy*32+22); ctx.font='9px monospace'; ctx.fillStyle='#90e0ef'; ctx.fillText('SHOP',vx*32+16,vy*32+5); } else {
                     if(e.name==='Slime') drawSlime(ctx,vx*32,vy*32,gameState.player.animTimer);
@@ -3738,6 +4007,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.20', title: 'Dungeon Biome Variation (Phase 4)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['DUNGEON_BIOMES registry: standard / frost / ash / rune palettes (wall/mortar/edgeGlow/floor/accent/particle).', 'drawTile() WALL branches: frost (ice blocks + shimmer), ash (scorched + ember-cracks), rune (glowing glyphs with pulse). FLOOR branches: frost (ice + reflective specular), ash (cracked earth + ember spots), rune (arcane circles + pulse). Standard preserved byte-identical.', 'Ambient particle layer (40-particle pool): snow drifts down (frost), embers float up (ash), violet sparks scatter (rune). Standard biome has no particles.', 'BIOME selector row added to dungeon-select panel — 4 buttons with selected-state highlight. Flag persists across runs.', 'BFS wallDepth fade preserved across all biomes. Mob types reused (no biome-themed enemies in this phase — flagged for future).'] }] },
             { version: 'v0.0.19', title: 'Player Polish (Phase 3)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['Walk-cycle: 4 directions × 4 frames (2 distinct walk poses + face/eye/weapon-side variants per direction). Direction tracked via player.facing, frameTick advances on every move.', 'Equipped-gear visual: armour tier (none/light/medium/heavy) drives torso width + shoulder pads + chest plate + rivets. Weapon (sword/dagger/staff) drawn on facing-aware hip side, with arcane-orb glow on staves.', 'Equip/unequip flow in character sheet inventory: per-row EQUIP button. Class-mismatched weapons get disabled button with reason. Equip mirrors into ch.gear slot — existing damage/HP/DEF code paths pick up bonuses with no extra wiring.', 'Idle polish: 1.2s sine bob + slower torso-only breath, suppressed while moving. Look-around eye-shift every 6s when stationary. Class palettes (warrior cyan, rogue green, mage purple).', 'Hub + overworld player sprite updated; dungeon sprite intentionally out of scope (different art system).'] }] },
             { version: 'v0.0.18', title: 'Collectibles + Lore Shrines (Phase 2G — Phase 2 complete)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['8 collectibles in Verdant Reach: 3 gold piles (small/medium), 2 herbs, 1 rune shard, 2 potions. Auto-pickup on walk-over with floating reward text. Persisted via character.collectiblesPicked — never respawn.', '4 lore shrines in overworld + 2 in side-dungeons (Bone Inscription in Cave of Fangs, Altar Stone in Ancient Ruin). Each shrine has unique atmospheric worldbuilding text; first reading grants +25 XP.', 'Shrine UI: dedicated #lore-overlay with violet theme, scrollable lore text, READ tag on subsequent reads.', 'Discoveries tracker added to character sheet: shrines read X/Y, collectibles found X/Y, side-dungeons cleared X/Y, plus % explored aggregate.', 'Persistence: character.shrinesRead, character.collectiblesPicked, character.sideDungeonsCleared. Side-dungeon entities use composite keys (dungeonId__shrineId) so they survive dungeon regeneration.'] }] },
             { version: 'v0.0.17', title: 'Side-Dungeons (Phase 2F)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['2 side-dungeon entries on Verdant Reach: Cave of Fangs (tile 19, west at (3,5)) + Ancient Ruin (tile 20, east at (20,8)).', 'Side-dungeons implemented as themed mini-zones via the existing ZONES system — dynamic registration on entry, procedural layout per visit, deletion on exit.', 'Cave of Fangs: 12×12, mobs (3 cave-rat, 2 cave-bat, 1 cave-spider mini-boss). Ancient Ruin: 14×12, mobs (3 ruin-bandit, 2 ruin-wraith mini-boss).', '5 new mob types added with full sprites: cave-rat, cave-bat, cave-spider (mini-boss), ruin-bandit, ruin-wraith (mini-boss).', '6 new tile types added: cave mouth (19), ruin entrance (20), cave floor (21), ruin floor (22), cave wall (23), ruin wall (24).', 'Entry flow: walk onto entry tile → "Enter the cave/ruin?" prompt → confirm → procedural map generation + mob placement + south-edge exit tile.', 'Mini-boss kills drop a guaranteed item from the dungeon loot table (mystery box, rune shard, silvered key) into character.inventory.'] }] },
@@ -3877,13 +4147,34 @@
         function renderDungeonSelect() {
           const ch=loadCharacter(); const el=document.getElementById('dungeonselect-content'); if(!el) return;
           const lvl=ch?ch.level:1;
+          // ── Phase 4: biome selector row ─────────────────────────────────
+          // Biome state is stored on gameState so the choice persists across
+          // re-renders of this panel. Default = 'standard' (existing look).
+          if (!gameState.currentDungeonBiome) gameState.currentDungeonBiome = 'standard';
+          const _biomeRow = (() => {
+            const opts = [
+              { id: 'standard', label: 'Standard', col: '#00b4d8', sub: 'Teal stone'    },
+              { id: 'frost',    label: 'Frost',    col: '#4fc3f7', sub: 'Ice + snow'    },
+              { id: 'ash',      label: 'Ash',      col: '#f97316', sub: 'Embers'        },
+              { id: 'rune',     label: 'Rune',     col: '#c026d3', sub: 'Arcane glyphs' }
+            ];
+            const cur = gameState.currentDungeonBiome;
+            const buttons = opts.map(o => {
+              const sel = (o.id === cur);
+              return `<button onclick="gameState.currentDungeonBiome='${o.id}';renderDungeonSelect();" class="btn-pixel" style="flex:1;padding:8px 4px;border:3px solid ${sel?o.col:'#1a3340'};background:${sel?'rgba(0,30,50,0.95)':'rgba(0,16,28,0.85)'};color:${sel?o.col:'#90e0ef'};font-size:0.75rem;letter-spacing:0.04em;line-height:1.05"><div style="font-weight:bold">${o.label}</div><div style="font-size:0.65rem;opacity:0.75;margin-top:2px">${o.sub}</div></button>`;
+            }).join('');
+            return `<div style="margin-bottom:14px;padding:10px;border:2px solid #1a3340;background:rgba(0,12,20,0.7)">
+              <div style="font-size:0.85rem;color:#90e0ef;letter-spacing:0.08em;margin-bottom:8px">&#9670; BIOME</div>
+              <div style="display:flex;gap:6px">${buttons}</div>
+            </div>`;
+          })();
           const tiers=[
             {id:'normal',label:'Normal', req:1, reqLabel:'',         hpMult:'1×',    dmgMult:'1×',    lootNote:'Standard drops',                  btnColor:'#00b4d8'},
             {id:'hard',  label:'Hard',   req:5, reqLabel:'Level 5+', hpMult:'1.25×', dmgMult:'1.4×',  lootNote:'Better Uncommon / Rare chance',    btnColor:'#f97316'},
             {id:'elite', label:'Elite',  req:10,reqLabel:'Level 10+',hpMult:'1.6×',  dmgMult:'1.9×',  lootNote:'Guaranteed Rare from boss',        btnColor:'#c084fc'},
             {id:'boss',  label:'Boss Dungeon',req:15,reqLabel:'Level 15+',hpMult:'3×',dmgMult:'3×',   lootNote:'Guaranteed Legendary drop',        btnColor:'#fde047'}
           ];
-          el.innerHTML=tiers.map(t=>{
+          el.innerHTML = _biomeRow + tiers.map(t=>{
             const locked=lvl<t.req;
             const bc=locked?'#334':t.btnColor;
             const onclick=t.id==='boss'
@@ -7621,7 +7912,13 @@
         function syncMenuSettings() { const vp=Math.round(gameState._volume*714); const vs=document.getElementById('ig-vol-slider'); if(vs) vs.value=vp; const vv=document.getElementById('ig-vol-val'); if(vv) vv.innerText=vp+'%'; const mp=Math.round(gameState._musicVolume*1000); const ms=document.getElementById('ig-music-vol-slider'); if(ms) ms.value=mp; const mv=document.getElementById('ig-music-vol-val'); if(mv) mv.innerText=mp+'%'; const bs=document.getElementById('brightness-slider'); const ibs=document.getElementById('ig-brightness-slider'); if(bs&&ibs){ibs.value=bs.value; const bv=document.getElementById('ig-brightness-val'); if(bv) bv.innerText=bs.value+'%';} ['sfx-toggle','ig-sfx-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.sfxEnabled?'ON':'OFF';}); ['music-toggle','ig-music-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.musicEnabled?'ON':'OFF';}); ['handed-toggle','ig-handed-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText=gameState.leftHanded?'ON':'OFF';}); }
         (function(){ if(localStorage.getItem('XP_leftHanded')==='1'){ gameState.leftHanded=true; const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.add('left-handed'); ['handed-toggle','ig-handed-toggle'].forEach(id=>{const b=document.getElementById(id);if(b)b.innerText='ON';}); } })();
 
-        function startGame(replaySeed=null) { history.pushState({panel:'game'},''); initAudio(); cancelAnimationFrame(_rafId); stopMobWanderTimer(); if(gameState._difficulty!=='boss2') gameState._isLichDungeon=false; const p=gameState.player; const _ch=loadCharacter(); const _chHp=_ch?_ch.maxHp:100; const _chAtk=_ch?(_ch.attack-1.0):0; const _chDef=_ch?Math.max(0,(_ch.defense-1.0)*5):0; const _chWpn=_ch&&_ch.gear&&_ch.gear.weapon; const _chArm=_ch&&_ch.gear&&_ch.gear.armour; const _gearAtkFlat=_chWpn?(_chWpn.atkBonus||0):0; const _gearDefBonus=_chArm?(_chArm.defBonus||0):0; const _gearHpBonus=_chArm?(_chArm.hpBonus||0):0; const _hubPotions=_ch?(_ch.potions||0):0; if(_ch&&_ch.potions){_ch.potions=0;saveCharacter(_ch);} const _shrineHp=(gameState._hubBuff==='hp')?25:0; gameState._hubBuff=null; p.hp=p.maxHp=_chHp+_gearHpBonus+_shrineHp; p.potions=_hubPotions; p.armourPotions=0; p.armor=Math.round(_chDef+_gearDefBonus); p.score=0; p.exp=0; p.kills=0; p.gold=0; p.steps=0; p.level=1; p.animTimer=0; p.damagePots=0; p.damageBonusPct=_chAtk; p.gearAtkFlat=_gearAtkFlat; p._critChance=_ch?(_ch.crit||0.2):0.2; p.luckyStrike=false; p.killScore=0; p.floorBonus=0; p.chaliceBonus=0; p.hitFlash=0; p.armourFlash=0; p.dmgDir=null; p.dmgDirTimer=0; gameState._runXpGained=0; gameState._runGoldGained=0; gameState._runNewLevel=0; gameState._runPotionsUsed=0; gameState._pendingLootDrop=null; gameState.timeLeft=300; gameState.isGameOver=false; gameState.menuOpen=false; gameState.shopOpen=false; gameState.isTransitioning=false; gameState.isLevelingUp=false; gameState.hasChalice=false; gameState.hasKey=false; gameState.seen=new Set(); gameState.journeyFloors=[]; gameState.currentFloor=null; gameState.lastJourney=null; gameState.lastKillTime=0; gameState.comboCount=0; gameState.floatNums=[]; gameState.timeWarnPlayed=false; gameState.lastDamageTime=0; gameState.hiddenRooms=[]; gameState.actionLog=[]; const _seed=replaySeed!=null?replaySeed:gameState.challengeSeed; if(_seed!=null){gameState.runStartIndex=_seed;gameState.runFloor=1;loadFloor(_seed);}else{gameState.challengeSeed=null;generateLevel();} const go=get('game-over'); if(go) go.classList.add('hidden'); const mc=get('mobile-controls'); if(mc) mc.classList.remove('hidden'); gameState.gameStarted=true; get('start-overlay').classList.add('hidden'); lastT=performance.now(); startDungeonMusic(); renderQuestTracker(); _rafId=requestAnimationFrame(loop); }
+        function startGame(replaySeed=null) { history.pushState({panel:'game'},''); initAudio(); cancelAnimationFrame(_rafId); stopMobWanderTimer(); if(gameState._difficulty!=='boss2') gameState._isLichDungeon=false; const p=gameState.player; const _ch=loadCharacter(); const _chHp=_ch?_ch.maxHp:100; const _chAtk=_ch?(_ch.attack-1.0):0; const _chDef=_ch?Math.max(0,(_ch.defense-1.0)*5):0; const _chWpn=_ch&&_ch.gear&&_ch.gear.weapon; const _chArm=_ch&&_ch.gear&&_ch.gear.armour; const _gearAtkFlat=_chWpn?(_chWpn.atkBonus||0):0; const _gearDefBonus=_chArm?(_chArm.defBonus||0):0; const _gearHpBonus=_chArm?(_chArm.hpBonus||0):0; const _hubPotions=_ch?(_ch.potions||0):0; if(_ch&&_ch.potions){_ch.potions=0;saveCharacter(_ch);} const _shrineHp=(gameState._hubBuff==='hp')?25:0; gameState._hubBuff=null; p.hp=p.maxHp=_chHp+_gearHpBonus+_shrineHp; p.potions=_hubPotions; p.armourPotions=0; p.armor=Math.round(_chDef+_gearDefBonus); p.score=0; p.exp=0; p.kills=0; p.gold=0; p.steps=0; p.level=1; p.animTimer=0; p.damagePots=0; p.damageBonusPct=_chAtk; p.gearAtkFlat=_gearAtkFlat; p._critChance=_ch?(_ch.crit||0.2):0.2; p.luckyStrike=false; p.killScore=0; p.floorBonus=0; p.chaliceBonus=0; p.hitFlash=0; p.armourFlash=0; p.dmgDir=null; p.dmgDirTimer=0; gameState._runXpGained=0; gameState._runGoldGained=0; gameState._runNewLevel=0; gameState._runPotionsUsed=0; gameState._pendingLootDrop=null; gameState.timeLeft=300; gameState.isGameOver=false; gameState.menuOpen=false; gameState.shopOpen=false; gameState.isTransitioning=false; gameState.isLevelingUp=false; gameState.hasChalice=false; gameState.hasKey=false; gameState.seen=new Set(); gameState.journeyFloors=[]; gameState.currentFloor=null; gameState.lastJourney=null; gameState.lastKillTime=0; gameState.comboCount=0; gameState.floatNums=[]; gameState.timeWarnPlayed=false; gameState.lastDamageTime=0; gameState.hiddenRooms=[]; gameState.actionLog=[]; const _seed=replaySeed!=null?replaySeed:gameState.challengeSeed; if(_seed!=null){gameState.runStartIndex=_seed;gameState.runFloor=1;loadFloor(_seed);}else{gameState.challengeSeed=null;generateLevel();} const go=get('game-over'); if(go) go.classList.add('hidden'); const mc=get('mobile-controls'); if(mc) mc.classList.remove('hidden'); gameState.gameStarted=true; get('start-overlay').classList.add('hidden'); lastT=performance.now();
+          // Phase 4: seed the biome particle pool now that canvas dims are
+          // settled. currentDungeonBiome was set by the dungeon-select panel
+          // (or defaults to 'standard'). Re-seed every run so a fresh pool is
+          // ready and the viewport is filled before the first frame.
+          initBiomeParticles();
+          startDungeonMusic(); renderQuestTracker(); _rafId=requestAnimationFrame(loop); }
         let lastT=0, _rafId=0; function loop() { _rafId=requestAnimationFrame(loop); if(!gameState.isGameOver&&!gameState.menuOpen){ if(gameState.gameStarted){ const now=performance.now(); if(now-lastT>=1000){ gameState.timeLeft--; lastT=now; if(gameState.timeLeft===60&&!gameState.timeWarnPlayed){ gameState.timeWarnPlayed=true; playSynth(440,'square',0.15,0.08); setTimeout(()=>playSynth(330,'square',0.10,0.12),120); } if(gameState.timeLeft<=0){get('game-over-msg').innerText="TIME EXPIRED"; endGame(false,true);} } } draw(); } }
 
         window.onload = () => {
