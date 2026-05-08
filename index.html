@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.18</title>
+    <title>XPL0R3R v0.0.19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.18</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.19</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.18</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.19</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -2510,7 +2510,10 @@
           'Dust rises from the dungeon entrance.',
           'A quest parchment falls from the board.'
         ];
-        let worldPlayer = {x:5, y:12};
+        // Phase 3: facing + walk-frame tick added so drawHubPlayer can
+        // render direction-aware walk-cycle sprites. _moveTs flags the most
+        // recent move for the idle-vs-moving render branch.
+        let worldPlayer = {x:5, y:12, facing:'down', frameTick:0, _moveTs:0};
         const SHRINE_TILES = [
           {row:3,col:5,revealed:false,used:false},
           {row:6,col:8,revealed:false,used:false},
@@ -3735,6 +3738,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.19', title: 'Player Polish (Phase 3)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['Walk-cycle: 4 directions × 4 frames (2 distinct walk poses + face/eye/weapon-side variants per direction). Direction tracked via player.facing, frameTick advances on every move.', 'Equipped-gear visual: armour tier (none/light/medium/heavy) drives torso width + shoulder pads + chest plate + rivets. Weapon (sword/dagger/staff) drawn on facing-aware hip side, with arcane-orb glow on staves.', 'Equip/unequip flow in character sheet inventory: per-row EQUIP button. Class-mismatched weapons get disabled button with reason. Equip mirrors into ch.gear slot — existing damage/HP/DEF code paths pick up bonuses with no extra wiring.', 'Idle polish: 1.2s sine bob + slower torso-only breath, suppressed while moving. Look-around eye-shift every 6s when stationary. Class palettes (warrior cyan, rogue green, mage purple).', 'Hub + overworld player sprite updated; dungeon sprite intentionally out of scope (different art system).'] }] },
             { version: 'v0.0.18', title: 'Collectibles + Lore Shrines (Phase 2G — Phase 2 complete)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['8 collectibles in Verdant Reach: 3 gold piles (small/medium), 2 herbs, 1 rune shard, 2 potions. Auto-pickup on walk-over with floating reward text. Persisted via character.collectiblesPicked — never respawn.', '4 lore shrines in overworld + 2 in side-dungeons (Bone Inscription in Cave of Fangs, Altar Stone in Ancient Ruin). Each shrine has unique atmospheric worldbuilding text; first reading grants +25 XP.', 'Shrine UI: dedicated #lore-overlay with violet theme, scrollable lore text, READ tag on subsequent reads.', 'Discoveries tracker added to character sheet: shrines read X/Y, collectibles found X/Y, side-dungeons cleared X/Y, plus % explored aggregate.', 'Persistence: character.shrinesRead, character.collectiblesPicked, character.sideDungeonsCleared. Side-dungeon entities use composite keys (dungeonId__shrineId) so they survive dungeon regeneration.'] }] },
             { version: 'v0.0.17', title: 'Side-Dungeons (Phase 2F)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['2 side-dungeon entries on Verdant Reach: Cave of Fangs (tile 19, west at (3,5)) + Ancient Ruin (tile 20, east at (20,8)).', 'Side-dungeons implemented as themed mini-zones via the existing ZONES system — dynamic registration on entry, procedural layout per visit, deletion on exit.', 'Cave of Fangs: 12×12, mobs (3 cave-rat, 2 cave-bat, 1 cave-spider mini-boss). Ancient Ruin: 14×12, mobs (3 ruin-bandit, 2 ruin-wraith mini-boss).', '5 new mob types added with full sprites: cave-rat, cave-bat, cave-spider (mini-boss), ruin-bandit, ruin-wraith (mini-boss).', '6 new tile types added: cave mouth (19), ruin entrance (20), cave floor (21), ruin floor (22), cave wall (23), ruin wall (24).', 'Entry flow: walk onto entry tile → "Enter the cave/ruin?" prompt → confirm → procedural map generation + mob placement + south-edge exit tile.', 'Mini-boss kills drop a guaranteed item from the dungeon loot table (mystery box, rune shard, silvered key) into character.inventory.'] }] },
             { version: 'v0.0.16', title: 'Shop Variety (Phase 2E)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['Travelling merchant random encounter (40% spawn chance per overworld entry; rotating inventory of 4 random items from an 11-item pool; distinct hooded purple-cloak sprite with backpack + bedroll + walking stick).', '3 specialist shops on a row-15 trading post: Argent Forge (weapons, tile 16, col 14), Ironcrest Armoury (armour, tile 17, col 16), Murmuring Cauldron (potions, tile 18, col 18). Path stubs connect them to the main path.', 'Shop overlay UI: full-screen modal with item list, drawIcon-painted icons, prices, gold counter, Buy buttons (with Owned / Need-X-G / Full-cap states). Pauses player input.', 'Item registry: per-class weapons (2 tiers: Steel/Twin/Aether 160G +6/7/8 ATK; Runed/Venom/Voidcaller 340G +10/11/12 ATK), armour (3 tiers: Padded 120G +3/+12, Plated 220G +6/+20, Iron 380G +10/+30), potions, elixirs, mystery box.', 'character.inventory array — items viewable in inventory but weapons/armour not yet equippable (Phase 3 deliverable). Health potions bump ch.potions for dungeon-run integration.'] }] },
@@ -3786,6 +3790,75 @@
         };
         function loadCharacter() { try{ const s=localStorage.getItem('XP_character'); return s?JSON.parse(s):null; }catch(e){return null;} }
         function saveCharacter(ch) { localStorage.setItem('XP_character', JSON.stringify(ch)); }
+        // ─── Phase 3: equip/unequip flow ─────────────────────────────────
+        // Inventory items bought from Phase 2E shops carry a `gear` payload.
+        // Equipping copies that payload into ch.gear[slot] (the existing
+        // slot already used by hub-shop / dungeon-drop equipment) and
+        // stamps ch.equippedInvId.<slot> so the inventory UI knows which
+        // item is currently equipped. The legacy ch.gear[slot] system is
+        // unchanged — this hooks straight into existing damage / DEF / HP
+        // calculations in startGame() and renderCharSheet() without
+        // needing parallel state.
+        //
+        // Class restriction: weapons with item.cls set must match the
+        // character's class. Armour has no class restriction (tier-only).
+        function _canEquipItem(ch, item) {
+          if (!ch || !item) return { ok:false, reason:'No item.' };
+          if (item.slot !== 'weapon' && item.slot !== 'armour') {
+            return { ok:false, reason:'Not equippable.' };
+          }
+          if (!item.gear) return { ok:false, reason:'Item has no stats.' };
+          if (item.slot === 'weapon' && item.cls && item.cls !== ch.class) {
+            return { ok:false, reason:'Wrong class — cannot equip ' + item.cls + ' weapon as ' + ch.class + '.' };
+          }
+          return { ok:true };
+        }
+        function isItemEquipped(ch, item) {
+          if (!ch || !item) return false;
+          const map = ch.equippedInvId || {};
+          return map[item.slot] && item.id && map[item.slot] === item.id && (item._invIdx == null || true);
+        }
+        function _equipInventoryItem(invIdx) {
+          const ch = loadCharacter(); if (!ch) return;
+          if (!Array.isArray(ch.inventory)) return;
+          const item = ch.inventory[invIdx]; if (!item) return;
+          const check = _canEquipItem(ch, item);
+          if (!check.ok) {
+            try { _explrLog(check.reason); } catch(e){}
+            renderCharSheet();
+            return;
+          }
+          ch.gear = ch.gear || {};
+          ch.equippedInvId = ch.equippedInvId || {};
+          // Copy the item's gear payload into the legacy slot so existing
+          // ATK/DEF/HP calculations pick it up. Adding _fromInv lets the
+          // char-sheet renderer label it correctly.
+          // Carry shop-level metadata (tier, icon, cls) into the gear copy
+          // so drawHubPlayer can pick the right armour silhouette / weapon
+          // kind without re-walking SHOP_ITEMS.
+          ch.gear[item.slot] = Object.assign({}, item.gear, {
+            _fromInv:true, _invItemId:item.id,
+            tier: item.tier || item.gear.tier || null,
+            icon: item.icon || item.gear.icon || null,
+            kind: item.kind || item.gear.kind || null,
+            cls: item.cls || item.gear.cls || null
+          });
+          ch.equippedInvId[item.slot] = item.id;
+          saveCharacter(ch);
+          try { playSynth(660,'sine',0.10,0.06); } catch(e){}
+          renderCharSheet();
+          try { drawWorldMap(); } catch(e){}
+        }
+        function _unequipSlot(slot) {
+          const ch = loadCharacter(); if (!ch) return;
+          if (!ch.gear) ch.gear = {};
+          ch.gear[slot] = null;
+          if (ch.equippedInvId) ch.equippedInvId[slot] = null;
+          saveCharacter(ch);
+          try { playSynth(440,'sine',0.08,0.05); } catch(e){}
+          renderCharSheet();
+          try { drawWorldMap(); } catch(e){}
+        }
         const _QUEST_DEFS = {
           kill:        {desc:'Kill 15 enemies',                         goal:15, reward:{xp:40,gold:20}},
           survival:    {desc:'Finish a run without using any potions',  goal:1,  reward:{xp:50,gold:25}},
@@ -3840,20 +3913,230 @@
         let _achieveTimer=null;
         function _explrAchievementToast(text) { const t=document.getElementById('achievement-toast'); const tt=document.getElementById('achievement-toast-text'); if(!t||!tt) return; tt.textContent=text; t.style.transform='translateX(-50%) translateY(0)'; t.style.opacity='1'; clearTimeout(_achieveTimer); _achieveTimer=setTimeout(()=>{ t.style.transform='translateX(-50%) translateY(-80px)'; t.style.opacity='0'; },3200); }
         function _explrCheckAchievement(key, text) { try { const a=JSON.parse(localStorage.getItem('XP_achievements')||'{}'); if(a[key]) return; a[key]=true; localStorage.setItem('XP_achievements',JSON.stringify(a)); _explrAchievementToast(text); } catch(e){} }
-        function drawHubPlayer(ctx2d, cx, cy, ts) {
+        // ─── Phase 3: hub/overworld player avatar ─────────────────────────
+        // Direction-aware walk cycle (4 dirs × 4 frames = 16 states), idle
+        // bob + breath, and equipped-gear silhouette/weapon overlays.
+        //
+        // Class palette: warrior = plate (steel + blue trim), rogue =
+        // cloaked (forest green + black hood), mage = robed (deep purple +
+        // arcane glow). The original purple-cloak look is the mage default,
+        // kept for backwards-compat when class is unknown.
+        //
+        // Frame logic (passed in):
+        //   direction ∈ {'down','up','left','right'} — drives leg/arm sway
+        //   frame ∈ 0..3                              — walk-cycle phase
+        //                                              0/2 = neutral, 1 = step-left, 3 = step-right
+        // The idle path snaps frame to 0 and uses Date.now() phase for the
+        // sub-pixel bob + breath rise/fall.
+        //
+        // opts: { ch, direction, frame, moving } — all optional.
+        const _PLAYER_CLASS_PALETTES = {
+          warrior: { robe:'#3a4a64', trim:'#5b86a8', face:'#1a1a1a', hood:'#2a3344', accent:'#8fb6d8', glow:'#90e0ef' },
+          rogue:   { robe:'#1a3320', trim:'#3a6a3a', face:'#0c0c0c', hood:'#0a1a10', accent:'#6ab06a', glow:'#4ade80' },
+          mage:    { robe:'#4c1d95', trim:'#7e3ad6', face:'#000',    hood:'#222',    accent:'#d946ef', glow:'#d946ef' }
+        };
+        function _getPlayerPalette(ch) {
+          if (ch && ch.class && _PLAYER_CLASS_PALETTES[ch.class]) return _PLAYER_CLASS_PALETTES[ch.class];
+          return _PLAYER_CLASS_PALETTES.mage;
+        }
+        // Visual armour tier from the equipped armour item. 'light' = thin
+        // outline, 'medium' = bulkier torso, 'heavy' = blocky thicker shape.
+        // Falls back to 'light' when no armour is equipped (or unknown).
+        function _armourTierFor(ch) {
+          if (!ch || !ch.gear || !ch.gear.armour) return 'none';
+          const a = ch.gear.armour;
+          if (a.tier) return a.tier;
+          // Heuristic from defBonus when shop-tier metadata missing (legacy).
+          const d = a.defBonus || 0;
+          if (d >= 9) return 'heavy';
+          if (d >= 5) return 'medium';
+          if (d >= 2) return 'light';
+          return 'none';
+        }
+        // Weapon kind from the equipped weapon. 'sword' (warrior), 'dagger'
+        // (rogue), 'staff' (mage). Drawn on the side of the body matching
+        // the facing direction so it doesn't clip the head.
+        function _weaponKindFor(ch) {
+          if (!ch || !ch.gear || !ch.gear.weapon) return 'none';
+          const w = ch.gear.weapon;
+          if (w.icon === 'sword' || w.kind === 'sword') return 'sword';
+          if (w.icon === 'dagger' || w.kind === 'dagger') return 'dagger';
+          if (w.icon === 'staff' || w.kind === 'staff') return 'staff';
+          // Heuristic by class when icon metadata missing.
+          if (ch.class === 'warrior') return 'sword';
+          if (ch.class === 'rogue') return 'dagger';
+          if (ch.class === 'mage') return 'staff';
+          return 'sword';
+        }
+        function drawHubPlayer(ctx2d, cx, cy, ts, opts) {
+          opts = opts || {};
+          const ch = opts.ch || (typeof loadCharacter==='function' ? loadCharacter() : null);
+          const dir = opts.direction || (typeof worldPlayer!=='undefined' && worldPlayer.facing) || 'down';
+          const moving = !!opts.moving;
+          const frame = (typeof opts.frame === 'number') ? (opts.frame & 3) : 0;
+          const pal = _getPlayerPalette(ch);
+          const tier = _armourTierFor(ch);
+          const weap = _weaponKindFor(ch);
+          // Idle bob + breath: 1.2s cycle, sub-pixel y offset (~0.7px world,
+          // scaled). Breath uses a slower 2.6s cycle and only nudges the
+          // torso up/down by a tiny amount. Suppressed while moving.
+          const now = Date.now();
+          const bob = moving ? 0 : Math.sin(now / 1200 * Math.PI * 2) * 0.7;
+          const breath = moving ? 0 : Math.sin(now / 2600 * Math.PI * 2) * 0.35;
+          // Optional "look around" peek every ~6s when stationary. Cheap and
+          // non-fatal; doesn't depend on tracking lastMove time. Cycles
+          // through left → centre → right over ~1.4s every 6s.
+          let lookOffset = 0;
+          if (!moving) {
+            const cy6 = (now % 6000);
+            if (cy6 < 1400) {
+              const p = cy6 / 1400;
+              if (p < 0.33) lookOffset = -1.5;
+              else if (p < 0.66) lookOffset = 1.5;
+            }
+          }
           const s = ts / 32;
           ctx2d.save();
-          ctx2d.translate(cx, cy);
+          ctx2d.translate(cx, cy + bob);
           ctx2d.scale(s, s);
-          ctx2d.fillStyle='#1a1a1a'; ctx2d.beginPath(); ctx2d.moveTo(-11,16); ctx2d.lineTo(-8,-6); ctx2d.lineTo(8,-6); ctx2d.lineTo(11,16); ctx2d.closePath(); ctx2d.fill();
-          ctx2d.fillStyle='#222'; ctx2d.beginPath(); ctx2d.arc(0,-7,11,Math.PI,0); ctx2d.lineTo(11,0); ctx2d.lineTo(-11,0); ctx2d.closePath(); ctx2d.fill();
-          ctx2d.fillStyle='#4c1d95'; ctx2d.fillRect(-4,-2,8,18);
-          ctx2d.fillStyle='#000'; ctx2d.beginPath(); ctx2d.arc(0,-6,7,0,Math.PI*2); ctx2d.fill();
-          ctx2d.fillStyle='#d946ef'; ctx2d.shadowBlur=12; ctx2d.shadowColor='#d946ef';
-          ctx2d.beginPath(); ctx2d.arc(-4,-7,2.5,0,Math.PI*2); ctx2d.arc(4,-7,2.5,0,Math.PI*2); ctx2d.fill();
-          ctx2d.shadowBlur=0; ctx2d.globalAlpha=0.12; ctx2d.fillStyle='#d946ef';
-          ctx2d.beginPath(); ctx2d.arc(0,4,15,0,Math.PI*2); ctx2d.fill();
-          ctx2d.globalAlpha=1;
+          // Shadow disc — slightly bigger / softer for heavy armour.
+          ctx2d.globalAlpha = 0.12;
+          ctx2d.fillStyle = '#000';
+          ctx2d.beginPath();
+          ctx2d.ellipse(0, 16, tier==='heavy'?14:tier==='medium'?12:11, 4, 0, 0, Math.PI*2);
+          ctx2d.fill();
+          ctx2d.globalAlpha = 1;
+          // Armour silhouette: width of robe / torso scales with tier.
+          // light  = 8 wide (default svelte)
+          // medium = 10 wide + slight shoulder lift
+          // heavy  = 12 wide + shoulder pads (drawn as small stubs)
+          const torsoW = tier==='heavy' ? 12 : tier==='medium' ? 10 : 8;
+          const robeW  = torsoW + 3;
+          // ── Walk-cycle leg offsets ────────────────────────────────────
+          // Step amplitude per frame: 0/2 = neutral, 1 = +legSwing, 3 = -legSwing.
+          // For up/down we offset legs forward/back; for left/right we
+          // alternate between front-foot and back-foot.
+          const legSwing = moving ? (frame===1 ? 1.5 : frame===3 ? -1.5 : 0) : 0;
+          const armSwing = moving ? (frame===1 ? -1.0 : frame===3 ? 1.0 : 0) : 0;
+          // ── Robe / lower body ─────────────────────────────────────────
+          ctx2d.fillStyle = pal.robe;
+          ctx2d.beginPath();
+          ctx2d.moveTo(-robeW, 16 + legSwing);
+          ctx2d.lineTo(-torsoW, -6);
+          ctx2d.lineTo(torsoW, -6);
+          ctx2d.lineTo(robeW, 16 - legSwing);
+          ctx2d.closePath();
+          ctx2d.fill();
+          // Robe trim seam down the middle (subtle gear line).
+          ctx2d.fillStyle = pal.trim;
+          ctx2d.fillRect(-1, -4, 2, 18);
+          // ── Hood / shoulders ──────────────────────────────────────────
+          ctx2d.fillStyle = pal.hood;
+          ctx2d.beginPath();
+          ctx2d.arc(0, -7 + breath, 11, Math.PI, 0);
+          ctx2d.lineTo(torsoW, 0 + breath);
+          ctx2d.lineTo(-torsoW, 0 + breath);
+          ctx2d.closePath();
+          ctx2d.fill();
+          // Shoulder pads for heavy armour.
+          if (tier === 'heavy') {
+            ctx2d.fillStyle = pal.trim;
+            ctx2d.fillRect(-torsoW-2, -4 + breath, 3, 4);
+            ctx2d.fillRect(torsoW-1,  -4 + breath, 3, 4);
+          }
+          // Chest plate for medium/heavy.
+          if (tier === 'medium' || tier === 'heavy') {
+            ctx2d.fillStyle = pal.trim;
+            ctx2d.fillRect(-3, -2 + breath, 6, 6);
+            // Rivets on heavy.
+            if (tier === 'heavy') {
+              ctx2d.fillStyle = pal.accent;
+              ctx2d.fillRect(-3, -2 + breath, 1, 1);
+              ctx2d.fillRect(2,  -2 + breath, 1, 1);
+              ctx2d.fillRect(-3, 3 + breath, 1, 1);
+              ctx2d.fillRect(2,  3 + breath, 1, 1);
+            }
+          }
+          // ── Face / eyes (direction-aware) ─────────────────────────────
+          ctx2d.fillStyle = pal.face;
+          ctx2d.beginPath();
+          ctx2d.arc(0, -6 + breath, 7, 0, Math.PI*2);
+          ctx2d.fill();
+          // Eyes shift based on direction. Up = no eyes (facing away);
+          // down = both forward; left/right = one eye + glance.
+          ctx2d.fillStyle = pal.accent;
+          ctx2d.shadowBlur = 12;
+          ctx2d.shadowColor = pal.glow;
+          if (dir === 'up') {
+            // facing away — small hood-glint instead of eyes
+            ctx2d.globalAlpha = 0.45;
+            ctx2d.beginPath(); ctx2d.arc(0, -10 + breath, 1.6, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.globalAlpha = 1;
+          } else if (dir === 'left') {
+            ctx2d.beginPath();
+            ctx2d.arc(-3 + lookOffset, -7 + breath, 2.2, 0, Math.PI*2);
+            ctx2d.fill();
+          } else if (dir === 'right') {
+            ctx2d.beginPath();
+            ctx2d.arc(3 + lookOffset, -7 + breath, 2.2, 0, Math.PI*2);
+            ctx2d.fill();
+          } else {
+            // down (default) — both eyes
+            ctx2d.beginPath();
+            ctx2d.arc(-4 + lookOffset, -7 + breath, 2.5, 0, Math.PI*2);
+            ctx2d.arc(4 + lookOffset,  -7 + breath, 2.5, 0, Math.PI*2);
+            ctx2d.fill();
+          }
+          ctx2d.shadowBlur = 0;
+          // ── Arms (walk-cycle sway) ────────────────────────────────────
+          ctx2d.fillStyle = pal.robe;
+          // Left arm
+          ctx2d.fillRect(-torsoW-1, 0 + armSwing, 3, 8);
+          // Right arm
+          ctx2d.fillRect(torsoW-2,  0 - armSwing, 3, 8);
+          // ── Equipped weapon overlay ──────────────────────────────────
+          // Drawn after the body so it sits on top. Side depends on facing
+          // — sword on right hip when facing down; flips when facing left.
+          if (weap !== 'none') {
+            const side = (dir === 'left') ? -1 : 1; // sword/dagger on facing-side hip
+            ctx2d.save();
+            if (weap === 'sword') {
+              // Sword on hip — short blade + crossguard.
+              ctx2d.fillStyle = '#c8d4e0';
+              ctx2d.fillRect(side*(torsoW+1), 2 + armSwing, 2, 10);
+              ctx2d.fillStyle = '#888';
+              ctx2d.fillRect(side*(torsoW+1)-1, 1 + armSwing, 4, 2);
+              // Pommel
+              ctx2d.fillStyle = '#fde047';
+              ctx2d.fillRect(side*(torsoW+1), -1 + armSwing, 2, 2);
+            } else if (weap === 'dagger') {
+              // Dagger — shorter blade, dark grip.
+              ctx2d.fillStyle = '#a8d8c0';
+              ctx2d.fillRect(side*(torsoW+1), 3 + armSwing, 2, 6);
+              ctx2d.fillStyle = '#1a1a1a';
+              ctx2d.fillRect(side*(torsoW+1)-1, 2 + armSwing, 4, 2);
+            } else if (weap === 'staff') {
+              // Staff — long shaft + arcane orb at top, glows.
+              ctx2d.fillStyle = '#5a3a1a';
+              ctx2d.fillRect(side*(torsoW+1), -8 + armSwing, 2, 22);
+              ctx2d.fillStyle = pal.accent;
+              ctx2d.shadowBlur = 8;
+              ctx2d.shadowColor = pal.glow;
+              ctx2d.beginPath();
+              ctx2d.arc(side*(torsoW+1)+1, -9 + armSwing, 2.5, 0, Math.PI*2);
+              ctx2d.fill();
+              ctx2d.shadowBlur = 0;
+            }
+            ctx2d.restore();
+          }
+          // ── Class glow disc (existing ambient) ────────────────────────
+          ctx2d.shadowBlur = 0;
+          ctx2d.globalAlpha = 0.10;
+          ctx2d.fillStyle = pal.glow;
+          ctx2d.beginPath();
+          ctx2d.arc(0, 4, 15, 0, Math.PI*2);
+          ctx2d.fill();
+          ctx2d.globalAlpha = 1;
           ctx2d.restore();
         }
         // Deterministic per-tile hash for grass/path texture variation (matches drawTile cobble pattern).
@@ -5990,9 +6273,25 @@
               drawMob(ctx2d, mob, mpx, mpy, tw, th);
             }
           }
-          // Player. Hub-only player gets the purple-cloak avatar; same draw
-          // is fine for overworld for now (Phase 3 will add walk cycles).
-          drawHubPlayer(ctx2d, (worldPlayer.x-camera.x) * tw + tw/2, (worldPlayer.y-camera.y) * th + th/2, Math.min(tw, th));
+          // Phase 3: direction-aware walk cycle + class palette + equipped
+          // gear overlay. moving = recent move (within ~280ms) so the bob /
+          // breath idle anim only kicks in once the player has stopped.
+          // Frame logic: frameTick is bumped on every move; rendered frame
+          // is frameTick % 4 (0/2 neutral, 1/3 step left/right). When idle,
+          // we snap to frame 0 so the sprite settles into a neutral pose.
+          {
+            const _ch_pl = (typeof loadCharacter === 'function') ? loadCharacter() : null;
+            const _now = Date.now();
+            const _moving = (_now - (worldPlayer._moveTs||0)) < 280;
+            const _frame = _moving ? (worldPlayer.frameTick & 3) : 0;
+            drawHubPlayer(
+              ctx2d,
+              (worldPlayer.x-camera.x) * tw + tw/2,
+              (worldPlayer.y-camera.y) * th + th/2,
+              Math.min(tw, th),
+              { ch: _ch_pl, direction: worldPlayer.facing || 'down', frame: _frame, moving: _moving }
+            );
+          }
 
           // ─── Phase 2C: floating combat numbers (overworld only) ─────────
           if (currentZoneId !== 'hub' && overworldFloatNums.length) {
@@ -6540,6 +6839,11 @@
               m.state !== 'dead' && m.tileX === nx && m.tileY === ny
             );
             if (target) {
+              // Phase 3: face the mob even though we don't move into its tile.
+              if (dx !== 0) worldPlayer.facing = (dx > 0) ? 'right' : 'left';
+              else if (dy !== 0) worldPlayer.facing = (dy > 0) ? 'down' : 'up';
+              worldPlayer.frameTick = (worldPlayer.frameTick + 1) & 0xFF;
+              worldPlayer._moveTs = Date.now();
               // Player damage: scales lightly with character level for
               // progression. Defaults to 5 if no character (shouldn't happen
               // in the overworld, but defensive).
@@ -6572,6 +6876,14 @@
           //             12 flowers, 13 milestone, 14 campsite, 15 tall grass.
           //   Impassable: 2 water, 4-7 hub buildings, 10 tree, 11 rock.
           if (!isWalkable(t)) return;
+          // Phase 3: update facing + frame tick on successful move.
+          // Horizontal beats vertical when both axes are non-zero (matches
+          // the joystick/D-pad expectation). frameTick increments per step
+          // so drawHubPlayer can advance walk-cycle frame % 4.
+          if (dx !== 0) worldPlayer.facing = (dx > 0) ? 'right' : 'left';
+          else if (dy !== 0) worldPlayer.facing = (dy > 0) ? 'down' : 'up';
+          worldPlayer.frameTick = (worldPlayer.frameTick + 1) & 0xFF;
+          worldPlayer._moveTs = Date.now();
           worldPlayer.x = nx; worldPlayer.y = ny;
           updateCamera();
           // Phase 2G: collectible auto-pickup. Walking onto a tile that
@@ -7046,17 +7358,43 @@
         function newGamePlus() { const ch=loadCharacter(); if(!ch) return; const b=CLASS_BASE[ch.class]; ch.prestige=(ch.prestige||0)+1; ch.level=1; ch.xp=0; ch.maxHp=b.maxHp; ch.attack=b.attack; ch.defense=b.defense; ch.crit=b.crit||0; ch.xpBonus=b.xpBonus||1; ch.gear={weapon:null,armour:null}; ch.quests=_freshQuests(3); saveCharacter(ch); const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); gameState._pendingLootDrop=null; _explrLog(`${ch.name} began Prestige ${ch.prestige}!`); showHub(); }
         // ──────────────────────────────────────────────────────────────────────
         function renderCharSheet() { const ch=loadCharacter(); const el=document.getElementById('charsheet-content'); if(!el||!ch) return; const CC={warrior:'#60a5fa',rogue:'#4ade80',mage:'#c084fc'}; const CI={warrior:'&#9876;',rogue:'&#10022;',mage:'&#9672;'}; const cc=CC[ch.class]||'#90e0ef'; const ci=CI[ch.class]||'?'; const xpNext=ch.level*100; const xpPct=Math.min(100,Math.round(ch.xp/xpNext*100)); const wpn=ch.gear&&ch.gear.weapon; const arm=ch.gear&&ch.gear.armour; const atkB=wpn?(wpn.atkBonus||0):0; const defB=arm?(arm.defBonus||0):0; const hpB=arm?(arm.hpBonus||0):0; const baseAtk=Math.round(18*ch.attack)+atkB; const baseDef=Math.round(Math.max(0,(ch.defense-1.0)*5))+defB; const totalHp=ch.maxHp+hpB; const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const gs=(label,item)=>{ if(!item) return `<div style="display:flex;justify-content:space-between;border:2px solid #000a10;padding:6px 8px"><span style="color:#00b4d8">${label}</span><span style="color:#333;font-size:0.85em">Empty</span></div>`; const rx=rc[item.rarity]||'#a8d8c0'; const bx=[]; if(item.atkBonus) bx.push(`+${item.atkBonus} ATK`); if(item.defBonus) bx.push(`+${item.defBonus} DEF`); if(item.hpBonus) bx.push(`+${item.hpBonus} HP`); return `<div style="display:flex;justify-content:space-between;align-items:center;border:2px solid #000a10;padding:6px 8px;gap:8px"><span style="color:#00b4d8">${label}</span><div style="text-align:right"><div style="color:${rx};font-size:0.9em">${item.name}</div><div style="color:#fff;font-size:0.75em;opacity:0.65">${bx.join(' · ')||'—'}</div></div></div>`; };
-        // Phase 2E: inventory listing — items bought from the new specialist
-        // shops + travelling merchant land in ch.inventory[]. Equip/use is
-        // deferred to Phase 3, so for now we show name + brief tag (Equip
-        // pending / unused) per row. Health potions are tracked separately
-        // via ch.potions and stay out of this list to avoid double-display.
+        // Phase 2E: inventory listing. Phase 3 added equip/unequip buttons
+        // for weapon + armour rows. ch.equippedInvId.{weapon,armour} tracks
+        // which inventory item is currently equipped (legacy ch.gear[slot]
+        // is still the source of truth for stats; Phase 3 mirrors the
+        // selected inventory gear into it).
         const inv=Array.isArray(ch.inventory)?ch.inventory:[];
+        const _invEqMap = ch.equippedInvId || {};
         const invHtml = inv.length
-          ? inv.map(it=>{
+          ? inv.map((it, idx)=>{
               const stats=[]; if(it.gear){ if(it.gear.atkBonus) stats.push('+'+it.gear.atkBonus+' ATK'); if(it.gear.defBonus) stats.push('+'+it.gear.defBonus+' DEF'); if(it.gear.hpBonus) stats.push('+'+it.gear.hpBonus+' HP'); }
-              const tag = it.slot==='consumable'?'Consumable (use in dungeon)' : it.slot==='weapon'?'Weapon — equip in Phase 3' : it.slot==='armour'?'Armour — equip in Phase 3' : 'Misc';
-              return `<div style="display:flex;align-items:center;gap:8px;border:1px solid #002030;background:#000c14;padding:5px 8px;margin-top:4px"><div style="flex:1"><div style="color:#fff;font-size:0.95rem">${it.name}</div><div style="color:#00b4d8;font-size:0.72rem">${tag}${stats.length?' · '+stats.join(' · '):''}</div></div></div>`;
+              const isEquipped = (it.slot==='weapon'||it.slot==='armour') && _invEqMap[it.slot] === it.id;
+              const eq = _canEquipItem(ch, it);
+              let actionBtn = '';
+              let tag;
+              if (it.slot === 'consumable') {
+                tag = 'Consumable (use in dungeon)';
+              } else if (it.slot === 'weapon' || it.slot === 'armour') {
+                if (isEquipped) {
+                  tag = `<span style="color:#4ade80">Equipped</span>`;
+                  actionBtn = `<button onclick="_unequipSlot('${it.slot}')" style="background:#202a30;color:#fde047;border:1px solid #fde047;padding:2px 8px;cursor:pointer;font-family:'VT323',monospace;font-size:0.85rem;letter-spacing:0.04em">UNEQUIP</button>`;
+                } else if (!eq.ok) {
+                  tag = `<span style="color:#f87171">${eq.reason}</span>`;
+                  actionBtn = `<button disabled style="background:#202a30;color:#666;border:1px solid #444;padding:2px 8px;font-family:'VT323',monospace;font-size:0.85rem;letter-spacing:0.04em;cursor:not-allowed;opacity:0.6">CAN'T EQUIP</button>`;
+                } else {
+                  tag = it.slot==='weapon'?'Weapon':'Armour';
+                  actionBtn = `<button onclick="_equipInventoryItem(${idx})" style="background:#00b4d8;color:#000;border:none;padding:2px 8px;cursor:pointer;font-family:'VT323',monospace;font-size:0.85rem;letter-spacing:0.04em">EQUIP</button>`;
+                }
+              } else {
+                tag = 'Misc';
+              }
+              return `<div style="display:flex;align-items:center;gap:8px;border:1px solid #002030;background:#000c14;padding:5px 8px;margin-top:4px">
+                <div style="flex:1;min-width:0">
+                  <div style="color:#fff;font-size:0.95rem">${it.name}</div>
+                  <div style="color:#00b4d8;font-size:0.72rem">${tag}${stats.length?' · '+stats.join(' · '):''}</div>
+                </div>
+                ${actionBtn?`<div style="flex-shrink:0">${actionBtn}</div>`:''}
+              </div>`;
             }).join('')
           : `<div style="color:#3a5a6a;font-size:0.78rem;padding:6px 0">Empty. Visit shops in Verdant Reach.</div>`;
         // Phase 2G: discoveries totals — shrines read, collectibles found,
