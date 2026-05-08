@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.16</title>
+    <title>XPL0R3R v0.0.17</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.16</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.17</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.16</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.17</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1667,10 +1667,16 @@
           //  14  campsite firepit (passable) 15  tall grass (passable)
           //  16  weapon shop (interaction)  17  armour shop (interaction)
           //  18  potion shop (interaction)
+          //  19  cave mouth (side-dungeon entry; passable, opens prompt)
+          //  20  ruin entrance (side-dungeon entry; passable, opens prompt)
           //
           // Phase 2E: trading-post cluster on row 15, cols 14/16/18 (weapon /
           // armour / potion). Path stubs at cols 13/15/17/19 frame the shops
           // and link them back to the main north-south path at col 12.
+          // Phase 2F: side-dungeon entries on west (cave mouth, col 3 row 5)
+          // and east (ruin entrance, col 20 row 8) sides of the map. Each
+          // entry tile is walkable; stepping onto it triggers an
+          // "Enter the [cave|ruin]?" confirm overlay → side-dungeon load.
           overworld_grasslands: {
             id: 'overworld_grasslands',
             name: 'Verdant Reach',
@@ -1684,10 +1690,10 @@
               [10, 0, 0, 0,15, 0, 0, 0, 0, 1, 0, 0, 0, 0,11, 0, 0,15, 0, 0, 0, 0, 0,10],
               [10, 0,12, 0, 0, 0, 0,15, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11, 0, 0,10],
               [10, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,15, 0, 0, 0, 0, 0,15,10],
-              [10, 0, 0,15, 0, 0,11, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12, 0, 0,10],
+              [10, 0, 0,19, 0, 0,11, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12, 0, 0,10],
               [10,12, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,15, 0, 0, 0, 0,10],
               [10, 0, 0, 0, 0,15, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10],
-              [10, 0, 0,11, 0, 0, 0, 0, 1, 0,15, 0, 0, 0, 0, 0,11, 0, 0, 0,11, 0, 0,10],
+              [10, 0, 0,11, 0, 0, 0, 0, 1, 0,15, 0, 0, 0, 0, 0,11, 0, 0, 0,20, 0, 0,10],
               [10, 0,15, 0, 0, 0, 0,15, 1, 0, 0, 0, 0, 0,15, 0, 0, 0, 0, 0, 0, 0,12,10],
               [10, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10],
               [10, 0,12, 0, 0,15, 0,11, 0, 1, 0,14, 0, 0, 0, 0, 0, 0, 0,15, 0, 0, 0,10],
@@ -1782,6 +1788,15 @@
                 quest: null,
                 dialog: { greeting: "Picking herbs while it's still light. Mind the rats — they hide in the grass." }
               }
+            ],
+            // ── Phase 2F: side-dungeon entry metadata ─────────────────────
+            // Tile coords match the map above (tile 19 = cave mouth, tile 20
+            // = ruin entrance). enterSideDungeon() reads dungeonId to fetch
+            // the SIDE_DUNGEONS template, then dynamically registers a
+            // 'side_<dungeonId>' zone in ZONES on entry.
+            sideDungeons: [
+              { tileX:  3, tileY:  5, dungeonId: 'cave-of-fangs', name: 'Cave of Fangs', difficulty: 1 },
+              { tileX: 20, tileY:  8, dungeonId: 'ancient-ruin',  name: 'Ancient Ruin',  difficulty: 2 }
             ]
           }
         };
@@ -1868,17 +1883,83 @@
         // Phase 2C: mob type registry — stats per type. sightRange is
         // manhattan-distance tiles; xpReward is the same currency used by
         // dungeon kills (tracked on the character). Bandit > Slime > Rat.
+        // Phase 2F: side-dungeon mob types added below the overworld set.
+        // Cave biome: cave-rat (tougher rat), cave-bat (fast/low HP),
+        // cave-spider (mini-boss). Ruin biome: ruin-bandit (stronger bandit),
+        // ruin-wraith (mini-boss with inflated HP for ghostly resilience).
+        // miniBoss:true triggers a guaranteed loot drop on death — the
+        // dungeon's loot table picks the item.
         const MOB_TYPES = {
-          rat:    { hp:  8, damage: 2, sightRange: 4, xpReward:  6, goldDrop: 2 },
-          slime:  { hp: 12, damage: 3, sightRange: 3, xpReward: 12, goldDrop: 4 },
-          bandit: { hp: 18, damage: 5, sightRange: 5, xpReward: 25, goldDrop: 9 }
+          rat:          { hp:  8, damage: 2, sightRange: 4, xpReward:  6, goldDrop: 2 },
+          slime:        { hp: 12, damage: 3, sightRange: 3, xpReward: 12, goldDrop: 4 },
+          bandit:       { hp: 18, damage: 5, sightRange: 5, xpReward: 25, goldDrop: 9 },
+          // Cave biome mobs (Phase 2F) ──────────────────────────────────
+          'cave-rat':    { hp: 10, damage: 3, sightRange: 4, xpReward:  8, goldDrop: 3 },
+          'cave-bat':    { hp:  6, damage: 2, sightRange: 5, xpReward: 10, goldDrop: 3 },
+          'cave-spider': { hp: 25, damage: 6, sightRange: 4, xpReward: 50, goldDrop: 20, miniBoss: true },
+          // Ruin biome mobs (Phase 2F) ──────────────────────────────────
+          'ruin-bandit': { hp: 24, damage: 7, sightRange: 5, xpReward: 35, goldDrop: 12 },
+          'ruin-wraith': { hp: 24, damage: 5, sightRange: 4, xpReward: 60, goldDrop: 15, miniBoss: true }
+        };
+        // ─── Phase 2F: side-dungeon registry ─────────────────────────────
+        // Lookup by dungeonId. Each entry is a TEMPLATE — enterSideDungeon()
+        // generates a fresh procedural map + mob array on each visit so
+        // returning to a side-dungeon resets all mobs (no save state).
+        //
+        //   biome     visual theme key (cave / ruin) — drives drawTile branch
+        //   cols/rows zone size (smaller than overworld; 12×12 / 14×12)
+        //   palette   biome-specific colour overrides (currently unused but
+        //             kept here so future drawSideDungeonTile() can branch)
+        //   mobs[]    spawn list — { type, count } pairs; mobs are placed on
+        //             random walkable interior floor tiles by enterSideDungeon
+        //   loot      reward pool when a mini-boss dies in this dungeon:
+        //               gold: [min, max]   — random gold drop range (currently flavour;
+        //                                    actual gold comes from MOB_TYPES.goldDrop)
+        //               items: [...]       — id pool for guaranteed item drops on
+        //                                    miniBoss kill, picked uniform-random
+        const SIDE_DUNGEONS = {
+          'cave-of-fangs': {
+            id: 'cave-of-fangs',
+            name: 'Cave of Fangs',
+            biome: 'cave',
+            cols: 12, rows: 12,
+            palette: {
+              floor: '#1a1410', floorAlt: '#241c14', wall: '#0a0805',
+              wallTop: '#3a2a1a', glow: '#90e0ef', mineral: '#48cae4'
+            },
+            mobs: [
+              { type: 'cave-rat',    count: 3 },
+              { type: 'cave-bat',    count: 2 },
+              { type: 'cave-spider', count: 1 }
+            ],
+            loot: { gold: [50, 150], items: ['mystery-box', 'rune-shard'] }
+          },
+          'ancient-ruin': {
+            id: 'ancient-ruin',
+            name: 'Ancient Ruin',
+            biome: 'ruin',
+            cols: 14, rows: 12,
+            palette: {
+              floor: '#1a1f1a', floorAlt: '#222a22', wall: '#0a0d0a',
+              wallTop: '#2a3a2a', glow: '#c8e8a8', moss: '#3a7a2a'
+            },
+            mobs: [
+              { type: 'ruin-bandit', count: 3 },
+              { type: 'ruin-wraith', count: 2 }
+            ],
+            loot: { gold: [80, 220], items: ['silvered-key', 'mystery-box'] }
+          }
         };
         // Tiles a mob is allowed to occupy. Excludes 3 (gate) so mobs never
         // accidentally trigger zone transitions, and excludes 1 (path) to keep
         // them off the road and preserve traversal feel.
+        // Phase 2F: cave floor (21) and ruin floor (22) are mob-walkable;
+        // side-dungeon entry tiles 19/20 are NOT (they're entry/exit triggers
+        // — keeping mobs off them prevents accidental zone-jump on contact).
         function isMobWalkable(tileVal) {
           return tileVal === 0 ||
-                 tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15;
+                 tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15 ||
+                 tileVal === 21 || tileVal === 22;
         }
         let currentZoneId = 'hub';
         function currentZone() { return ZONES[currentZoneId]; }
@@ -1888,12 +1969,18 @@
         // Phase 2E specialist shop tiles (16/17/18) — those are interaction
         // tiles: walking onto them is fine, the shop overlay opens via
         // centerBtnAction (or auto-prompt while standing on them).
-        // Impassable: 2 water, 4-7 hub buildings, 10 tree, 11 rock.
+        // Phase 2F: side-dungeon entries (19 cave mouth, 20 ruin entrance)
+        // are walkable — stepping onto them triggers the entry prompt via
+        // tryZoneTransition(). Cave floor (21) and ruin floor (22) are the
+        // walkable interiors of side-dungeons.
+        // Impassable: 2 water, 4-7 hub buildings, 10 tree, 11 rock,
+        // 23 cave wall, 24 ruin wall.
         function isWalkable(tileVal) {
           return tileVal === 0 || tileVal === 1 || tileVal === 3 ||
                  tileVal === 8 || tileVal === 9 ||
                  tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15 ||
-                 tileVal === 16 || tileVal === 17 || tileVal === 18;
+                 tileVal === 16 || tileVal === 17 || tileVal === 18 ||
+                 tileVal === 19 || tileVal === 20 || tileVal === 21 || tileVal === 22;
         }
         // Legacy alias — repointed by switchZone() so existing code that reads
         // WORLD_MAP[row][col] still works without change.
@@ -1990,10 +2077,266 @@
               switchZone(gate.toZone, gate.toX, gate.toY);
             }
           }
+          // ─── Phase 2F: side-dungeon entry / exit ───────────────────────
+          // Walking onto tile 19 (cave mouth) or 20 (ruin entrance) opens a
+          // confirm prompt for entry. Stepping onto the same tile inside a
+          // 'side_*' zone fires the exit and returns the player to the
+          // previously-saved overworld position.
+          else if (t === 19 || t === 20) {
+            if (_zoneSwitchGuard) { _zoneSwitchGuard = false; return; }
+            // In a side-dungeon zone: this is the EXIT tile, return to
+            // the saved overworld position.
+            if (currentZoneId.indexOf('side_') === 0) {
+              _exitSideDungeon();
+            } else {
+              // In overworld: locate the matching side-dungeon entry and
+              // open the "Enter the cave?" confirm prompt.
+              const sd = (zone.sideDungeons || []).find(
+                e => e.tileX === playerTileX && e.tileY === playerTileY
+              );
+              if (sd) {
+                _openSideDungeonPrompt(sd);
+              }
+            }
+          }
           _zoneSwitchGuard = false;  // clear after each move
         }
+        // ─── Phase 2F: side-dungeon entry confirm prompt ──────────────────
+        // Reuses the dialog overlay (no NPC bound — _activeDialogNpcId stays
+        // null so closeNpcDialog/renderNpcDialog leave it alone). Buttons:
+        //   Cancel — close + nudge player one tile back so they don't
+        //            instantly re-trigger on the entry tile.
+        //   Enter  — call enterSideDungeon().
+        let _pendingSideDungeon = null;
+        function _openSideDungeonPrompt(entry) {
+          _pendingSideDungeon = entry;
+          const ov = document.getElementById('dialog-overlay');
+          if (!ov) return;
+          const nameEl = document.getElementById('dialog-name');
+          const textEl = document.getElementById('dialog-text');
+          const optsEl = document.getElementById('dialog-options');
+          const qInfoEl = document.getElementById('dialog-quest-info');
+          if (!nameEl || !textEl || !optsEl) return;
+          const isCave = entry.dungeonId === 'cave-of-fangs';
+          nameEl.textContent = isCave ? 'Cave Mouth' : 'Ancient Ruin';
+          textEl.textContent = isCave
+            ? "A dark archway carved into the rock. Cold air drifts out, and something inside echoes back.\n\nEnter the cave?"
+            : "A collapsed stone arch, choked with weeds. The air past the threshold tastes of dust and old smoke.\n\nEnter the ruin?";
+          if (qInfoEl) {
+            qInfoEl.textContent = `◆ ${entry.name} — Difficulty: ${entry.difficulty}`;
+            qInfoEl.style.whiteSpace = 'pre-line';
+            qInfoEl.classList.remove('hidden');
+          }
+          const _btnStyle    = "background:#00b4d8;color:#000;border:none;padding:6px 14px;cursor:pointer;font-family:'VT323',monospace;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em;min-width:80px";
+          const _btnSecStyle = "background:transparent;color:#90e0ef;border:2px solid #00b4d8;padding:4px 12px;cursor:pointer;font-family:'VT323',monospace;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em;min-width:80px";
+          optsEl.innerHTML =
+            `<button style="${_btnSecStyle}" onclick="_cancelSideDungeon()">Cancel</button>` +
+            `<button style="${_btnStyle}" onclick="_confirmSideDungeon()">Enter</button>`;
+          ov.classList.remove('hidden');
+        }
+        function _cancelSideDungeon() {
+          // Bump player one tile in the direction they came from so closing
+          // the prompt doesn't leave them stranded on the entry tile (which
+          // would re-fire on the next step). We pick whichever cardinal
+          // neighbour is walkable + not the same entry tile type.
+          const ov = document.getElementById('dialog-overlay');
+          if (ov) ov.classList.add('hidden');
+          const qInfoEl = document.getElementById('dialog-quest-info');
+          if (qInfoEl) qInfoEl.classList.add('hidden');
+          const zone = currentZone();
+          if (zone) {
+            const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+            for (const [dx, dy] of dirs) {
+              const nx = worldPlayer.x + dx, ny = worldPlayer.y + dy;
+              if (nx < 0 || ny < 0 || nx >= zone.cols || ny >= zone.rows) continue;
+              const r = zone.map[ny]; if (!r) continue;
+              const tt = r[nx];
+              if (tt === 19 || tt === 20) continue;
+              if (!isWalkable(tt)) continue;
+              worldPlayer.x = nx; worldPlayer.y = ny;
+              _zoneSwitchGuard = true;
+              break;
+            }
+          }
+          _pendingSideDungeon = null;
+          try { drawWorldMap(); } catch(e){}
+        }
+        function _confirmSideDungeon() {
+          const entry = _pendingSideDungeon;
+          _pendingSideDungeon = null;
+          const ov = document.getElementById('dialog-overlay');
+          if (ov) ov.classList.add('hidden');
+          const qInfoEl = document.getElementById('dialog-quest-info');
+          if (qInfoEl) qInfoEl.classList.add('hidden');
+          if (!entry) return;
+          enterSideDungeon(entry.dungeonId, currentZoneId, worldPlayer.x, worldPlayer.y);
+        }
+        // ─── Phase 2F: side-dungeon zone generation ──────────────────────
+        // Generate a fresh side-dungeon ZONES entry from a SIDE_DUNGEONS
+        // template. Walls (23 cave / 24 ruin) form the perimeter; floors
+        // (21 / 22) fill the interior; one EXIT tile (re-using the entry
+        // tile id 19 / 20) is placed on the south edge so the player can
+        // step off it to leave. Mobs are placed on random interior floor
+        // tiles, no two on the same tile, none adjacent to the entry.
+        function _genSideDungeonMap(template) {
+          const W = template.cols, H = template.rows;
+          const isCave = template.biome === 'cave';
+          const wallTile  = isCave ? 23 : 24;
+          const floorTile = isCave ? 21 : 22;
+          const exitTile  = isCave ? 19 : 20;
+          const map = [];
+          for (let y = 0; y < H; y++) {
+            const row = [];
+            for (let x = 0; x < W; x++) {
+              const isEdge = (x === 0 || y === 0 || x === W-1 || y === H-1);
+              row.push(isEdge ? wallTile : floorTile);
+            }
+            map.push(row);
+          }
+          // Sprinkle a few interior wall pillars for visual interest. Use a
+          // simple deterministic-ish placement based on a per-zone seed so
+          // each visit is fresh but coherent.
+          const pillarCount = Math.max(2, Math.floor((W * H) / 30));
+          for (let i = 0; i < pillarCount; i++) {
+            const px = 2 + Math.floor(Math.random() * (W - 4));
+            const py = 2 + Math.floor(Math.random() * (H - 4));
+            // Don't pillar the centre column (path), don't pillar the spawn
+            // column near the exit.
+            if (Math.abs(px - Math.floor(W/2)) < 2 && py > H - 4) continue;
+            map[py][px] = wallTile;
+          }
+          // Place EXIT at south-edge centre. Carve a 1-tile floor in front
+          // so the player has a step-back tile inside the dungeon.
+          const exitX = Math.floor(W / 2);
+          const exitY = H - 1;
+          map[exitY][exitX] = exitTile;
+          map[exitY - 1][exitX] = floorTile;  // ensure adjacent floor
+          return { map, exitX, exitY, floorTile, wallTile };
+        }
+        function _placeSideDungeonMobs(template, mapInfo) {
+          const W = template.cols, H = template.rows;
+          const map = mapInfo.map;
+          const floorTile = mapInfo.floorTile;
+          const mobs = [];
+          let mobIdx = 0;
+          // Forbidden: tiles within 2 of the south-edge exit (so player gets
+          // breathing room on entry). We compare against the exit tile.
+          const exitX = mapInfo.exitX, exitY = mapInfo.exitY;
+          // Build a candidate list of floor tiles eligible for spawning.
+          const cands = [];
+          for (let y = 1; y < H - 1; y++) {
+            for (let x = 1; x < W - 1; x++) {
+              if (map[y][x] !== floorTile) continue;
+              if (Math.abs(x - exitX) + Math.abs(y - exitY) < 3) continue;
+              cands.push({ x, y });
+            }
+          }
+          // Shuffle candidate list.
+          for (let i = cands.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const tmp = cands[i]; cands[i] = cands[j]; cands[j] = tmp;
+          }
+          let cursor = 0;
+          for (const spec of (template.mobs || [])) {
+            const stats = MOB_TYPES[spec.type] || {};
+            for (let k = 0; k < (spec.count || 0); k++) {
+              if (cursor >= cands.length) break;
+              const pos = cands[cursor++];
+              mobs.push({
+                id: `${template.id}-${spec.type}-${mobIdx++}`,
+                type: spec.type,
+                tileX: pos.x, tileY: pos.y,
+                hp: stats.hp || 10, maxHp: stats.hp || 10,
+                state: 'idle',
+                anchorX: pos.x, anchorY: pos.y
+              });
+            }
+          }
+          return mobs;
+        }
+        // Saved overworld position so _exitSideDungeon() knows where to drop
+        // the player back. Set on enterSideDungeon, cleared on exit.
+        let _sideDungeonReturn = null;
+        function enterSideDungeon(dungeonId, fromZone, fromX, fromY) {
+          const template = SIDE_DUNGEONS[dungeonId];
+          if (!template) return;
+          const sideZoneId = 'side_' + dungeonId;
+          // Generate a fresh procedural map + mob layout each entry, so
+          // returning resets all mobs (each visit feels fresh).
+          const mapInfo = _genSideDungeonMap(template);
+          const mobs = _placeSideDungeonMobs(template, mapInfo);
+          ZONES[sideZoneId] = {
+            id: sideZoneId,
+            name: template.name,
+            cols: template.cols,
+            rows: template.rows,
+            spawn: { x: mapInfo.exitX, y: mapInfo.exitY - 1 },
+            biome: template.biome,
+            map: mapInfo.map,
+            // No persistent connections — the exit tile is the entry/exit
+            // and tryZoneTransition handles it via the side-dungeon path.
+            connections: [],
+            mobs: mobs,
+            npcs: [],
+            // Save a back-reference for the loot table + return position.
+            _sideDungeonId: dungeonId,
+            _sideDungeonLoot: template.loot
+          };
+          _sideDungeonReturn = { zone: fromZone, x: fromX, y: fromY };
+          // Switch in. Spawn one tile NORTH of the exit tile so the player
+          // doesn't immediately re-trigger the exit on first step.
+          switchZone(sideZoneId, mapInfo.exitX, mapInfo.exitY - 1);
+          // "Entered [dungeon name]" banner via hub-interact-prompt strip.
+          const pr = document.getElementById('hub-interact-prompt');
+          if (pr) {
+            pr.textContent = '❖ Entered ' + template.name;
+            pr.style.display = 'block';
+            setTimeout(() => { pr.style.display = 'none'; }, 2200);
+          }
+        }
+        function _exitSideDungeon() {
+          const ret = _sideDungeonReturn;
+          if (!ret || !ZONES[ret.zone]) {
+            // Defensive: dump player back to hub if return data was lost.
+            switchZone('hub', ZONES.hub.spawn.x, ZONES.hub.spawn.y);
+            return;
+          }
+          // Move player one tile next to the entry tile (south of it) so
+          // walking back onto the entry doesn't immediately re-prompt.
+          const targetZone = ZONES[ret.zone];
+          let returnX = ret.x, returnY = ret.y;
+          // Try one tile south of the entry first; fall back to other
+          // cardinals if that's not walkable.
+          const candidates = [
+            { x: ret.x, y: ret.y + 1 },
+            { x: ret.x, y: ret.y - 1 },
+            { x: ret.x + 1, y: ret.y },
+            { x: ret.x - 1, y: ret.y },
+            { x: ret.x, y: ret.y }      // last resort: same tile (guard
+                                          // protects from immediate re-fire)
+          ];
+          for (const c of candidates) {
+            if (c.x < 0 || c.y < 0 || c.x >= targetZone.cols || c.y >= targetZone.rows) continue;
+            const r = targetZone.map[c.y]; if (!r) continue;
+            const tt = r[c.x];
+            if (!isWalkable(tt)) continue;
+            // Don't land on another entry tile (would prompt again).
+            if (tt === 19 || tt === 20) continue;
+            returnX = c.x; returnY = c.y;
+            break;
+          }
+          // Wipe the temporary side-dungeon zone now that we've left.
+          const sideId = currentZoneId;
+          _sideDungeonReturn = null;
+          switchZone(ret.zone, returnX, returnY);
+          delete ZONES[sideId];
+        }
         // Base fills (drawn first, then drawWorldBuilding paints detail on top).
-        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a'};
+        // Phase 2F: 19 cave mouth + 20 ruin entrance share the surrounding
+        // grass base so they blend; 21 cave floor / 22 ruin floor / 23 cave
+        // wall / 24 ruin wall use biome-tinted bases for the side-dungeon
+        // interior.
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
@@ -3238,6 +3581,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.17', title: 'Side-Dungeons (Phase 2F)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['2 side-dungeon entries on Verdant Reach: Cave of Fangs (tile 19, west at (3,5)) + Ancient Ruin (tile 20, east at (20,8)).', 'Side-dungeons implemented as themed mini-zones via the existing ZONES system — dynamic registration on entry, procedural layout per visit, deletion on exit.', 'Cave of Fangs: 12×12, mobs (3 cave-rat, 2 cave-bat, 1 cave-spider mini-boss). Ancient Ruin: 14×12, mobs (3 ruin-bandit, 2 ruin-wraith mini-boss).', '5 new mob types added with full sprites: cave-rat, cave-bat, cave-spider (mini-boss), ruin-bandit, ruin-wraith (mini-boss).', '6 new tile types added: cave mouth (19), ruin entrance (20), cave floor (21), ruin floor (22), cave wall (23), ruin wall (24).', 'Entry flow: walk onto entry tile → "Enter the cave/ruin?" prompt → confirm → procedural map generation + mob placement + south-edge exit tile.', 'Mini-boss kills drop a guaranteed item from the dungeon loot table (mystery box, rune shard, silvered key) into character.inventory.'] }] },
             { version: 'v0.0.16', title: 'Shop Variety (Phase 2E)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['Travelling merchant random encounter (40% spawn chance per overworld entry; rotating inventory of 4 random items from an 11-item pool; distinct hooded purple-cloak sprite with backpack + bedroll + walking stick).', '3 specialist shops on a row-15 trading post: Argent Forge (weapons, tile 16, col 14), Ironcrest Armoury (armour, tile 17, col 16), Murmuring Cauldron (potions, tile 18, col 18). Path stubs connect them to the main path.', 'Shop overlay UI: full-screen modal with item list, drawIcon-painted icons, prices, gold counter, Buy buttons (with Owned / Need-X-G / Full-cap states). Pauses player input.', 'Item registry: per-class weapons (2 tiers: Steel/Twin/Aether 160G +6/7/8 ATK; Runed/Venom/Voidcaller 340G +10/11/12 ATK), armour (3 tiers: Padded 120G +3/+12, Plated 220G +6/+20, Iron 380G +10/+30), potions, elixirs, mystery box.', 'character.inventory array — items viewable in inventory but weapons/armour not yet equippable (Phase 3 deliverable). Health potions bump ch.potions for dungeon-run integration.'] }] },
             { version: 'v0.0.15', title: 'NPCs + Quest System (Phase 2D)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['4 overworld NPCs added: Mira (campsite, kill-rats-3 quest), Old Eron (milestone, kill-bandit-1 quest), Pilgrim + Forager (flavour wanderers, no quests).', 'Per-zone NPC sprites: drawOverworldNPC() with traveller/hermit/wanderer types. Idle bob + quest indicator (! available, ? turn-in).', 'Wandering NPC movement: 3.5s timer, walkable-tile aware, anchor-based with random direction + edge-pull.', 'Dialog overlay UI: greeting/available/accepted/turn-in/done stages, mobile-friendly tap targets, ESC/close, gates player input while open.', 'Quest registry: kill-rats-3 (rat ×3, +30G/+50XP), kill-bandit-1 (bandit ×1, +60G/+100XP). Mob death increments matching active quests; turn-in grants reward + can level up.', 'Quest log overlay accessible from main menu (Quest Log button); shows active quests with progress + completed grayed-out.', 'Persistence: character.npcQuests separate from legacy quests array; reconciled on every zone-enter.'] }] },
             { version: 'v0.0.14', title: 'Overworld Mobs (Phase 2C)', date: '2026-05-09', sections: [{ heading: 'Combat', items: ['3 mob types: Rat (8 HP / 2 dmg / sight 4 / +6 XP / +2 G), Slime (12 HP / 3 dmg / sight 3 / +12 XP / +4 G), Bandit (18 HP / 5 dmg / sight 5 / +25 XP / +9 G).', '5 mobs placed in Verdant Reach (2 rats, 2 slimes, 1 bandit) on grass tiles off the path; none in player spawn sight range.', 'AI state machine: idle (anchor wander) → aggro (! flash) → chasing (greedy step) → combat (bump) → dead (loot+xp). Returns to idle if player escapes sight+4.', 'Bump combat: walking into a mob deals 5 + 1.5×level damage; mob retaliates with its damage stat. Floating damage numbers (yellow dealt, red taken). Mob HP bar shows when wounded; canvas-wide red flash on player damage.', 'Player HP bar in non-hub zones; on death player respawns at hub spawn with full HP (no XP/gold loss for now). Wander timer gated to non-town biomes; fully off in hub and dungeon.'] }] },
@@ -3940,6 +4284,315 @@
             ctx2d.beginPath(); ctx2d.arc(px + tw*0.74, py + th*0.46, tw*0.012, 0, Math.PI*2); ctx2d.fill();
             ctx2d.beginPath(); ctx2d.arc(px + tw*0.78, py + th*0.45, tw*0.012, 0, Math.PI*2); ctx2d.fill();
             ctx2d.shadowBlur = 0;
+          } else if(t === 19) {
+            // Phase 2F — Cave mouth (side-dungeon entry). Dark archway carved
+            // into a rock face. Distinct from the Gate (3) which is a
+            // floor-level rune; this is a vertical opening with depth.
+            const h = _hubTileHash(col, row);
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.45)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.92, tw*0.42, th*0.06, 0, 0, Math.PI*2); ctx2d.fill();
+            // Rock face background — jagged silhouette
+            ctx2d.fillStyle = '#3a3f48';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.04, py + th*0.86);
+            ctx2d.lineTo(px + tw*0.02, py + th*0.36);
+            ctx2d.lineTo(px + tw*0.16, py + th*0.18);
+            ctx2d.lineTo(px + tw*0.36, py + th*0.08);
+            ctx2d.lineTo(px + tw*0.62, py + th*0.06);
+            ctx2d.lineTo(px + tw*0.84, py + th*0.18);
+            ctx2d.lineTo(px + tw*0.96, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.98, py + th*0.86);
+            ctx2d.closePath(); ctx2d.fill();
+            // Rock highlight (top-left edge)
+            ctx2d.fillStyle = '#5a606a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.05, py + th*0.5);
+            ctx2d.lineTo(px + tw*0.04, py + th*0.36);
+            ctx2d.lineTo(px + tw*0.18, py + th*0.2);
+            ctx2d.lineTo(px + tw*0.34, py + th*0.12);
+            ctx2d.lineTo(px + tw*0.34, py + th*0.18);
+            ctx2d.lineTo(px + tw*0.2, py + th*0.26);
+            ctx2d.lineTo(px + tw*0.1, py + th*0.4);
+            ctx2d.closePath(); ctx2d.fill();
+            // Rock shadow (bottom-right)
+            ctx2d.fillStyle = '#1f242c';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.96, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.98, py + th*0.86);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.86);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.5);
+            ctx2d.closePath(); ctx2d.fill();
+            // Cave opening — black arch hole
+            ctx2d.fillStyle = '#000';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.22, py + th*0.86);
+            ctx2d.lineTo(cx - tw*0.22, py + th*0.5);
+            ctx2d.quadraticCurveTo(cx, py + th*0.22, cx + tw*0.22, py + th*0.5);
+            ctx2d.lineTo(cx + tw*0.22, py + th*0.86);
+            ctx2d.closePath(); ctx2d.fill();
+            // Inner darkness gradient — second slightly lighter inset
+            ctx2d.fillStyle = '#0a0408';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.16, py + th*0.86);
+            ctx2d.lineTo(cx - tw*0.16, py + th*0.56);
+            ctx2d.quadraticCurveTo(cx, py + th*0.32, cx + tw*0.16, py + th*0.56);
+            ctx2d.lineTo(cx + tw*0.16, py + th*0.86);
+            ctx2d.closePath(); ctx2d.fill();
+            // Two glowing eye-pricks deep inside (subtle, pulse with phase)
+            const _cavePulse = 0.5 + 0.5 * Math.sin(Date.now()/700 + col*0.3 + row*0.2);
+            ctx2d.fillStyle = `rgba(144,224,239,${0.3 + 0.4 * _cavePulse})`;
+            ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 4 * _cavePulse + 2;
+            ctx2d.beginPath(); ctx2d.arc(cx - tw*0.05, py + th*0.6, tw*0.012, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(cx + tw*0.05, py + th*0.62, tw*0.012, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Stalactite hint at top of arch
+            ctx2d.fillStyle = '#1a1d22';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.05, py + th*0.34);
+            ctx2d.lineTo(cx, py + th*0.42);
+            ctx2d.lineTo(cx + tw*0.05, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            // Pebble scatter at base
+            ctx2d.fillStyle = '#3a3f48';
+            for(let i=0;i<3;i++) {
+              const px2 = cx + ((h >> (i*3)) & 7) * tw*0.04 - tw*0.14;
+              ctx2d.fillRect(px2, py + th*0.84, Math.max(1, tw*0.04), Math.max(1, th*0.02));
+            }
+          } else if(t === 20) {
+            // Phase 2F — Ruin entrance (side-dungeon entry). Collapsed stone
+            // arch with weeds + cracks. Lighter / mossier than cave mouth so
+            // the two read as different biomes at a glance.
+            const h = _hubTileHash(col, row);
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.92, tw*0.42, th*0.06, 0, 0, Math.PI*2); ctx2d.fill();
+            // Backing dirt patch (hint of dug-out depression around the arch)
+            ctx2d.fillStyle = '#2a2820';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.7, tw*0.42, th*0.22, 0, 0, Math.PI*2); ctx2d.fill();
+            // Left pillar (ruined column — stacked stone blocks)
+            ctx2d.fillStyle = '#5a5a4a';
+            ctx2d.fillRect(px + tw*0.14, py + th*0.34, tw*0.18, th*0.5);
+            // Pillar block joints
+            ctx2d.fillStyle = '#2a2a22';
+            for(let i=1;i<3;i++) ctx2d.fillRect(px + tw*0.14, py + th*(0.34 + i*0.16), tw*0.18, Math.max(1, th*0.025));
+            // Pillar top (broken/jagged)
+            ctx2d.fillStyle = '#5a5a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.14, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.18, py + th*0.26);
+            ctx2d.lineTo(px + tw*0.24, py + th*0.3);
+            ctx2d.lineTo(px + tw*0.32, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            // Right pillar mirror
+            ctx2d.fillStyle = '#5a5a4a';
+            ctx2d.fillRect(px + tw*0.68, py + th*0.34, tw*0.18, th*0.5);
+            ctx2d.fillStyle = '#2a2a22';
+            for(let i=1;i<3;i++) ctx2d.fillRect(px + tw*0.68, py + th*(0.34 + i*0.16), tw*0.18, Math.max(1, th*0.025));
+            ctx2d.fillStyle = '#5a5a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.68, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.72, py + th*0.28);
+            ctx2d.lineTo(px + tw*0.8, py + th*0.32);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.34);
+            ctx2d.closePath(); ctx2d.fill();
+            // Collapsed lintel (broken arch — sagging crossbeam between pillars)
+            ctx2d.fillStyle = '#5a5a4a';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.14, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.32, py + th*0.34);
+            ctx2d.lineTo(cx, py + th*0.42);
+            ctx2d.lineTo(px + tw*0.68, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.34);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.4);
+            ctx2d.lineTo(cx, py + th*0.5);
+            ctx2d.lineTo(px + tw*0.14, py + th*0.4);
+            ctx2d.closePath(); ctx2d.fill();
+            // Lintel shadow underside
+            ctx2d.fillStyle = '#2a2a22';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.14, py + th*0.4);
+            ctx2d.lineTo(cx, py + th*0.5);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.4);
+            ctx2d.lineTo(px + tw*0.86, py + th*0.42);
+            ctx2d.lineTo(cx, py + th*0.52);
+            ctx2d.lineTo(px + tw*0.14, py + th*0.42);
+            ctx2d.closePath(); ctx2d.fill();
+            // Dark interior between pillars (the entrance)
+            ctx2d.fillStyle = '#0a0805';
+            ctx2d.fillRect(cx - tw*0.16, py + th*0.5, tw*0.32, th*0.34);
+            // Inner depth — slightly lighter floor strip
+            ctx2d.fillStyle = '#1a1f18';
+            ctx2d.fillRect(cx - tw*0.14, py + th*0.78, tw*0.28, th*0.06);
+            // Crack runs across the lintel
+            ctx2d.strokeStyle = '#1a1d18';
+            ctx2d.lineWidth = 1;
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.32, py + th*0.36);
+            ctx2d.lineTo(px + tw*0.46, py + th*0.42);
+            ctx2d.lineTo(px + tw*0.62, py + th*0.4);
+            ctx2d.lineTo(px + tw*0.68, py + th*0.36);
+            ctx2d.stroke();
+            // Moss / weeds on lintel + base (deterministic placement)
+            ctx2d.fillStyle = '#3a7a2a'; ctx2d.shadowColor = '#1a5230'; ctx2d.shadowBlur = 2;
+            const wOff = [
+              [0.18, 0.32], [0.4, 0.34], [0.58, 0.34], [0.8, 0.32]
+            ];
+            for(let i=0;i<wOff.length;i++) {
+              const [fx, fy] = wOff[i];
+              if(((h >> (i*2)) & 3) === 0) continue;
+              ctx2d.fillRect(px + tw*fx, py + th*fy, Math.max(1, tw*0.04), Math.max(1, th*0.04));
+            }
+            ctx2d.shadowBlur = 0;
+            // Tall weed sprout near base
+            ctx2d.strokeStyle = '#1a5230';
+            ctx2d.lineWidth = Math.max(1, tw*0.02);
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.36, py + th*0.86);
+            ctx2d.quadraticCurveTo(px + tw*0.34, py + th*0.74, px + tw*0.32, py + th*0.66);
+            ctx2d.stroke();
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.66, py + th*0.86);
+            ctx2d.quadraticCurveTo(px + tw*0.68, py + th*0.78, px + tw*0.7, py + th*0.7);
+            ctx2d.stroke();
+            // Faint glyph glow inside (pale green — different colour than cave's cyan)
+            const _ruinPulse = 0.5 + 0.5 * Math.sin(Date.now()/900 + col*0.4 + row*0.2);
+            ctx2d.fillStyle = `rgba(200,232,168,${0.25 + 0.3 * _ruinPulse})`;
+            ctx2d.shadowColor = '#3a7a2a'; ctx2d.shadowBlur = 4 * _ruinPulse + 2;
+            ctx2d.beginPath(); ctx2d.arc(cx, py + th*0.7, tw*0.02, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+          } else if(t === 21) {
+            // Phase 2F — Cave floor (side-dungeon interior). Dark stone slab
+            // with deterministic mineral-glow specks. Hash-driven so each
+            // tile reads slightly different.
+            const h = _hubTileHash(col, row);
+            // Base slab variation — three shades
+            const shade = h & 3;
+            ctx2d.fillStyle = shade === 0 ? '#1a1410' :
+                              shade === 1 ? '#241c14' :
+                              shade === 2 ? '#1f1812' : '#2a221a';
+            ctx2d.fillRect(px, py, tw + 0.5, th + 0.5);
+            // Mortar joints (subtle)
+            ctx2d.fillStyle = '#0a0604';
+            ctx2d.fillRect(px, py + th - 1, tw, Math.max(1, th*0.04));
+            ctx2d.fillRect(px + tw - 1, py, Math.max(1, tw*0.04), th);
+            // Mineral-glow speck (1 in 4 tiles)
+            if((h & 3) === 0) {
+              const _minPulse = 0.5 + 0.5 * Math.sin(Date.now()/600 + col*0.4 + row*0.5);
+              ctx2d.fillStyle = `rgba(72,202,228,${0.4 + 0.4 * _minPulse})`;
+              ctx2d.shadowColor = '#48cae4'; ctx2d.shadowBlur = 4;
+              const sx = px + tw * (0.3 + ((h >> 4) & 3) * 0.1);
+              const sy = py + th * (0.3 + ((h >> 6) & 3) * 0.1);
+              ctx2d.beginPath(); ctx2d.arc(sx, sy, Math.max(1, tw*0.02), 0, Math.PI*2); ctx2d.fill();
+              ctx2d.shadowBlur = 0;
+            }
+            // Occasional pebble
+            if((h & 7) === 0) {
+              ctx2d.fillStyle = '#3a3028';
+              ctx2d.fillRect(px + tw*0.45, py + th*0.55, Math.max(1, tw*0.06), Math.max(1, th*0.04));
+            }
+          } else if(t === 22) {
+            // Phase 2F — Ruin floor (side-dungeon interior). Mossy weathered
+            // stone tiles. Distinct palette (greenish) from the cave.
+            const h = _hubTileHash(col, row);
+            const shade = h & 3;
+            ctx2d.fillStyle = shade === 0 ? '#1a1f1a' :
+                              shade === 1 ? '#222a22' :
+                              shade === 2 ? '#1f261f' : '#262e26';
+            ctx2d.fillRect(px, py, tw + 0.5, th + 0.5);
+            // Moss patch (1 in 3 tiles)
+            if((h % 3) === 0) {
+              ctx2d.fillStyle = 'rgba(58,122,42,0.4)';
+              ctx2d.fillRect(px + tw*0.15, py + th*0.65, tw*0.5, th*0.2);
+            }
+            // Mortar joints
+            ctx2d.fillStyle = '#0a0d0a';
+            ctx2d.fillRect(px, py + th - 1, tw, Math.max(1, th*0.04));
+            ctx2d.fillRect(px + tw - 1, py, Math.max(1, tw*0.04), th);
+            // Crack
+            if((h & 3) === 1) {
+              ctx2d.strokeStyle = '#0a0d0a';
+              ctx2d.lineWidth = 1;
+              ctx2d.beginPath();
+              ctx2d.moveTo(px + tw*0.2, py + th*0.3);
+              ctx2d.lineTo(px + tw*0.5, py + th*0.55);
+              ctx2d.lineTo(px + tw*0.7, py + th*0.45);
+              ctx2d.stroke();
+            }
+          } else if(t === 23) {
+            // Phase 2F — Cave wall (impassable, side-dungeon interior). Dark
+            // jagged rock face with subtle mineral edge.
+            const h = _hubTileHash(col, row);
+            // Base rock dark fill
+            ctx2d.fillStyle = '#0a0805';
+            ctx2d.fillRect(px, py, tw + 0.5, th + 0.5);
+            // Rough rock body
+            ctx2d.fillStyle = '#1a1410';
+            ctx2d.beginPath();
+            ctx2d.moveTo(px, py);
+            ctx2d.lineTo(px + tw*0.15, py + th*0.1);
+            ctx2d.lineTo(px + tw*0.3, py);
+            ctx2d.lineTo(px + tw*0.45, py + th*0.08);
+            ctx2d.lineTo(px + tw*0.6, py);
+            ctx2d.lineTo(px + tw*0.75, py + th*0.12);
+            ctx2d.lineTo(px + tw, py);
+            ctx2d.lineTo(px + tw, py + th);
+            ctx2d.lineTo(px, py + th);
+            ctx2d.closePath(); ctx2d.fill();
+            // Top edge highlight (cyan glow tint to match cave palette)
+            ctx2d.strokeStyle = 'rgba(72,202,228,0.18)';
+            ctx2d.lineWidth = 1;
+            ctx2d.beginPath();
+            ctx2d.moveTo(px, py + th*0.06);
+            ctx2d.lineTo(px + tw*0.15, py + th*0.14);
+            ctx2d.lineTo(px + tw*0.3, py + th*0.04);
+            ctx2d.lineTo(px + tw*0.45, py + th*0.12);
+            ctx2d.lineTo(px + tw*0.6, py + th*0.04);
+            ctx2d.lineTo(px + tw*0.75, py + th*0.16);
+            ctx2d.lineTo(px + tw, py + th*0.04);
+            ctx2d.stroke();
+            // Embedded mineral fleck (rare)
+            if((h & 7) === 0) {
+              ctx2d.fillStyle = '#48cae4'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 3;
+              ctx2d.beginPath(); ctx2d.arc(px + tw*0.5, py + th*0.5, Math.max(1, tw*0.025), 0, Math.PI*2); ctx2d.fill();
+              ctx2d.shadowBlur = 0;
+            }
+          } else if(t === 24) {
+            // Phase 2F — Ruin wall (impassable). Weathered stone block with
+            // moss streaks; distinct from cave wall.
+            const h = _hubTileHash(col, row);
+            // Base
+            ctx2d.fillStyle = '#1a1f1a';
+            ctx2d.fillRect(px, py, tw + 0.5, th + 0.5);
+            // Stone block face
+            ctx2d.fillStyle = '#3a4238';
+            ctx2d.fillRect(px + tw*0.04, py + th*0.04, tw*0.92, th*0.92);
+            // Block edge highlight
+            ctx2d.fillStyle = '#5a6258';
+            ctx2d.fillRect(px + tw*0.04, py + th*0.04, tw*0.92, Math.max(1, th*0.06));
+            // Block bottom shadow
+            ctx2d.fillStyle = '#1a1f1a';
+            ctx2d.fillRect(px + tw*0.04, py + th*0.88, tw*0.92, Math.max(1, th*0.06));
+            // Vertical seam (block joint)
+            if(((col + row) & 1) === 0) {
+              ctx2d.fillStyle = '#0a0d0a';
+              ctx2d.fillRect(px + tw*0.5, py, Math.max(1, tw*0.04), th);
+            }
+            // Moss streak (some tiles)
+            if((h % 3) === 0) {
+              ctx2d.fillStyle = 'rgba(58,122,42,0.35)';
+              ctx2d.fillRect(px + tw*0.2, py + th*0.14, tw*0.18, th*0.5);
+            }
+            // Crack
+            if((h & 3) === 1) {
+              ctx2d.strokeStyle = '#0a0d0a';
+              ctx2d.lineWidth = 1;
+              ctx2d.beginPath();
+              ctx2d.moveTo(px + tw*0.3, py + th*0.2);
+              ctx2d.lineTo(px + tw*0.55, py + th*0.5);
+              ctx2d.lineTo(px + tw*0.4, py + th*0.8);
+              ctx2d.stroke();
+            }
           }
           ctx2d.restore();
         }
@@ -4201,7 +4854,13 @@
           const baseY = py + th*0.55;
           const u = Math.min(tw, th) / 32;
           // Idle bob (slime bobs more, rat barely)
-          const bobAmpByType = { rat: 0.012, slime: 0.04, bandit: 0.02 };
+          const bobAmpByType = {
+            rat: 0.012, slime: 0.04, bandit: 0.02,
+            // Phase 2F: side-dungeon mobs. Bat hovers heavily, spider barely
+            // bobs (legs animate instead), wraith floats/breathes slowly.
+            'cave-rat': 0.014, 'cave-bat': 0.06, 'cave-spider': 0.005,
+            'ruin-bandit': 0.022, 'ruin-wraith': 0.05
+          };
           const bobAmp = bobAmpByType[mob.type] || 0.02;
           const bob = Math.sin(Date.now()/500 + (mob.id ? mob.id.length : 0)) * th * bobAmp;
           ctx2d.save();
@@ -4271,6 +4930,195 @@
             ctx2d.shadowBlur = 0;
             ctx2d.fillStyle = '#3d1f08';
             ctx2d.fillRect(5.7*u, 5*u, 1.8*u, 1.5*u);
+          } else if(mob.type === 'cave-rat') {
+            // Phase 2F — Cave rat: darker fur, red eye, slightly bigger ears.
+            // Tail
+            ctx2d.strokeStyle = '#a8788c'; ctx2d.lineWidth = 1.4*u;
+            ctx2d.beginPath(); ctx2d.moveTo(-6*u, 4*u); ctx2d.quadraticCurveTo(-10*u, 2*u, -10*u, -2*u); ctx2d.stroke();
+            // Body — near-black with grey highlight
+            ctx2d.fillStyle = '#1f1812';
+            ctx2d.beginPath(); ctx2d.ellipse(0, 4*u, 6.5*u, 4.2*u, 0, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#3a2c20';
+            ctx2d.beginPath(); ctx2d.ellipse(1*u, 5*u, 4*u, 2*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Big ears
+            ctx2d.fillStyle = '#0e0a06';
+            ctx2d.beginPath(); ctx2d.arc(2.5*u, 0.5*u, 1.8*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(5*u, 1*u, 1.5*u, 0, Math.PI*2); ctx2d.fill();
+            // Red glowing eye
+            ctx2d.fillStyle = '#ef4444'; ctx2d.shadowColor = '#c92a2a'; ctx2d.shadowBlur = 3;
+            ctx2d.beginPath(); ctx2d.arc(5*u, 3*u, 0.8*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Snout
+            ctx2d.fillStyle = '#a8788c';
+            ctx2d.beginPath(); ctx2d.arc(7*u, 4*u, 0.7*u, 0, Math.PI*2); ctx2d.fill();
+          } else if(mob.type === 'cave-bat') {
+            // Phase 2F — Cave bat: small flying silhouette with broad wings,
+            // hovers slightly above ground (extra negative Y bob).
+            const wingFlap = Math.sin(Date.now()/130) * 0.25;
+            // Hover bob
+            ctx2d.translate(0, -3*u);
+            // Body — small dark furred lump
+            ctx2d.fillStyle = '#1a1018';
+            ctx2d.beginPath(); ctx2d.ellipse(0, 2*u, 2.5*u, 3*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Wings (membrane) — animated flap
+            ctx2d.fillStyle = '#0a0810';
+            ctx2d.beginPath();
+            ctx2d.moveTo(-2*u, 1*u);
+            ctx2d.lineTo(-7*u, 0 + wingFlap*4*u);
+            ctx2d.lineTo(-8*u, 3*u + wingFlap*2*u);
+            ctx2d.lineTo(-5*u, 3*u);
+            ctx2d.lineTo(-2*u, 4*u);
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath();
+            ctx2d.moveTo(2*u, 1*u);
+            ctx2d.lineTo(7*u, 0 + wingFlap*4*u);
+            ctx2d.lineTo(8*u, 3*u + wingFlap*2*u);
+            ctx2d.lineTo(5*u, 3*u);
+            ctx2d.lineTo(2*u, 4*u);
+            ctx2d.closePath(); ctx2d.fill();
+            // Wing membrane lines (skeletal struts)
+            ctx2d.strokeStyle = '#1a1018'; ctx2d.lineWidth = 0.5*u;
+            ctx2d.beginPath();
+            ctx2d.moveTo(-2*u, 1*u); ctx2d.lineTo(-6*u, 1.5*u + wingFlap*3*u);
+            ctx2d.moveTo(-2*u, 2*u); ctx2d.lineTo(-6*u, 2.5*u + wingFlap*2*u);
+            ctx2d.moveTo(2*u, 1*u); ctx2d.lineTo(6*u, 1.5*u + wingFlap*3*u);
+            ctx2d.moveTo(2*u, 2*u); ctx2d.lineTo(6*u, 2.5*u + wingFlap*2*u);
+            ctx2d.stroke();
+            // Pointy ears
+            ctx2d.fillStyle = '#1a1018';
+            ctx2d.beginPath();
+            ctx2d.moveTo(-1.5*u, -0.5*u); ctx2d.lineTo(-2.2*u, -2.5*u); ctx2d.lineTo(-0.5*u, -1*u); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath();
+            ctx2d.moveTo(1.5*u, -0.5*u); ctx2d.lineTo(2.2*u, -2.5*u); ctx2d.lineTo(0.5*u, -1*u); ctx2d.closePath(); ctx2d.fill();
+            // Red eye dots
+            ctx2d.fillStyle = '#ef4444'; ctx2d.shadowColor = '#c92a2a'; ctx2d.shadowBlur = 2;
+            ctx2d.fillRect(-1.2*u, 1*u, 0.7*u, 0.7*u);
+            ctx2d.fillRect(0.5*u, 1*u, 0.7*u, 0.7*u);
+            ctx2d.shadowBlur = 0;
+          } else if(mob.type === 'cave-spider') {
+            // Phase 2F — Cave spider (mini-boss): bigger body, 8 angled legs,
+            // glowing red eyes. Heavier silhouette than overworld mobs.
+            // 8 legs (4 pairs) — drawn as bent lines for arachnid feel
+            ctx2d.strokeStyle = '#0a0805'; ctx2d.lineWidth = 1.5*u;
+            const legPhase = Math.sin(Date.now()/300) * 0.6;
+            for(let s = -1; s <= 1; s += 2) {  // mirror sides
+              for(let i = 0; i < 4; i++) {
+                const angBase = -0.4 + i*0.3;
+                const legLen = 8*u;
+                const x1 = s * 3*u;
+                const y1 = 2*u + i*0.6*u;
+                const x2 = x1 + s * legLen * Math.cos(angBase);
+                const y2 = y1 + legLen * Math.sin(angBase) + (i % 2 === 0 ? legPhase : -legPhase) * u;
+                const xMid = (x1 + x2) / 2 + s * 1.5*u;
+                const yMid = (y1 + y2) / 2 - 2*u;
+                ctx2d.beginPath();
+                ctx2d.moveTo(x1, y1);
+                ctx2d.lineTo(xMid, yMid);
+                ctx2d.lineTo(x2, y2);
+                ctx2d.stroke();
+              }
+            }
+            // Body — bulbous abdomen (rear) + head (front)
+            ctx2d.fillStyle = '#1a1010';
+            ctx2d.beginPath(); ctx2d.ellipse(-1*u, 3*u, 6.5*u, 5*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Body sheen
+            ctx2d.fillStyle = '#2a1a1a';
+            ctx2d.beginPath(); ctx2d.ellipse(-2*u, 1.5*u, 3*u, 1.5*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Head (smaller, forward)
+            ctx2d.fillStyle = '#0e0808';
+            ctx2d.beginPath(); ctx2d.arc(4*u, 2*u, 3*u, 0, Math.PI*2); ctx2d.fill();
+            // Glowing red eye cluster (4 dots)
+            ctx2d.fillStyle = '#ef4444'; ctx2d.shadowColor = '#c92a2a'; ctx2d.shadowBlur = 4;
+            ctx2d.beginPath(); ctx2d.arc(5*u,  1*u, 0.6*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(6*u,  2*u, 0.6*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(5*u,  3*u, 0.6*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(6*u,  3.5*u, 0.5*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Fang glints
+            ctx2d.fillStyle = '#90e0ef';
+            ctx2d.fillRect(6.5*u, 4*u, 0.6*u, 1.5*u);
+            ctx2d.fillRect(7*u, 4*u, 0.5*u, 1*u);
+          } else if(mob.type === 'ruin-bandit') {
+            // Phase 2F — Ruin bandit: sturdier than overworld bandit, leather
+            // armour highlights, larger sword.
+            // Cloak/legs
+            ctx2d.fillStyle = '#2a1a10';
+            ctx2d.beginPath(); ctx2d.moveTo(-7*u, 9*u); ctx2d.lineTo(-5*u, -4*u); ctx2d.lineTo(5*u, -4*u); ctx2d.lineTo(7*u, 9*u); ctx2d.closePath(); ctx2d.fill();
+            // Leather chest piece
+            ctx2d.fillStyle = '#5a3a1a';
+            ctx2d.fillRect(-5*u, -1*u, 10*u, 5*u);
+            // Belt
+            ctx2d.fillStyle = '#1a0e08';
+            ctx2d.fillRect(-5*u, 3*u, 10*u, 1.5*u);
+            // Hood
+            ctx2d.fillStyle = '#1a1208';
+            ctx2d.beginPath(); ctx2d.arc(0, -6*u, 6*u, Math.PI, 0); ctx2d.lineTo(5*u, -1*u); ctx2d.lineTo(-5*u, -1*u); ctx2d.closePath(); ctx2d.fill();
+            // Face shadow
+            ctx2d.fillStyle = '#000';
+            ctx2d.beginPath(); ctx2d.arc(0, -5*u, 3.5*u, 0, Math.PI*2); ctx2d.fill();
+            // Black bandanna
+            ctx2d.fillStyle = '#0a0a0a';
+            ctx2d.fillRect(-4*u, -4*u, 8*u, 2*u);
+            // Eye glints (orange — different from overworld bandit's yellow)
+            ctx2d.fillStyle = '#ff7a30'; ctx2d.shadowColor = '#ff7700'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(-2.5*u, -7*u, 1.2*u, 1*u);
+            ctx2d.fillRect(1.3*u, -7*u, 1.2*u, 1*u);
+            ctx2d.shadowBlur = 0;
+            // Long sword (right hand) — bigger blade than overworld bandit
+            ctx2d.fillStyle = '#90e0ef'; ctx2d.shadowColor = '#00b4d8'; ctx2d.shadowBlur = 3;
+            ctx2d.fillRect(7*u, -2*u, 1.8*u, 9*u);
+            ctx2d.fillStyle = '#48cae4';
+            ctx2d.fillRect(7.4*u, -2*u, 0.6*u, 9*u);
+            ctx2d.shadowBlur = 0;
+            // Crossguard
+            ctx2d.fillStyle = '#5a5a64';
+            ctx2d.fillRect(6*u, 6*u, 4*u, 1.2*u);
+            // Hilt
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(7*u, 7*u, 1.8*u, 2.5*u);
+          } else if(mob.type === 'ruin-wraith') {
+            // Phase 2F — Ruin wraith (mini-boss): translucent ghostly silhouette,
+            // glowing eyes, no legs (trailing mist instead).
+            const flicker = 0.6 + 0.4 * Math.sin(Date.now()/240);
+            // Trailing mist (below)
+            ctx2d.fillStyle = `rgba(150,200,180,${0.18 * flicker})`;
+            ctx2d.beginPath();
+            ctx2d.moveTo(-5*u, 2*u);
+            ctx2d.quadraticCurveTo(-7*u, 6*u, -3*u, 9*u);
+            ctx2d.lineTo(3*u, 9*u);
+            ctx2d.quadraticCurveTo(7*u, 6*u, 5*u, 2*u);
+            ctx2d.closePath(); ctx2d.fill();
+            // Outer glow body
+            ctx2d.fillStyle = `rgba(180,220,200,${0.22 * flicker})`;
+            ctx2d.shadowColor = '#90c8b0'; ctx2d.shadowBlur = 8 * flicker;
+            ctx2d.beginPath();
+            ctx2d.moveTo(-5*u, 2*u);
+            ctx2d.lineTo(-4*u, -8*u);
+            ctx2d.quadraticCurveTo(0, -12*u, 4*u, -8*u);
+            ctx2d.lineTo(5*u, 2*u);
+            ctx2d.closePath(); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Inner robe / shroud
+            ctx2d.fillStyle = `rgba(60,90,75,${0.7 * flicker})`;
+            ctx2d.beginPath();
+            ctx2d.moveTo(-4*u, 1*u);
+            ctx2d.lineTo(-3*u, -7*u);
+            ctx2d.quadraticCurveTo(0, -10*u, 3*u, -7*u);
+            ctx2d.lineTo(4*u, 1*u);
+            ctx2d.closePath(); ctx2d.fill();
+            // Hood opening (dark void)
+            ctx2d.fillStyle = '#000';
+            ctx2d.beginPath();
+            ctx2d.ellipse(0, -6*u, 2.5*u, 3.5*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Glowing eyes — pale green/cyan
+            ctx2d.fillStyle = '#c8e8a8'; ctx2d.shadowColor = '#90e0ef'; ctx2d.shadowBlur = 5 * flicker + 2;
+            ctx2d.beginPath(); ctx2d.arc(-1.2*u, -6.5*u, 0.9*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(1.2*u, -6.5*u, 0.9*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Spectral wisps drifting up
+            ctx2d.fillStyle = `rgba(200,232,168,${0.4 * flicker})`;
+            ctx2d.beginPath(); ctx2d.arc(-3*u, -10*u + Math.sin(Date.now()/400)*u, 0.6*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(3*u, -11*u + Math.cos(Date.now()/350)*u, 0.5*u, 0, Math.PI*2); ctx2d.fill();
           }
           ctx2d.restore();
           // Hit flash overlay (red wash). Decremented in updateMobs/draw loop.
@@ -4573,6 +5421,12 @@
                 // quest progress" text over the corpse so the player sees
                 // the credit. Quests live in ch.npcQuests (separate from
                 // legacy dungeon ch.quests).
+                // Phase 2F note: side-dungeon mob types (cave-rat,
+                // ruin-bandit, etc.) are NEW types — they do NOT match the
+                // overworld 'rat' / 'bandit' targets, so killing them does
+                // NOT progress kill-rats-3 / kill-bandit-1. Side-dungeon
+                // mobs intentionally have their own typed quests reserved
+                // for a future expansion.
                 if (!ch.npcQuests) ch.npcQuests = { active: {}, completed: {} };
                 const active = ch.npcQuests.active || {};
                 let bumped = false;
@@ -4606,6 +5460,40 @@
                     tileX: mob.tileX, tileY: mob.tileY, val: '+1 quest',
                     color: '#fde047', timer: 70, yOff: -16
                   });
+                }
+                // ─── Phase 2F: mini-boss loot drop ───────────────────────
+                // If this mob has miniBoss:true and we're inside a
+                // side-dungeon zone (which carries _sideDungeonLoot), drop
+                // a guaranteed item from the dungeon's loot.items pool into
+                // the character's inventory.
+                if (stats.miniBoss) {
+                  try {
+                    const z = currentZone();
+                    const lootDef = z && z._sideDungeonLoot;
+                    if (lootDef && Array.isArray(lootDef.items) && lootDef.items.length) {
+                      const itemId = lootDef.items[Math.floor(Math.random() * lootDef.items.length)];
+                      const itemDef = (typeof SHOP_ITEMS !== 'undefined') ? SHOP_ITEMS[itemId] : null;
+                      const itemName = itemDef ? itemDef.name : itemId;
+                      if (!Array.isArray(ch.inventory)) ch.inventory = [];
+                      // Stack consumables / misc by id with qty; equipment
+                      // (weapons/armour) stays as a unique entry.
+                      const slot = itemDef ? itemDef.slot : 'misc';
+                      if (slot === 'consumable' || slot === 'misc') {
+                        const existing = ch.inventory.find(it => it && it.id === itemId);
+                        if (existing) {
+                          existing.qty = (existing.qty || 1) + 1;
+                        } else {
+                          ch.inventory.push({ id: itemId, qty: 1 });
+                        }
+                      } else {
+                        ch.inventory.push({ id: itemId, qty: 1 });
+                      }
+                      overworldFloatNums.push({
+                        tileX: mob.tileX, tileY: mob.tileY, val: '+1 ' + itemName,
+                        color: '#c084fc', timer: 90, yOff: -22
+                      });
+                    }
+                  } catch(e){}
                 }
                 if (typeof saveCharacter === 'function') saveCharacter(ch);
               }
@@ -4861,9 +5749,10 @@
                 ctx2d.strokeRect(px+0.5,py+0.5,tw-1,th-1);
               }
               // All decorated tile types route through drawWorldBuilding
-              // (covers 0-9 hub tiles, 10-15 grassland additions, and
-              // 16/17/18 Phase 2E specialist shop facades).
-              if(t>=0 && t<=18){
+              // (covers 0-9 hub tiles, 10-15 grassland additions, 16/17/18
+              // Phase 2E specialist shop facades, and 19-24 Phase 2F
+              // side-dungeon entries + interior tiles).
+              if(t>=0 && t<=24){
                 drawWorldBuilding(ctx2d,t,px,py,tw,th,col,row);
               }
             }
