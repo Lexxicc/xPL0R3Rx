@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.21</title>
+    <title>XPL0R3R v0.0.22</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -372,7 +372,7 @@
     </div>
 
     <header class="w-full bg-[#00243a] border-4 border-b-0 border-[#00b4d8] px-3 py-2 flex justify-between items-center z-10 box-border shrink-0">
-        <h1 class="text-2xl text-[#90e0ef] uppercase tracking-tighter font-black italic pixel-text-shadow leading-none">RPG<span class="text-white">X</span></h1>
+        <h1 class="text-2xl text-[#90e0ef] uppercase tracking-tighter font-black italic pixel-text-shadow leading-none">XPL0<span class="text-white">R3R</span></h1>
 
         <div class="flex items-center gap-4 ml-auto">
             <div class="text-center">
@@ -729,7 +729,7 @@
                                 <span class="ml-auto text-base opacity-40 font-sans">›</span>
                             </button>
                         </div>
-                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.21</p>
+                        <p class="text-[10px] uppercase tracking-[0.35em] text-[#00b4d8] opacity-60 text-center py-3 border-t border-[#000a10]">&copy; Tacticon Studios 2026 &nbsp;&mdash;&nbsp; v0.0.22</p>
                     </div>
 
                     <div id="start-howtoplay" class="menu-scroll hidden relative z-10">
@@ -1192,7 +1192,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.21</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.22</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1706,7 +1706,7 @@
             spawn: { x: 12, y: 17 },
             biome: 'grassland',
             map: [
-              [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+              [10,10,10,10,10,10,10,10,10, 3,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
               [10, 0,15, 0, 0, 0,11, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,15, 0, 0, 0,10],
               [10, 0, 0, 0,15, 0, 0, 0, 0, 1, 0, 0, 0, 0,11, 0, 0,15, 0, 0, 0, 0, 0,10],
               [10, 0,12, 0, 0, 0, 0,15, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11, 0, 0,10],
@@ -1729,7 +1729,8 @@
             // ports the player to the hub. _zoneSwitchGuard prevents an
             // immediate re-trigger on arrival.
             connections: [
-              { fromX: 12, fromY: 17, toZone: 'hub', toX: 5, toY: 12 }
+              { fromX: 12, fromY: 17, toZone: 'hub',             toX:  5, toY: 12 },
+              { fromX:  9, fromY:  0, toZone: 'overworld_frost',  toX: 12, toY: 16 }
             ],
             // Phase 2C: 5 mobs scattered across the grassland. Anchors are all
             // on grass/flower/tall-grass tiles (passable, off the stone path).
@@ -1856,6 +1857,93 @@
               { id: 'riverside-shrine',   name: 'Riverside Shrine',   tileX: 20, tileY:  1,
                 lore: "Cool stone, cool moss, cool air rising off water that isn't quite there anymore.\n\nThis shrine remembers the river. The river drained when the second wall fell, and the shrine remembered it loudly for a hundred years before learning to be quiet.\n\nPress an ear to it on the right night, and you'll hear a rapid that hasn't existed since your grandmother's mother was born." }
             ]
+          },
+          // ── Zone 2: Frost biome — Frostpeak Wastes ──────────────────────
+          // 24×18 grid. Tile legend (frost additions):
+          //   26  snow ground (passable)      27  ice patches (passable)
+          //   28  frozen water (impassable)   29  frost pine tree (impassable)
+          //   30  ice cave entry (passable, dungeon trigger)
+          //   25  lore shrine marker (impassable)
+          //    3  gate (return to grasslands at south border, col 12)
+          // Gate from grasslands sits at row 0 col 9 of overworld_grasslands;
+          // player spawns at (12, 16) on entry and the return gate is at (12, 17).
+          overworld_frost: {
+            id: 'overworld_frost',
+            name: 'Frostpeak Wastes',
+            cols: 24,
+            rows: 18,
+            spawn: { x: 12, y: 16 },
+            biome: 'frost',
+            map: [
+              [29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29],
+              [29,26,26,26,26,26,29,26,26,26,26,26,26,26,26,26,26,26,29,26,26,26,26,29],
+              [29,26,27,26,26,29,26,26,26,26,27,27,26,26,26,26,26,26,26,26,26,27,26,29],
+              [29,26,26,26,29,26,26,26,27,26,26,26,26,26,26,26,29,26,26,26,26,26,26,29],
+              [29,26,26,26,26,26,29,26,26,28,28,28,28,26,26,26,26,26,26,29,26,26,26,29],
+              [29,26,26,29,26,26,26,26,28,28,28,28,28,28,26,26,26,26,26,26,26,26,26,29],
+              [29,26,26,26,26,26,26,28,28,28,28,28,28,28,28,26,29,26,26,26,26,26,26,29],
+              [29,26,29,26,26,26,26,28,28,28,28,28,28,28,28,26,26,26,26,26,27,26,26,29],
+              [29,26,26,26,26,26,26,28,28,28,28,28,28,28,26,26,26,26,26,26,26,26,30,29],
+              [29,26,26,26,26,26,26,26,28,28,28,28,28,26,26,26,26,26,29,26,26,26,26,29],
+              [29,26,29,26,26,29,26,26,26,27,27,27,26,26,26,26,26,26,26,26,26,29,26,29],
+              [29,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,26,26,26,26,26,29],
+              [29,26,27,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,29,26,26,26,26,29],
+              [29,26,26,26,29,26,26,26,26,25,26,26,29,26,26,26,26,26,26,26,29,26,26,29],
+              [29,26,26,26,26,26,26,26,26,26,26,27,26,26,26,26,26,26,26,26,26,26,26,29],
+              [29,26,26,29,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,29],
+              [29,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,29],
+              [29,29,29,29,29,29,29,29,29,29,29,29, 3,29,29,29,29,29,29,29,29,29,29,29]
+            ],
+            connections: [
+              { fromX: 12, fromY: 17, toZone: 'overworld_grasslands', toX: 9, toY: 1 }
+            ],
+            mobs: [
+              { id: 'ice-slime-1',  type: 'ice-slime',  tileX:  5, tileY:  3, hp: 14, maxHp: 14, state: 'idle', anchorX:  5, anchorY:  3 },
+              { id: 'ice-slime-2',  type: 'ice-slime',  tileX: 17, tileY: 11, hp: 14, maxHp: 14, state: 'idle', anchorX: 17, anchorY: 11 },
+              { id: 'frost-wolf-1', type: 'frost-wolf', tileX: 11, tileY: 11, hp: 20, maxHp: 20, state: 'idle', anchorX: 11, anchorY: 11 },
+              { id: 'frost-wolf-2', type: 'frost-wolf', tileX: 19, tileY:  3, hp: 20, maxHp: 20, state: 'idle', anchorX: 19, anchorY:  3 },
+              { id: 'ice-goblin-1', type: 'ice-goblin', tileX:  3, tileY: 14, hp: 10, maxHp: 10, state: 'idle', anchorX:  3, anchorY: 14 }
+            ],
+            npcs: [
+              {
+                id: 'frost-hermit-1',
+                type: 'hermit',
+                tileX: 4, tileY: 2,
+                name: 'Frost Hermit',
+                quest: null,
+                dialog: {
+                  greeting: "...You found me. That is unfortunate for both of us. I left the south for silence. You are the third person this season.",
+                  done: "Still here? The cold will drive you back eventually. They always go back."
+                }
+              },
+              {
+                id: 'lost-trapper-1',
+                type: 'traveller',
+                tileX: 20, tileY: 14,
+                anchorX: 20, anchorY: 14,
+                name: 'Lost Trapper',
+                wanderRange: 2,
+                quest: null,
+                dialog: {
+                  greeting: "Thank the thaw - a face. I've been lost for four days. My traps are set but I can not find the camp. Does this trail look familiar to you?",
+                  done: "Still not sure where I am. But at least I'm not alone. For now."
+                }
+              }
+            ],
+            sideDungeons: [
+              { tileX: 22, tileY: 8, dungeonId: 'ice-cavern', name: 'Ice Cavern', difficulty: 2 }
+            ],
+            collectibles: [
+              { id: 'frost-gold-1',  type: 'gold-small',  tileX:  2, tileY: 12, value: 15 },
+              { id: 'frost-gold-2',  type: 'gold-medium', tileX: 21, tileY:  3, value: 35 },
+              { id: 'frost-rune-1',  type: 'rune-shard',  tileX:  6, tileY:  1, item: { id: 'rune-shard', name: 'Rune Shard',    icon: 'star',         slot: 'misc', kind: 'material' } },
+              { id: 'frost-herb-1',  type: 'herb',        tileX: 18, tileY:  6, item: { id: 'herb-frost', name: 'Frost Herb',    icon: 'potion-purple', slot: 'misc', kind: 'material' } },
+              { id: 'frost-pot-1',   type: 'potion',      tileX: 15, tileY: 14, item: { id: 'potion-health-1', name: 'Health Potion', icon: 'potion-red', slot: 'consumable', kind: 'health-potion' } }
+            ],
+            shrines: [
+              { id: 'frostpeak-marker', name: 'Frostpeak Marker', tileX: 9, tileY: 13,
+                lore: "A stone column, half-buried in snow. The inscription is worn but legible.\n\nIt reads: 'Here the frost remembers a summer that came once and decided not to return. The village below was hopeful for nineteen years. Then it stopped being hopeful. Then it stopped being a village.'\n\nBelow, in a different hand: 'We still call it the warm year. We do not call it anything else.'" }
+            ]
           }
         };
         // ─── Phase 2D: quest registry ─────────────────────────────────────
@@ -1957,7 +2045,11 @@
           'cave-spider': { hp: 25, damage: 6, sightRange: 4, xpReward: 50, goldDrop: 20, miniBoss: true },
           // Ruin biome mobs (Phase 2F) ──────────────────────────────────
           'ruin-bandit': { hp: 24, damage: 7, sightRange: 5, xpReward: 35, goldDrop: 12 },
-          'ruin-wraith': { hp: 24, damage: 5, sightRange: 4, xpReward: 60, goldDrop: 15, miniBoss: true }
+          'ruin-wraith': { hp: 24, damage: 5, sightRange: 4, xpReward: 60, goldDrop: 15, miniBoss: true },
+          // Frost biome mobs (Zone 2 — Frostpeak Wastes) ────────────────
+          'ice-slime':  { hp: 14, damage: 4, sightRange: 3, xpReward: 15, goldDrop:  5 },
+          'frost-wolf': { hp: 20, damage: 6, sightRange: 6, xpReward: 28, goldDrop: 10 },
+          'ice-goblin': { hp: 10, damage: 4, sightRange: 5, xpReward: 20, goldDrop:  7 }
         };
         // ─── Phase 2F: side-dungeon registry ─────────────────────────────
         // Lookup by dungeonId. Each entry is a TEMPLATE — enterSideDungeon()
@@ -2019,6 +2111,22 @@
               { id: 'ruin-altar-stone', name: 'Altar Stone',
                 lore: "An altar carved from a single block of black basalt, polished by hands and knees and centuries.\n\nThe basin at its centre is dry. The grooves around the basin are not.\n\nA name is etched along the rim — yours. The carving looks old. Older than your grandmother. Older than her grandmother. The letters are a little wrong, but the shape is unmistakable." }
             ]
+          },
+          'ice-cavern': {
+            id: 'ice-cavern',
+            name: 'Ice Cavern',
+            biome: 'cave',
+            cols: 12, rows: 12,
+            palette: { floor: '#1a2a38', floorAlt: '#1e3044', wall: '#0a1420', wallTop: '#2a4a68', glow: '#a0d8ef', mineral: '#4fc3f7' },
+            mobs: [
+              { type: 'ice-slime',  count: 3 },
+              { type: 'ice-goblin', count: 2 }
+            ],
+            loot: { gold: [60, 180], items: ['rune-shard', 'mystery-box'] },
+            shrines: [
+              { id: 'ice-cavern-rune', name: 'Frost Rune',
+                lore: "A rune carved into the ice wall. The groove glows pale blue.\n\nTranslation (partial, margin of the Frozen Codex): 'Before the thaw, before the naming, the frost was here. The frost remembers everything. Every boot that crossed it. Every fire that died in it. Every word spoken into the cold that no one heard.'\n\nThe glow fades before you finish reading." }
+            ]
           }
         };
         // Tiles a mob is allowed to occupy. Excludes 3 (gate) so mobs never
@@ -2030,7 +2138,8 @@
         function isMobWalkable(tileVal) {
           return tileVal === 0 ||
                  tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15 ||
-                 tileVal === 21 || tileVal === 22;
+                 tileVal === 21 || tileVal === 22 ||
+                 tileVal === 26 || tileVal === 27;
         }
         let currentZoneId = 'hub';
         function currentZone() { return ZONES[currentZoneId]; }
@@ -2051,7 +2160,8 @@
                  tileVal === 8 || tileVal === 9 ||
                  tileVal === 12 || tileVal === 13 || tileVal === 14 || tileVal === 15 ||
                  tileVal === 16 || tileVal === 17 || tileVal === 18 ||
-                 tileVal === 19 || tileVal === 20 || tileVal === 21 || tileVal === 22;
+                 tileVal === 19 || tileVal === 20 || tileVal === 21 || tileVal === 22 ||
+                 tileVal === 26 || tileVal === 27 || tileVal === 30;
         }
         // Legacy alias — repointed by switchZone() so existing code that reads
         // WORLD_MAP[row][col] still works without change.
@@ -2161,7 +2271,7 @@
           // confirm prompt for entry. Stepping onto the same tile inside a
           // 'side_*' zone fires the exit and returns the player to the
           // previously-saved overworld position.
-          else if (t === 19 || t === 20) {
+          else if (t === 19 || t === 20 || t === 30) {
             if (_zoneSwitchGuard) { _zoneSwitchGuard = false; return; }
             // In a side-dungeon zone: this is the EXIT tile, return to
             // the saved overworld position.
@@ -2491,7 +2601,8 @@
         // in the colour table for future map authors who want to embed a
         // shrine directly in their tile grid. Live shrines today are placed
         // via zone.shrines[] objects rendered via drawLoreShrine().
-        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a',25:'#0a2e1a'};
+        const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a',25:'#0a2e1a',
+          26:'#c0d8e8',27:'#8ac4e0',28:'#1e3a54',29:'#0a1f10',30:'#0a1e2e'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
@@ -4375,7 +4486,7 @@
         }
 
         const PATCH_NOTES = [
-            { version: 'v0.0.21', title: 'Visual Atmosphere (Phase 5 — full roadmap complete)', date: '2026-05-09', sections: [{ heading: 'Polish', items: ['Overworld weather: clear/rain/leaves/mist cycle every 30-60s. Rain = slanted blue-grey lines + canvas wash. Leaves = green/brown drift with sine bob. Mist = stacked translucent grey puffs. Hub limited to mist only.', 'Day-night cycle: 5-minute full cycle, 7 keyframes (dawn warm orange → day clear → dusk purple → dusk-fade → night peak deep blue). Multiply-blend overlay; hub stays at day.', 'Ambient details: hub chimney smoke at tavern + merchant; deterministic water sparkles on pond tiles; subtle tree sway; gate banner flap; fireflies that spawn on night-time grass tiles (pool of 6).', 'Lore shrines glow stronger purple at night.', 'Performance: ~50-particle peak count on overworld at night, throttled at 15fps tick.', 'PHASE 5 COMPLETE — entire EXP 5-phase roadmap shipped (Hub completion → Above-world expansion → Player polish → Dungeon biomes → Atmosphere).'] }] },
+            { version: 'v0.0.22', title: 'Visual Atmosphere (Phase 5 — full roadmap complete)', date: '2026-05-09', sections: [{ heading: 'Polish', items: ['Overworld weather: clear/rain/leaves/mist cycle every 30-60s. Rain = slanted blue-grey lines + canvas wash. Leaves = green/brown drift with sine bob. Mist = stacked translucent grey puffs. Hub limited to mist only.', 'Day-night cycle: 5-minute full cycle, 7 keyframes (dawn warm orange → day clear → dusk purple → dusk-fade → night peak deep blue). Multiply-blend overlay; hub stays at day.', 'Ambient details: hub chimney smoke at tavern + merchant; deterministic water sparkles on pond tiles; subtle tree sway; gate banner flap; fireflies that spawn on night-time grass tiles (pool of 6).', 'Lore shrines glow stronger purple at night.', 'Performance: ~50-particle peak count on overworld at night, throttled at 15fps tick.', 'PHASE 5 COMPLETE — entire EXP 5-phase roadmap shipped (Hub completion → Above-world expansion → Player polish → Dungeon biomes → Atmosphere).'] }] },
             { version: 'v0.0.20', title: 'Dungeon Biome Variation (Phase 4)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['DUNGEON_BIOMES registry: standard / frost / ash / rune palettes (wall/mortar/edgeGlow/floor/accent/particle).', 'drawTile() WALL branches: frost (ice blocks + shimmer), ash (scorched + ember-cracks), rune (glowing glyphs with pulse). FLOOR branches: frost (ice + reflective specular), ash (cracked earth + ember spots), rune (arcane circles + pulse). Standard preserved byte-identical.', 'Ambient particle layer (40-particle pool): snow drifts down (frost), embers float up (ash), violet sparks scatter (rune). Standard biome has no particles.', 'BIOME selector row added to dungeon-select panel — 4 buttons with selected-state highlight. Flag persists across runs.', 'BFS wallDepth fade preserved across all biomes. Mob types reused (no biome-themed enemies in this phase — flagged for future).'] }] },
             { version: 'v0.0.19', title: 'Player Polish (Phase 3)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['Walk-cycle: 4 directions × 4 frames (2 distinct walk poses + face/eye/weapon-side variants per direction). Direction tracked via player.facing, frameTick advances on every move.', 'Equipped-gear visual: armour tier (none/light/medium/heavy) drives torso width + shoulder pads + chest plate + rivets. Weapon (sword/dagger/staff) drawn on facing-aware hip side, with arcane-orb glow on staves.', 'Equip/unequip flow in character sheet inventory: per-row EQUIP button. Class-mismatched weapons get disabled button with reason. Equip mirrors into ch.gear slot — existing damage/HP/DEF code paths pick up bonuses with no extra wiring.', 'Idle polish: 1.2s sine bob + slower torso-only breath, suppressed while moving. Look-around eye-shift every 6s when stationary. Class palettes (warrior cyan, rogue green, mage purple).', 'Hub + overworld player sprite updated; dungeon sprite intentionally out of scope (different art system).'] }] },
             { version: 'v0.0.18', title: 'Collectibles + Lore Shrines (Phase 2G — Phase 2 complete)', date: '2026-05-09', sections: [{ heading: 'Content', items: ['8 collectibles in Verdant Reach: 3 gold piles (small/medium), 2 herbs, 1 rune shard, 2 potions. Auto-pickup on walk-over with floating reward text. Persisted via character.collectiblesPicked — never respawn.', '4 lore shrines in overworld + 2 in side-dungeons (Bone Inscription in Cave of Fangs, Altar Stone in Ancient Ruin). Each shrine has unique atmospheric worldbuilding text; first reading grants +25 XP.', 'Shrine UI: dedicated #lore-overlay with violet theme, scrollable lore text, READ tag on subsequent reads.', 'Discoveries tracker added to character sheet: shrines read X/Y, collectibles found X/Y, side-dungeons cleared X/Y, plus % explored aggregate.', 'Persistence: character.shrinesRead, character.collectiblesPicked, character.sideDungeonsCleared. Side-dungeon entities use composite keys (dungeonId__shrineId) so they survive dungeon regeneration.'] }] },
@@ -5717,6 +5828,124 @@
               ctx2d.lineTo(px + tw*0.4, py + th*0.8);
               ctx2d.stroke();
             }
+          } else if(t === 26) {
+            // Snow ground (passable) — soft white with blue-grey shadow patches.
+            const h = _hubTileHash(col, row);
+            const bumps = 2 + (h & 1);
+            for(let i=0;i<bumps;i++){
+              const hx = (h >> (i*4)) & 0xF;
+              const hy = (h >> (i*4+2)) & 0xF;
+              const sx = px + tw*(0.1 + (hx/16)*0.8);
+              const sy = py + th*(0.1 + (hy/16)*0.8);
+              ctx2d.fillStyle = 'rgba(180,210,235,0.25)';
+              ctx2d.beginPath(); ctx2d.ellipse(sx, sy, tw*0.14, th*0.06, 0, 0, Math.PI*2); ctx2d.fill();
+            }
+            // Subtle footprint depressions (1 per hash variant)
+            if((h & 7) < 2) {
+              ctx2d.fillStyle = 'rgba(140,180,210,0.2)';
+              ctx2d.fillRect(px + tw*0.3, py + th*0.6, tw*0.1, th*0.12);
+              ctx2d.fillRect(px + tw*0.55, py + th*0.4, tw*0.1, th*0.12);
+            }
+          } else if(t === 27) {
+            // Ice patches (passable) — crystalline pale blue with specular glint.
+            ctx2d.fillStyle = 'rgba(100,200,240,0.18)';
+            ctx2d.fillRect(px, py, tw, th);
+            // Crystal facets
+            const phase27 = (Date.now()/2200 + col*0.28 + row*0.19) % 1;
+            ctx2d.fillStyle = `rgba(200,240,255,${0.35 + 0.25*Math.sin(phase27*Math.PI*2)})`;
+            ctx2d.beginPath();
+            ctx2d.moveTo(px + tw*0.35, py + th*0.2);
+            ctx2d.lineTo(px + tw*0.6,  py + th*0.1);
+            ctx2d.lineTo(px + tw*0.75, py + th*0.35);
+            ctx2d.lineTo(px + tw*0.5,  py + th*0.55);
+            ctx2d.closePath(); ctx2d.fill();
+            // Edge glow
+            ctx2d.strokeStyle = 'rgba(160,220,255,0.3)';
+            ctx2d.lineWidth = 1;
+            ctx2d.strokeRect(px + 1, py + 1, tw - 2, th - 2);
+          } else if(t === 28) {
+            // Frozen water (impassable) — solid icy blue, dark cracks, faint shimmer.
+            ctx2d.fillStyle = '#1e3a54';
+            ctx2d.fillRect(px, py, tw + 0.5, th + 0.5);
+            // Ice cracks (deterministic)
+            const h28 = _hubTileHash(col, row);
+            ctx2d.strokeStyle = 'rgba(80,160,220,0.5)';
+            ctx2d.lineWidth = 1;
+            if((h28 & 3) !== 3) {
+              ctx2d.beginPath();
+              ctx2d.moveTo(px + tw*0.15, py + th*0.5);
+              ctx2d.lineTo(px + tw*0.45, py + th*0.3);
+              ctx2d.lineTo(px + tw*0.7,  py + th*0.6);
+              ctx2d.stroke();
+            }
+            if((h28 & 5) !== 5) {
+              ctx2d.beginPath();
+              ctx2d.moveTo(px + tw*0.6, py + th*0.15);
+              ctx2d.lineTo(px + tw*0.4, py + th*0.55);
+              ctx2d.stroke();
+            }
+            // Surface glint
+            const ph28 = (Date.now()/3000 + col*0.3 + row*0.2) % 1;
+            ctx2d.fillStyle = `rgba(160,220,255,${0.12 * (1 - ph28)})`;
+            ctx2d.fillRect(px + tw*0.1, py + th*0.12, tw*0.3, Math.max(1, th*0.04));
+          } else if(t === 29) {
+            // Frost pine tree (impassable) — snow-capped pine silhouette.
+            const h29 = _hubTileHash(col, row);
+            const lean29 = ((h29 >> 2) & 1) ? 0.8 : -0.8;
+            // Ground shadow
+            ctx2d.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx2d.beginPath(); ctx2d.ellipse(cx, py + th*0.9, tw*0.3, th*0.05, 0, 0, Math.PI*2); ctx2d.fill();
+            // Trunk
+            ctx2d.fillStyle = '#3d1f08';
+            ctx2d.fillRect(cx - tw*0.05, py + th*0.65, tw*0.1, th*0.26);
+            // Pine tiers (3 stacked triangles, dark green)
+            ctx2d.fillStyle = '#0d3a1c';
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.06); ctx2d.lineTo(cx - tw*0.24, py + th*0.32); ctx2d.lineTo(cx + tw*0.24, py + th*0.32); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.2);  ctx2d.lineTo(cx - tw*0.3,  py + th*0.46); ctx2d.lineTo(cx + tw*0.3,  py + th*0.46); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.fillStyle = '#1a5230';
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.36); ctx2d.lineTo(cx - tw*0.34, py + th*0.64); ctx2d.lineTo(cx + tw*0.34, py + th*0.64); ctx2d.closePath(); ctx2d.fill();
+            // Snow cap on each tier
+            ctx2d.fillStyle = 'rgba(220,235,245,0.85)';
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.06); ctx2d.lineTo(cx - tw*0.12, py + th*0.22); ctx2d.lineTo(cx + tw*0.12, py + th*0.22); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.2);  ctx2d.lineTo(cx - tw*0.14, py + th*0.34); ctx2d.lineTo(cx + tw*0.14, py + th*0.34); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.moveTo(cx + lean29*tw*0.02, py + th*0.36); ctx2d.lineTo(cx - tw*0.16, py + th*0.49); ctx2d.lineTo(cx + tw*0.16, py + th*0.49); ctx2d.closePath(); ctx2d.fill();
+          } else if(t === 30) {
+            // Ice cave entry (passable dungeon trigger) — dark cave mouth framed
+            // by ice-rimmed rock, frost-blue glow from within.
+            // Rock frame
+            ctx2d.fillStyle = '#1e2e3a';
+            ctx2d.fillRect(px + tw*0.06, py + th*0.22, tw*0.88, th*0.7);
+            // Cave arch opening (dark interior)
+            ctx2d.fillStyle = '#060e14';
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.28, py + th*0.92);
+            ctx2d.lineTo(cx - tw*0.28, py + th*0.38);
+            ctx2d.arc(cx, py + th*0.38, tw*0.28, Math.PI, 0);
+            ctx2d.lineTo(cx + tw*0.28, py + th*0.92);
+            ctx2d.closePath(); ctx2d.fill();
+            // Ice rime on arch edge
+            ctx2d.strokeStyle = '#4fc3f7'; ctx2d.lineWidth = 1.2; ctx2d.shadowColor = '#0ea5e9'; ctx2d.shadowBlur = 4;
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.28, py + th*0.92);
+            ctx2d.lineTo(cx - tw*0.28, py + th*0.38);
+            ctx2d.arc(cx, py + th*0.38, tw*0.28, Math.PI, 0);
+            ctx2d.lineTo(cx + tw*0.28, py + th*0.92);
+            ctx2d.stroke(); ctx2d.shadowBlur = 0;
+            // Frost glow interior
+            const gph = (Date.now()/1800 + col*0.4) % 1;
+            ctx2d.fillStyle = `rgba(79,195,247,${0.08 + 0.05*Math.sin(gph*Math.PI*2)})`;
+            ctx2d.beginPath();
+            ctx2d.moveTo(cx - tw*0.26, py + th*0.92);
+            ctx2d.lineTo(cx - tw*0.26, py + th*0.4);
+            ctx2d.arc(cx, py + th*0.38, tw*0.26, Math.PI, 0);
+            ctx2d.lineTo(cx + tw*0.26, py + th*0.92);
+            ctx2d.closePath(); ctx2d.fill();
+            // "ICE" label above
+            ctx2d.fillStyle = '#a0d8ef'; ctx2d.shadowColor = '#4fc3f7'; ctx2d.shadowBlur = 3;
+            ctx2d.font = `bold ${Math.max(5, Math.round(th*0.14))}px VT323,monospace`;
+            ctx2d.textAlign = 'center'; ctx2d.textBaseline = 'middle';
+            ctx2d.fillText('ICE', cx, py + th*0.13);
+            ctx2d.shadowBlur = 0;
           }
           ctx2d.restore();
         }
@@ -6243,6 +6472,84 @@
             ctx2d.fillStyle = `rgba(200,232,168,${0.4 * flicker})`;
             ctx2d.beginPath(); ctx2d.arc(-3*u, -10*u + Math.sin(Date.now()/400)*u, 0.6*u, 0, Math.PI*2); ctx2d.fill();
             ctx2d.beginPath(); ctx2d.arc(3*u, -11*u + Math.cos(Date.now()/350)*u, 0.5*u, 0, Math.PI*2); ctx2d.fill();
+          } else if(mob.type === 'ice-slime') {
+            // Frost zone — ice-blue slime with crystalline sheen and cold eyes.
+            ctx2d.fillStyle = '#2a7aa0'; ctx2d.shadowColor = '#4fc3f7'; ctx2d.shadowBlur = 5;
+            ctx2d.beginPath(); ctx2d.arc(0, 2*u, 8*u, Math.PI, 0); ctx2d.lineTo(8*u, 7*u); ctx2d.lineTo(-8*u, 7*u); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Ice crystal sheen
+            ctx2d.fillStyle = 'rgba(160,230,255,0.6)';
+            ctx2d.beginPath(); ctx2d.ellipse(-3*u, -2*u, 2*u, 1*u, 0, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = 'rgba(200,245,255,0.4)';
+            ctx2d.beginPath(); ctx2d.ellipse(2*u, -4*u, 1*u, 0.5*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Cold pale eyes
+            ctx2d.fillStyle = '#e0f4ff';
+            ctx2d.beginPath(); ctx2d.arc(-2.5*u, 2*u, 1.4*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(2.5*u, 2*u, 1.4*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.fillStyle = '#0369a1';
+            ctx2d.beginPath(); ctx2d.arc(-2.2*u, 2.3*u, 0.7*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.arc(2.8*u, 2.3*u, 0.7*u, 0, Math.PI*2); ctx2d.fill();
+          } else if(mob.type === 'frost-wolf') {
+            // Frost zone — lean white/grey wolf with blue-tinted fur and icy snarl.
+            // Body
+            ctx2d.fillStyle = '#d0dde8';
+            ctx2d.beginPath(); ctx2d.ellipse(0, 2*u, 8*u, 5*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Underbelly (lighter)
+            ctx2d.fillStyle = '#edf4f9';
+            ctx2d.beginPath(); ctx2d.ellipse(0, 4*u, 5*u, 3*u, 0, 0, Math.PI*2); ctx2d.fill();
+            // Head
+            ctx2d.fillStyle = '#b8ccd8';
+            ctx2d.beginPath(); ctx2d.arc(7*u, -1*u, 4*u, 0, Math.PI*2); ctx2d.fill();
+            // Snout
+            ctx2d.fillStyle = '#90a8b8';
+            ctx2d.beginPath(); ctx2d.arc(10.5*u, 0*u, 2*u, 0, Math.PI*2); ctx2d.fill();
+            // Nose
+            ctx2d.fillStyle = '#1a2e3a';
+            ctx2d.beginPath(); ctx2d.arc(12*u, -0.5*u, 0.8*u, 0, Math.PI*2); ctx2d.fill();
+            // Ears
+            ctx2d.fillStyle = '#90a8b8';
+            ctx2d.beginPath(); ctx2d.moveTo(4*u, -4*u); ctx2d.lineTo(5.5*u, -8*u); ctx2d.lineTo(7*u, -4.5*u); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.moveTo(6.5*u, -3.5*u); ctx2d.lineTo(8*u, -7*u); ctx2d.lineTo(9*u, -3.5*u); ctx2d.closePath(); ctx2d.fill();
+            // Icy eyes
+            ctx2d.fillStyle = '#4fc3f7'; ctx2d.shadowColor = '#0ea5e9'; ctx2d.shadowBlur = 3;
+            ctx2d.beginPath(); ctx2d.arc(6*u, -1.5*u, 1*u, 0, Math.PI*2); ctx2d.fill();
+            ctx2d.shadowBlur = 0;
+            // Tail (curled back)
+            ctx2d.fillStyle = '#d0dde8';
+            ctx2d.strokeStyle = '#b8ccd8'; ctx2d.lineWidth = 2.5*u;
+            ctx2d.beginPath(); ctx2d.moveTo(-7*u, 0); ctx2d.quadraticCurveTo(-11*u, -5*u, -8*u, -8*u); ctx2d.stroke();
+            // Legs (4 stumps)
+            ctx2d.fillStyle = '#b0c0cc';
+            ctx2d.fillRect(-5*u, 6*u, 2.5*u, 3.5*u);
+            ctx2d.fillRect(-1.5*u, 6*u, 2.5*u, 3.5*u);
+            ctx2d.fillRect(2*u, 5.5*u, 2.5*u, 3*u);
+            ctx2d.fillRect(5*u, 5.5*u, 2.5*u, 3*u);
+          } else if(mob.type === 'ice-goblin') {
+            // Frost zone — small hunched goblin with pale blue-grey skin and a bone club.
+            // Body / cloak
+            ctx2d.fillStyle = '#3a4a56';
+            ctx2d.beginPath(); ctx2d.moveTo(-5*u, 8*u); ctx2d.lineTo(-3*u, -3*u); ctx2d.lineTo(3*u, -3*u); ctx2d.lineTo(5*u, 8*u); ctx2d.closePath(); ctx2d.fill();
+            // Skin — icy blue-grey
+            ctx2d.fillStyle = '#7aa8c0';
+            // Head
+            ctx2d.beginPath(); ctx2d.arc(0, -7*u, 5*u, 0, Math.PI*2); ctx2d.fill();
+            // Ears (pointed goblin ears)
+            ctx2d.fillStyle = '#6090a8';
+            ctx2d.beginPath(); ctx2d.moveTo(-4*u, -6*u); ctx2d.lineTo(-8*u, -9*u); ctx2d.lineTo(-4*u, -4*u); ctx2d.closePath(); ctx2d.fill();
+            ctx2d.beginPath(); ctx2d.moveTo(4*u, -6*u); ctx2d.lineTo(8*u, -9*u); ctx2d.lineTo(4*u, -4*u); ctx2d.closePath(); ctx2d.fill();
+            // Eyes — red slit pupils (frost goblins have cold rage)
+            ctx2d.fillStyle = '#ef4444'; ctx2d.shadowColor = '#c92a2a'; ctx2d.shadowBlur = 2;
+            ctx2d.fillRect(-2.5*u, -8*u, 1.2*u, 1.2*u);
+            ctx2d.fillRect(1.2*u, -8*u, 1.2*u, 1.2*u);
+            ctx2d.shadowBlur = 0;
+            // Teeth
+            ctx2d.fillStyle = '#ddeeff';
+            ctx2d.fillRect(-1.5*u, -4.5*u, 0.8*u, 1.5*u);
+            ctx2d.fillRect(0.6*u, -4.5*u, 0.8*u, 1.5*u);
+            // Club (left arm)
+            ctx2d.fillStyle = '#e0e0e0';
+            ctx2d.fillRect(-8*u, -5*u, 1.5*u, 7*u);
+            ctx2d.beginPath(); ctx2d.ellipse(-7.5*u, -5.5*u, 2*u, 1.5*u, 0, 0, Math.PI*2); ctx2d.fill();
           }
           ctx2d.restore();
           // Hit flash overlay (red wash). Decremented in updateMobs/draw loop.
@@ -6876,7 +7183,7 @@
               // (covers 0-9 hub tiles, 10-15 grassland additions, 16/17/18
               // Phase 2E specialist shop facades, and 19-24 Phase 2F
               // side-dungeon entries + interior tiles).
-              if(t>=0 && t<=24){
+              if(t>=0 && t<=30){
                 drawWorldBuilding(ctx2d,t,px,py,tw,th,col,row);
               }
             }
