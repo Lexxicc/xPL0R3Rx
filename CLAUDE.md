@@ -22,5 +22,5 @@
 ## Notes
 - GitHub repo is named `RPGX` (original working title)
 - Most localStorage keys of any game in the studio
-- Left-handed mode toggle (same as XDS.Dungeon-Swingers)
+- Left-handed mode toggle (same as XDungeon-Swingers.DS)
 - 4 canvas elements — most complex rendering setup in the studio
