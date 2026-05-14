@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.22</title>
+    <title>XPL0R3R v0.0.23</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -181,6 +181,9 @@
             flex-shrink: 0;
             box-sizing: border-box;
             touch-action: none;
+            border-left: 4px solid var(--color-primary);
+            border-right: 4px solid var(--color-primary);
+            border-bottom: 4px solid var(--color-primary);
             border-top: 4px solid var(--color-primary);
         }
         #mobile-dpad {
@@ -262,9 +265,9 @@
             main { min-height: 0; padding-bottom: 204px !important; }
             #mobile-controls {
                 position: fixed;
-                bottom: 3vw;
-                left: 1.6vw;
-                right: 1.6vw;
+                bottom: 0;
+                left: max(1.6vw, env(safe-area-inset-left, 0px));
+                right: max(1.6vw, env(safe-area-inset-right, 0px));
                 z-index: 210;
                 display: flex;
                 flex-shrink: 0;
@@ -920,34 +923,100 @@
                                     style="font-family:'VT323',monospace;font-size:1.4rem">
                             </div>
                             <div>
-                                <label class="text-[#00b4d8] block mb-2 uppercase" style="font-size:11px;letter-spacing:0.2em;font-family:'VT323',monospace">Choose Class</label>
+                                <label class="text-[#00b4d8] block mb-2 uppercase" style="font-size:11px;letter-spacing:0.2em;font-family:'VT323',monospace">Class</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="selectClass('warrior')" id="cc-cls-warrior" class="border-4 p-3 text-center" style="border-color:#90e0ef;background:rgba(0, 180, 216,0.22);cursor:pointer">
+                                        <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.2rem">Warrior</span>
+                                    </button>
+                                    <button onclick="selectClass('mage')" id="cc-cls-mage" class="border-4 p-3 text-center" style="border-color:#00b4d8;background:rgba(0,24,37,0.85);cursor:pointer">
+                                        <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.2rem">Wizard</span>
+                                    </button>
+                                    <button onclick="selectClass('archer')" id="cc-cls-archer" class="border-4 p-3 text-center" style="border-color:#00b4d8;background:rgba(0,24,37,0.85);cursor:pointer">
+                                        <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.2rem">Archer</span>
+                                    </button>
+                                    <button onclick="selectClass('rogue')" id="cc-cls-rogue" class="border-4 p-3 text-center" style="border-color:#00b4d8;background:rgba(0,24,37,0.85);cursor:pointer">
+                                        <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.2rem">Rogue</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="border:3px solid #00b4d8;padding:12px 10px 8px;background:rgba(0,10,18,0.7)">
+                                <div class="flex justify-center mb-3">
+                                    <canvas id="cc-ap-preview" width="128" height="128" style="border:2px solid #00b4d8;background:#001018;image-rendering:pixelated"></canvas>
+                                </div>
                                 <div class="flex flex-col gap-3">
-                                    <button onclick="selectClass('warrior')" id="cc-cls-warrior"
+                                    <div class="cc-ap-slot" data-slot="head">
+                                        <div class="flex items-center gap-2 mb-2" style="color:#90e0ef;font-family:'VT323',monospace;font-size:1rem;letter-spacing:0.15em">
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                            <span>HEAD</span>
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <button onclick="cycleAppearance('head',-1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:40px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8592;</button>
+                                            <div id="ap-img-head" class="border-2 border-[#00b4d8] flex items-center justify-center" style="width:80px;height:80px;background:#001018;flex-shrink:0"></div>
+                                            <button onclick="cycleAppearance('head',1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:40px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8594;</button>
+                                        </div>
+                                    </div>
+                                    <div class="cc-ap-slot" data-slot="torso">
+                                        <div class="flex items-center gap-2 mb-2" style="color:#90e0ef;font-family:'VT323',monospace;font-size:1rem;letter-spacing:0.15em">
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                            <span>TORSO</span>
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <button onclick="cycleAppearance('torso',-1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8592;</button>
+                                            <div id="ap-img-torso" class="border-2 border-[#00b4d8] flex items-center justify-center" style="width:80px;height:80px;background:#001018;flex-shrink:0"></div>
+                                            <button onclick="cycleAppearance('torso',1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8594;</button>
+                                        </div>
+                                    </div>
+                                    <div class="cc-ap-slot" data-slot="legs">
+                                        <div class="flex items-center gap-2 mb-2" style="color:#90e0ef;font-family:'VT323',monospace;font-size:1rem;letter-spacing:0.15em">
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                            <span>LEGS</span>
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <button onclick="cycleAppearance('legs',-1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8592;</button>
+                                            <div id="ap-img-legs" class="border-2 border-[#00b4d8] flex items-center justify-center" style="width:80px;height:80px;background:#001018;flex-shrink:0"></div>
+                                            <button onclick="cycleAppearance('legs',1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8594;</button>
+                                        </div>
+                                    </div>
+                                    <div class="cc-ap-slot" data-slot="boots">
+                                        <div class="flex items-center gap-2 mb-2" style="color:#90e0ef;font-family:'VT323',monospace;font-size:1rem;letter-spacing:0.15em">
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                            <span>BOOTS</span>
+                                            <div style="flex:1;height:2px;background:#00b4d8;opacity:0.4"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <button onclick="cycleAppearance('boots',-1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8592;</button>
+                                            <div id="ap-img-boots" class="border-2 border-[#00b4d8] flex items-center justify-center" style="width:80px;height:80px;background:#001018;flex-shrink:0"></div>
+                                            <button onclick="cycleAppearance('boots',1)" class="border-2 border-[#00b4d8] text-[#90e0ef] flex items-center justify-center" style="font-family:'VT323',monospace;font-size:1.6rem;width:40px;height:80px;background:rgba(0,24,37,0.85);cursor:pointer;flex-shrink:0">&#8594;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[#00b4d8] block mb-2 uppercase" style="font-size:11px;letter-spacing:0.2em;font-family:'VT323',monospace">Starting Bonus</label>
+                                <div class="flex flex-col gap-3">
+                                    <button onclick="selectBonus('stamina')" id="cc-bon-stamina"
                                         class="border-4 border-[#00b4d8] p-4 text-left" style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                        <div class="flex items-center gap-3 mb-1">
+                                        <div class="flex items-center gap-3">
+                                            <span style="font-size:1.5rem">&#9651;</span>
+                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">+5 Stamina</span>
+                                        </div>
+                                    </button>
+                                    <button onclick="selectBonus('health')" id="cc-bon-health"
+                                        class="border-4 border-[#00b4d8] p-4 text-left" style="background:rgba(0,24,37,0.85);cursor:pointer">
+                                        <div class="flex items-center gap-3">
+                                            <span style="font-size:1.5rem">&#10084;</span>
+                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">+5 Health</span>
+                                        </div>
+                                    </button>
+                                    <button onclick="selectBonus('damage')" id="cc-bon-damage"
+                                        class="border-4 border-[#00b4d8] p-4 text-left" style="background:rgba(0,24,37,0.85);cursor:pointer">
+                                        <div class="flex items-center gap-3">
                                             <span style="font-size:1.5rem">&#9876;</span>
-                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">Warrior</span>
-                                            <span class="ml-auto text-[#00b4d8] uppercase" style="font-size:11px;font-family:'VT323',monospace">HP 140 &middot; DEF 2.0 &middot; ATK 1.0&times;</span>
+                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">+5 Damage</span>
                                         </div>
-                                        <p class="text-[#8ab8a4] leading-snug" style="font-family:'VT323',monospace;font-size:1rem">Iron body. Takes hits, dishes punishment. Low on flair, high on staying power.</p>
-                                    </button>
-                                    <button onclick="selectClass('rogue')" id="cc-cls-rogue"
-                                        class="border-4 border-[#00b4d8] p-4 text-left" style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <span style="font-size:1.5rem">&#10022;</span>
-                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">Rogue</span>
-                                            <span class="ml-auto text-[#00b4d8] uppercase" style="font-size:11px;font-family:'VT323',monospace">HP 100 &middot; DEF 1.0 &middot; ATK 1.5&times; &middot; CRIT 20%</span>
-                                        </div>
-                                        <p class="text-[#8ab8a4] leading-snug" style="font-family:'VT323',monospace;font-size:1rem">Fast and ruthless. Crits land hard. Glass jaw — don't get surrounded.</p>
-                                    </button>
-                                    <button onclick="selectClass('mage')" id="cc-cls-mage"
-                                        class="border-4 border-[#00b4d8] p-4 text-left" style="background:rgba(0,24,37,0.85);cursor:pointer">
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <span style="font-size:1.5rem">&#9672;</span>
-                                            <span class="text-[#90e0ef] font-bold uppercase" style="font-family:'VT323',monospace;font-size:1.4rem">Mage</span>
-                                            <span class="ml-auto text-[#00b4d8] uppercase" style="font-size:11px;font-family:'VT323',monospace">HP 80 &middot; DEF 0.5 &middot; ATK 2.0&times; &middot; XP +25%</span>
-                                        </div>
-                                        <p class="text-[#8ab8a4] leading-snug" style="font-family:'VT323',monospace;font-size:1rem">Brittle but devastating. Earns XP faster. One mistake can end the run.</p>
                                     </button>
                                 </div>
                             </div>
@@ -956,7 +1025,7 @@
                                 style="font-size:1.5rem;background:rgba(0, 180, 216,0.12)">
                                 &#9658; Begin Journey
                             </button>
-                            <p id="cc-error" class="text-red-400 text-center hidden" style="font-family:'VT323',monospace;font-size:1.1rem">Please enter a name and choose a class.</p>
+                            <p id="cc-error" class="text-red-400 text-center hidden" style="font-family:'VT323',monospace;font-size:1.1rem">Please enter a name and choose a starting bonus.</p>
                         </div>
                         <div class="sticky bottom-0" style="height:6px;background:#001825;"></div>
                     </div>
@@ -1192,7 +1261,7 @@
                         <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
                         <!-- Footer / delete save -->
                         <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.22</span>
+                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.23</span>
                             <button onclick="deleteSave()"
                                 style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
                                 Delete Save
@@ -1237,10 +1306,21 @@
                     </div>
 
                 </div>
+                <!-- ── Mini-boss kill screen overlay ─────────────────────── -->
+                <div id="bosskill-overlay" class="hidden" style="position:fixed;inset:0;z-index:268;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;pointer-events:none">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 28px;background:rgba(10,4,12,0.92);border:3px solid #fde047;box-shadow:0 0 30px rgba(253,224,71,0.45)">
+                        <div style="font-size:0.9rem;color:#fde047;letter-spacing:0.3em;text-transform:uppercase">Mini-Boss Defeated</div>
+                        <img id="bosskill-art" alt="" style="width:200px;height:200px;image-rendering:pixelated;border:2px solid #fde047;background:#0a0410">
+                        <div id="bosskill-name" style="font-size:1.8rem;color:#fde047;text-shadow:0 0 10px rgba(253,224,71,0.6);text-transform:uppercase;letter-spacing:0.08em"></div>
+                    </div>
+                </div>
                 <!-- ── Phase 2D: NPC dialog overlay ─────────────────────── -->
                 <div id="dialog-overlay" class="hidden" style="position:fixed;inset:0;z-index:260;background:rgba(0,8,16,0.75);display:flex;align-items:flex-end;justify-content:center;padding:0 8px 96px;box-sizing:border-box;font-family:'VT323',monospace">
                     <div class="dialog-panel" style="width:100%;max-width:420px;background:#001218;border:3px solid #00b4d8;box-shadow:0 0 18px rgba(0,180,216,0.45),inset 0 0 0 1px #003050;padding:14px 16px 16px;color:#a8d8c0;box-sizing:border-box">
-                        <div class="dialog-name" id="dialog-name" style="font-size:1.25rem;color:#90e0ef;letter-spacing:0.06em;text-transform:uppercase;border-bottom:2px solid #003050;padding-bottom:6px;margin-bottom:10px;text-shadow:0 0 6px rgba(144,224,239,0.45)"></div>
+                        <div style="display:flex;align-items:center;gap:10px;border-bottom:2px solid #003050;padding-bottom:6px;margin-bottom:10px">
+                            <img id="dialog-portrait" alt="" style="width:64px;height:64px;image-rendering:pixelated;border:2px solid #003050;background:#000a14;flex-shrink:0;display:none">
+                            <div class="dialog-name" id="dialog-name" style="flex:1;font-size:1.25rem;color:#90e0ef;letter-spacing:0.06em;text-transform:uppercase;text-shadow:0 0 6px rgba(144,224,239,0.45)"></div>
+                        </div>
                         <div class="dialog-text" id="dialog-text" style="font-size:1.05rem;color:#d8e8e0;min-height:64px;line-height:1.4;margin-bottom:12px;white-space:pre-wrap"></div>
                         <div class="dialog-quest-info hidden" id="dialog-quest-info" style="font-size:0.92rem;color:#fde047;border:1px dashed #fde047;padding:6px 8px;margin-bottom:10px;background:rgba(40,30,0,0.3)"></div>
                         <div class="dialog-options" id="dialog-options" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end"></div>
@@ -1269,6 +1349,7 @@
                             <span id="shopov-gold" style="font-size:1.1rem;color:#fde047">0 G</span>
                             <button onclick="closeShopOverlay()" style="background:#00b4d8;color:#000;border:none;padding:4px 12px;cursor:pointer;font-family:'VT323',monospace;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em">Close</button>
                         </div>
+                        <img id="shopov-exterior" alt="" style="width:100%;max-height:180px;object-fit:contain;image-rendering:pixelated;background:#000a14;display:none">
                         <div id="shopov-flavour" style="padding:6px 14px 0;font-size:0.9rem;color:#00b4d8;font-style:italic"></div>
                         <div id="shopov-content" style="padding:10px 12px 14px;overflow-y:auto;font-size:1rem;color:#a8d8c0"></div>
                     </div>
@@ -1993,6 +2074,8 @@
           'wpn-warrior-3':    { id:'wpn-warrior-3',    name:'Runed Greatsword',  icon:'sword',         price:340, desc:'+10 ATK warrior weapon.',                      slot:'weapon', cls:'warrior', gear:{ name:'Runed Greatsword',rarity:'Rare',     slot:'weapon', atkBonus:10,defBonus:0, hpBonus:0 } },
           'wpn-rogue-2':      { id:'wpn-rogue-2',      name:'Twin Daggers',      icon:'dagger',        price:160, desc:'+7 ATK rogue weapon.',                         slot:'weapon', cls:'rogue',   gear:{ name:'Twin Daggers',    rarity:'Uncommon', slot:'weapon', atkBonus:7, defBonus:0, hpBonus:0 } },
           'wpn-rogue-3':      { id:'wpn-rogue-3',      name:'Venom Stiletto',    icon:'dagger',        price:340, desc:'+11 ATK rogue weapon.',                        slot:'weapon', cls:'rogue',   gear:{ name:'Venom Stiletto',  rarity:'Rare',     slot:'weapon', atkBonus:11,defBonus:0, hpBonus:0 } },
+          'wpn-archer-2':     { id:'wpn-archer-2',     name:'Hunters Bow',       icon:'dagger',        price:180, desc:'+8 ATK archer weapon.',                        slot:'weapon', cls:'archer',  gear:{ name:'Hunters Bow',     rarity:'Uncommon', slot:'weapon', atkBonus:8, defBonus:0, hpBonus:0 } },
+          'wpn-archer-3':     { id:'wpn-archer-3',     name:'Longshot Recurve',  icon:'dagger',        price:360, desc:'+12 ATK archer weapon.',                       slot:'weapon', cls:'archer',  gear:{ name:'Longshot Recurve',rarity:'Rare',     slot:'weapon', atkBonus:12,defBonus:0, hpBonus:0 } },
           'wpn-mage-2':       { id:'wpn-mage-2',       name:'Aether Staff',      icon:'staff',         price:160, desc:'+8 ATK mage weapon.',                          slot:'weapon', cls:'mage',    gear:{ name:'Aether Staff',    rarity:'Uncommon', slot:'weapon', atkBonus:8, defBonus:0, hpBonus:0 } },
           'wpn-mage-3':       { id:'wpn-mage-3',       name:'Voidcaller Rod',    icon:'staff',         price:340, desc:'+12 ATK mage weapon.',                         slot:'weapon', cls:'mage',    gear:{ name:'Voidcaller Rod',  rarity:'Rare',     slot:'weapon', atkBonus:12,defBonus:0, hpBonus:0 } },
           // ── Armour (light / medium / heavy) ───────────────────────────
@@ -2012,6 +2095,7 @@
           if (cls === 'warrior') return ['wpn-warrior-2', 'wpn-warrior-3'];
           if (cls === 'rogue')   return ['wpn-rogue-2',   'wpn-rogue-3'];
           if (cls === 'mage')    return ['wpn-mage-2',    'wpn-mage-3'];
+          if (cls === 'archer')  return ['wpn-archer-2',  'wpn-archer-3'];
           return [];
         }
         const SHOP_DEFS = {
@@ -2604,6 +2688,42 @@
         const WORLD_TILE_COLORS = {0:'#0a2e1a',1:'#1a3a28',2:'#0a2230',3:'#90e0ef',4:'#2a4a3a',5:'#1e3a30',6:'#2a3a1a',7:'#1a2e3a',8:'#0a2e1a',9:'#0a2e1a',10:'#0a2e1a',11:'#0a2e1a',12:'#0a2e1a',13:'#0a2e1a',14:'#1a1208',15:'#0a2e1a',16:'#0a2e1a',17:'#0a2e1a',18:'#0a2e1a',19:'#0a2e1a',20:'#0a2e1a',21:'#1a1410',22:'#1a1f1a',23:'#0a0805',24:'#0a0d0a',25:'#0a2e1a',
           26:'#c0d8e8',27:'#8ac4e0',28:'#1e3a54',29:'#0a1f10',30:'#0a1e2e'};
         const WORLD_TILE_GLYPHS = {3:'G',4:'A',5:'T',6:'M',7:'S'};
+        // Tile ID -> texture sprite. Building/gate IDs (3-7, 16-18) intentionally
+        // omit a base texture so drawWorldBuilding's stylised facade can read clean.
+        const WORLD_TILE_SRC = {
+          0:'EXP Assests/tiles/grass-plain.png',
+          1:'EXP Assests/tiles/grass-flowers.png',
+          2:'EXP Assests/tiles/stone-plain.png',
+          8:'EXP Assests/tiles/grass-plain.png',
+          9:'EXP Assests/tiles/grass-mushroom.png',
+          10:'EXP Assests/tiles/grass-plain.png',
+          11:'EXP Assests/tiles/grass-flowers.png',
+          12:'EXP Assests/tiles/grass-mushroom.png',
+          13:'EXP Assests/tiles/grass-plain.png',
+          14:'EXP Assests/tiles/mud-plain.png',
+          15:'EXP Assests/tiles/grass-plain.png',
+          19:'EXP Assests/tiles/grass-plain.png',
+          20:'EXP Assests/tiles/mud-sparse-grass.png',
+          21:'EXP Assests/tiles/stone-cracked.png',
+          22:'EXP Assests/tiles/stone-mossy.png',
+          23:'EXP Assests/tiles/stone-rubble.png',
+          24:'EXP Assests/tiles/stone-dense-moss.png',
+          25:'EXP Assests/tiles/grass-plain.png',
+          27:'EXP Assests/tiles/water-shore.png',
+          28:'EXP Assests/tiles/water-deep-dark.png',
+          29:'EXP Assests/tiles/grass-plain.png',
+          30:'EXP Assests/tiles/water-clear-deep.png'
+        };
+        const WORLD_TILE_SPRITES = {};
+        function preloadWorldTileSprites() {
+          Object.keys(WORLD_TILE_SRC).forEach(k=>{
+            if(WORLD_TILE_SPRITES[k]) return;
+            const im = new Image();
+            im.onload = ()=>{ try { drawWorldMap(); } catch(e){} };
+            im.src = WORLD_TILE_SRC[k];
+            WORLD_TILE_SPRITES[k] = im;
+          });
+        }
         const INTERACTION_ZONES = {
           '13,5':{name:'THE GATE',panel:'dungeonselect'},
           '11,2':{name:'THE ARMORY',panel:'charsheet'},
@@ -4477,7 +4597,7 @@
                 +'<button id="challenge-copy-btn" onclick="copyChallengeLink()" class="btn-pixel text-sm px-3 py-1">COPY</button></div></div>'; }
             else{ cs.innerHTML='<p style="font-family:VT323,monospace;font-size:13px;color:#94a3b8;margin:4px 0 0">Run could not be verified — challenge unavailable.</p>'; }
         }
-        { gameState._runWon=won; const _ch=loadCharacter(); if(_ch){ const _floorsCleared=gameState._isBossDungeon?(won?1:0):(won?(gameState._runMaxFloor||3):gameState.runFloor-1); const _baseXp=_floorsCleared*50+gameState.player.kills*10+(won?25:0); const _xpGained=Math.round(_baseXp*(_ch.xpBonus||1)); const _goldGained=_floorsCleared*10+Math.floor(gameState.player.kills*3)+(won?15:0); _ch.xp+=_xpGained; _ch.gold+=_goldGained; let _newLevel=0; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } let _qxp=0,_qg=0; if(_ch.quests&&_ch.quests.length){ _ch.quests.forEach(q=>{ if(q.completed) return; let done=false; if(q.type==='kill'&&gameState.player.kills>=q.goal) done=true; if(q.type==='survival'&&(gameState._runPotionsUsed||0)===0&&_floorsCleared>=1) done=true; if(q.type==='exploration'&&won) done=true; if(q.type==='loot'&&gameState._pendingLootDrop&&gameState._pendingLootDrop.rarity==='Rare') done=true; if(done){ q.completed=true; q.progress=q.goal; _qxp+=q.reward.xp; _qg+=q.reward.gold; } else if(q.type==='kill'){ q.progress=Math.min(q.goal,gameState.player.kills); } }); if(_qxp>0){ _ch.xp+=_qxp; _ch.gold+=_qg; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} _newLevel=_ch.level; } } } saveCharacter(_ch); gameState._runXpGained=_xpGained+_qxp; gameState._runGoldGained=_goldGained+_qg; gameState._runNewLevel=_newLevel; gameState._runFloorsCleared=_floorsCleared;
+        { gameState._runWon=won; const _ch=loadCharacter(); if(_ch){ const _floorsCleared=gameState._isBossDungeon?(won?1:0):(won?(gameState._runMaxFloor||3):gameState.runFloor-1); const _baseXp=_floorsCleared*50+gameState.player.kills*10+(won?25:0); const _xpGained=Math.round(_baseXp*(_ch.xpBonus||1)); const _goldGained=_floorsCleared*10+Math.floor(gameState.player.kills*3)+(won?15:0); _ch.xp+=_xpGained; _ch.gold+=_goldGained; let _newLevel=0; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} else if(_ch.class==='archer'){_ch.maxHp+=6;_ch.attack+=0.12;_ch.crit+=0.005;} _newLevel=_ch.level; } let _qxp=0,_qg=0; if(_ch.quests&&_ch.quests.length){ _ch.quests.forEach(q=>{ if(q.completed) return; let done=false; if(q.type==='kill'&&gameState.player.kills>=q.goal) done=true; if(q.type==='survival'&&(gameState._runPotionsUsed||0)===0&&_floorsCleared>=1) done=true; if(q.type==='exploration'&&won) done=true; if(q.type==='loot'&&gameState._pendingLootDrop&&gameState._pendingLootDrop.rarity==='Rare') done=true; if(done){ q.completed=true; q.progress=q.goal; _qxp+=q.reward.xp; _qg+=q.reward.gold; } else if(q.type==='kill'){ q.progress=Math.min(q.goal,gameState.player.kills); } }); if(_qxp>0){ _ch.xp+=_qxp; _ch.gold+=_qg; while(_ch.xp>=_ch.level*100){ _ch.xp-=_ch.level*100; _ch.level++; if(_ch.class==='warrior'){_ch.maxHp+=10;_ch.defense+=0.05;} else if(_ch.class==='rogue'){_ch.maxHp+=5;_ch.attack+=0.10;_ch.crit+=0.01;} else if(_ch.class==='mage'){_ch.maxHp+=3;_ch.attack+=0.15;} else if(_ch.class==='archer'){_ch.maxHp+=6;_ch.attack+=0.12;_ch.crit+=0.005;} _newLevel=_ch.level; } } } saveCharacter(_ch); gameState._runXpGained=_xpGained+_qxp; gameState._runGoldGained=_goldGained+_qg; gameState._runNewLevel=_newLevel; gameState._runFloorsCleared=_floorsCleared;
           const _diff=gameState._difficulty; const _diffLabel=_diff==='elite'?'Elite':_diff==='hard'?'Hard':'';
           if(gameState._isLichDungeon&&won){ _explrLog(`Lich King vanquished — Sanctum purged! +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else if(gameState._isBossDungeon&&won){ _explrLog(`Realm Boss defeated — Legendary relic secured! +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else if(won){ _explrLog(`You cleared a${_diffLabel?' '+_diffLabel:''} dungeon — ${_floorsCleared} floor${_floorsCleared!==1?'s':''}, +${_xpGained+_qxp} XP, +${_goldGained+_qg} G`); _explrCheckAchievement('first_clear','First Dungeon Clear!'); } else { _explrLog(`Run ended on floor ${gameState.runFloor} — +${_xpGained+_qxp} XP`); }
           if(_newLevel){ _explrLog(`Level ${_newLevel} reached!`); _explrCheckAchievement('first_levelup','First Level Up!'); }
@@ -4486,6 +4606,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.23', title: 'Mobile controls + class picker grid', date: '2026-05-14', sections: [{ heading: 'Updates', items: ['Mobile controls pinned to bottom: 0 with safe-area insets (env(safe-area-inset-left/right)).', 'Game canvas bordered on all 4 sides with primary colour.', 'Class picker redesigned as 2x2 button grid. Character appearance panel added with canvas preview + per-slot customisation.'] }] },
             { version: 'v0.0.22', title: 'Visual Atmosphere (Phase 5 — full roadmap complete)', date: '2026-05-09', sections: [{ heading: 'Polish', items: ['Overworld weather: clear/rain/leaves/mist cycle every 30-60s. Rain = slanted blue-grey lines + canvas wash. Leaves = green/brown drift with sine bob. Mist = stacked translucent grey puffs. Hub limited to mist only.', 'Day-night cycle: 5-minute full cycle, 7 keyframes (dawn warm orange → day clear → dusk purple → dusk-fade → night peak deep blue). Multiply-blend overlay; hub stays at day.', 'Ambient details: hub chimney smoke at tavern + merchant; deterministic water sparkles on pond tiles; subtle tree sway; gate banner flap; fireflies that spawn on night-time grass tiles (pool of 6).', 'Lore shrines glow stronger purple at night.', 'Performance: ~50-particle peak count on overworld at night, throttled at 15fps tick.', 'PHASE 5 COMPLETE — entire EXP 5-phase roadmap shipped (Hub completion → Above-world expansion → Player polish → Dungeon biomes → Atmosphere).'] }] },
             { version: 'v0.0.20', title: 'Dungeon Biome Variation (Phase 4)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['DUNGEON_BIOMES registry: standard / frost / ash / rune palettes (wall/mortar/edgeGlow/floor/accent/particle).', 'drawTile() WALL branches: frost (ice blocks + shimmer), ash (scorched + ember-cracks), rune (glowing glyphs with pulse). FLOOR branches: frost (ice + reflective specular), ash (cracked earth + ember spots), rune (arcane circles + pulse). Standard preserved byte-identical.', 'Ambient particle layer (40-particle pool): snow drifts down (frost), embers float up (ash), violet sparks scatter (rune). Standard biome has no particles.', 'BIOME selector row added to dungeon-select panel — 4 buttons with selected-state highlight. Flag persists across runs.', 'BFS wallDepth fade preserved across all biomes. Mob types reused (no biome-themed enemies in this phase — flagged for future).'] }] },
             { version: 'v0.0.19', title: 'Player Polish (Phase 3)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['Walk-cycle: 4 directions × 4 frames (2 distinct walk poses + face/eye/weapon-side variants per direction). Direction tracked via player.facing, frameTick advances on every move.', 'Equipped-gear visual: armour tier (none/light/medium/heavy) drives torso width + shoulder pads + chest plate + rivets. Weapon (sword/dagger/staff) drawn on facing-aware hip side, with arcane-orb glow on staves.', 'Equip/unequip flow in character sheet inventory: per-row EQUIP button. Class-mismatched weapons get disabled button with reason. Equip mirrors into ch.gear slot — existing damage/HP/DEF code paths pick up bonuses with no extra wiring.', 'Idle polish: 1.2s sine bob + slower torso-only breath, suppressed while moving. Look-around eye-shift every 6s when stationary. Class palettes (warrior cyan, rogue green, mage purple).', 'Hub + overworld player sprite updated; dungeon sprite intentionally out of scope (different art system).'] }] },
@@ -4536,7 +4657,8 @@
         const CLASS_BASE = {
             warrior: { maxHp:140, attack:1.0, defense:2.0, crit:0.05, xpBonus:1.0 },
             rogue:   { maxHp:100, attack:1.5, defense:1.0, crit:0.20, xpBonus:1.0 },
-            mage:    { maxHp:80,  attack:2.0, defense:0.5, crit:0.10, xpBonus:1.25 }
+            mage:    { maxHp:80,  attack:2.0, defense:0.5, crit:0.10, xpBonus:1.25 },
+            archer:  { maxHp:110, attack:1.6, defense:1.0, crit:0.12, xpBonus:1.05 }
         };
         function loadCharacter() { try{ const s=localStorage.getItem('XP_character'); return s?JSON.parse(s):null; }catch(e){return null;} }
         function saveCharacter(ch) { localStorage.setItem('XP_character', JSON.stringify(ch)); }
@@ -4676,9 +4798,63 @@
           el.innerHTML+=`<div style="margin-top:4px;border-top:2px solid #2a1a4a;padding-top:12px"><div style="font-size:1rem;color:#a78bfa;margin-bottom:10px;letter-spacing:0.04em">&#9760; DEEP FLOORS</div><div style="border:4px solid ${_dbc};padding:14px;background:rgba(0,20,36,0.9);opacity:${_deepLocked?0.55:1}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:1.5rem;color:${_dbc};text-transform:uppercase;letter-spacing:0.05em">&#9888; Veteran Only &mdash; Floors 4&ndash;6</span>${_deepLocked?'<span style="color:#f87171;font-size:0.9rem">Level 8+ required</span>':'<span style="color:#4ade80;font-size:0.9rem">&#10003; Unlocked</span>'}</div><div style="color:#a8d8c0;font-size:0.9rem;margin-bottom:6px">Enemy HP: 1.15&ndash;1.32&times; &nbsp;&middot;&nbsp; Enemy DMG: 1.15&ndash;1.32&times;</div><div style="color:#a78bfa;font-size:0.85rem;margin-bottom:10px">&#9670; Golems &amp; Liches spawn &mdash; deep dungeon scaling active</div><button ${_deepLocked?'disabled':''} onclick="gameState._difficulty='normal';gameState._isBossDungeon=false;gameState._runMaxFloor=6;gameState._deepFloorStart=4;startGame()" class="btn-pixel text-base px-5 py-2" style="width:100%;${_deepLocked?'opacity:0.4;cursor:not-allowed;':''}">${_deepLocked?'LOCKED':'DESCEND'}</button></div></div>`;
         }
         function createCharacter(name, cls) { const b=CLASS_BASE[cls]; const ch={name,class:cls,level:1,xp:0,gold:0,potions:0,maxHp:b.maxHp,attack:b.attack,defense:b.defense,crit:b.crit,xpBonus:b.xpBonus,gear:{weapon:null,armour:null},inventory:[],quests:_freshQuests(3),npcQuests:{active:{},completed:{}}}; saveCharacter(ch); return ch; }
-        let _selectedClass=null;
-        function selectClass(cls) { _selectedClass=cls; ['warrior','rogue','mage'].forEach(c=>{ const btn=document.getElementById('cc-cls-'+c); if(btn){ btn.style.background=c===cls?'rgba(0, 180, 216,0.22)':'rgba(0,24,37,0.85)'; btn.style.borderColor=c===cls?'#90e0ef':'#00b4d8'; } }); }
-        function confirmCharacterCreation() { const nameEl=document.getElementById('cc-name'); const name=nameEl?nameEl.value.trim():''; const errEl=document.getElementById('cc-error'); if(!name||!_selectedClass){ if(errEl) errEl.classList.remove('hidden'); return; } if(errEl) errEl.classList.add('hidden'); createCharacter(name,_selectedClass); showHub(); }
+        let _selectedBonus=null;
+        function selectBonus(bonus) { _selectedBonus=bonus; ['stamina','health','damage'].forEach(b=>{ const btn=document.getElementById('cc-bon-'+b); if(btn){ btn.style.background=b===bonus?'rgba(0, 180, 216,0.22)':'rgba(0,24,37,0.85)'; btn.style.borderColor=b===bonus?'#90e0ef':'#00b4d8'; } }); }
+        const _CLASS_PORTRAIT_SRC = {
+          warrior:'EXP Assests/Warrior_100px.png',
+          mage:   'EXP Assests/Wizard_100px.png',
+          archer: 'EXP Assests/Archer_100px.png',
+          rogue:  'EXP Assests/Rogue_100px.png'
+        };
+        const _CLASS_PORTRAITS = {};
+        let _selectedClass = 'warrior';
+        function _preloadClassPortraits() {
+          Object.keys(_CLASS_PORTRAIT_SRC).forEach(k=>{
+            if(_CLASS_PORTRAITS[k]) return;
+            const im = new Image();
+            im.onload = ()=>{ if(_selectedClass===k) _renderApPreview(); };
+            im.src = _CLASS_PORTRAIT_SRC[k];
+            _CLASS_PORTRAITS[k] = im;
+          });
+        }
+        function selectClass(cls) {
+          if(!_CLASS_PORTRAIT_SRC[cls]) return;
+          _selectedClass = cls;
+          ['warrior','mage','archer','rogue'].forEach(c=>{
+            const btn = document.getElementById('cc-cls-'+c);
+            if(btn){
+              btn.style.background  = c===cls ? 'rgba(0, 180, 216,0.22)' : 'rgba(0,24,37,0.85)';
+              btn.style.borderColor = c===cls ? '#90e0ef' : '#00b4d8';
+            }
+          });
+          _renderApPreview();
+        }
+        const _AP_IMAGES = { head:[], torso:[], legs:[], boots:[] };
+        const _appearance = { head:0, torso:0, legs:0, boots:0 };
+        function _renderApSlot(slot) { const el=document.getElementById('ap-img-'+slot); if(!el) return; const imgs=_AP_IMAGES[slot]; const idx=_appearance[slot]; el.innerHTML=''; if(imgs.length&&imgs[idx]){ const im=document.createElement('img'); im.src=imgs[idx]; im.style.cssText='width:76px;height:76px;image-rendering:pixelated;object-fit:contain;'; el.appendChild(im); } _renderApPreview(); }
+        function cycleAppearance(slot, dir) { const imgs=_AP_IMAGES[slot]; const len=Math.max(1,imgs.length); _appearance[slot]=(((_appearance[slot]+dir)%len)+len)%len; _renderApSlot(slot); }
+        function _renderApPreview() {
+          const cv=document.getElementById('cc-ap-preview'); if(!cv) return;
+          const ctx=cv.getContext('2d'); const W=128, H=128;
+          ctx.clearRect(0,0,W,H);
+          ctx.fillStyle='#001018'; ctx.fillRect(0,0,W,H);
+          const portrait = _CLASS_PORTRAITS[_selectedClass];
+          if(portrait && portrait.complete && portrait.naturalWidth){
+            const PW=100, PH=100;
+            ctx.drawImage(portrait, (W-PW)/2, (H-PH)/2, PW, PH);
+          } else if(typeof drawHubPlayer==='function'){
+            drawHubPlayer(ctx, W/2, H/2+10, 80, {ch:{class:_selectedClass,gear:{weapon:null,armour:null}}, direction:'down', moving:false, frame:0});
+          }
+          ['boots','legs','torso','head'].forEach(slot=>{
+            const imgs=_AP_IMAGES[slot]; const idx=_appearance[slot];
+            if(imgs&&imgs.length&&imgs[idx]){
+              const im=new Image(); im.src=imgs[idx];
+              if(im.complete){ ctx.drawImage(im,0,0,W,H); }
+              else { im.onload=()=>{ const c2=document.getElementById('cc-ap-preview'); if(c2){ const cx2=c2.getContext('2d'); cx2.drawImage(im,0,0,W,H); } }; }
+            }
+          });
+        }
+        function confirmCharacterCreation() { const nameEl=document.getElementById('cc-name'); const name=nameEl?nameEl.value.trim():''; const errEl=document.getElementById('cc-error'); if(!name||!_selectedBonus){ if(errEl) errEl.classList.remove('hidden'); return; } if(errEl) errEl.classList.add('hidden'); const ch=createCharacter(name,_selectedClass); ch.startingBonus=_selectedBonus; ch.appearance={head:_appearance.head,torso:_appearance.torso,legs:_appearance.legs,boots:_appearance.boots}; saveCharacter(ch); showHub(); }
         function _explrLog(msg) { try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log.unshift(msg); if(log.length>20) log=log.slice(0,20); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} }
         function renderEventLog() { const el=document.getElementById('hub-event-log'); if(!el) return; try { const log=JSON.parse(localStorage.getItem('XP_event_log')||'[]'); el.innerHTML=log.length?log.map(m=>`<div>${m}</div>`).join(''):'<div style="color:#334">No recent activity.</div>'; } catch(e){ el.innerHTML=''; } }
         let _achieveTimer=null;
@@ -4704,7 +4880,8 @@
         const _PLAYER_CLASS_PALETTES = {
           warrior: { robe:'#3a4a64', trim:'#5b86a8', face:'#1a1a1a', hood:'#2a3344', accent:'#8fb6d8', glow:'#90e0ef' },
           rogue:   { robe:'#1a3320', trim:'#3a6a3a', face:'#0c0c0c', hood:'#0a1a10', accent:'#6ab06a', glow:'#4ade80' },
-          mage:    { robe:'#4c1d95', trim:'#7e3ad6', face:'#000',    hood:'#222',    accent:'#d946ef', glow:'#d946ef' }
+          mage:    { robe:'#4c1d95', trim:'#7e3ad6', face:'#000',    hood:'#222',    accent:'#d946ef', glow:'#d946ef' },
+          archer:  { robe:'#3a6a3a', trim:'#7ec47e', face:'#101810', hood:'#1a2a1a', accent:'#a8d8a8', glow:'#a8e0a8' }
         };
         function _getPlayerPalette(ch) {
           if (ch && ch.class && _PLAYER_CLASS_PALETTES[ch.class]) return _PLAYER_CLASS_PALETTES[ch.class];
@@ -4737,6 +4914,7 @@
           if (ch.class === 'warrior') return 'sword';
           if (ch.class === 'rogue') return 'dagger';
           if (ch.class === 'mage') return 'staff';
+          if (ch.class === 'archer') return 'dagger';
           return 'sword';
         }
         function drawHubPlayer(ctx2d, cx, cy, ts, opts) {
@@ -6898,6 +7076,7 @@
                 // a guaranteed item from the dungeon's loot.items pool into
                 // the character's inventory.
                 if (stats.miniBoss) {
+                  try { showBossKillScreen(mob.type); } catch(e){}
                   try {
                     const z = currentZone();
                     const lootDef = z && z._sideDungeonLoot;
@@ -7173,6 +7352,11 @@
               const isShop=t===16||t===17||t===18;
               ctx2d.fillStyle=WORLD_TILE_COLORS[t]||'#0a2e1a';
               ctx2d.fillRect(px,py,tw+0.5,th+0.5);
+              const _spr = WORLD_TILE_SPRITES[t];
+              if(_spr && _spr.complete && _spr.naturalWidth){
+                ctx2d.imageSmoothingEnabled = false;
+                ctx2d.drawImage(_spr, px, py, tw+0.5, th+0.5);
+              }
               // Skip per-tile stroke on grass/path so cobblestone reads as a continuous strip.
               if(isBuilding || isShop || t===2 || t===3) {
                 ctx2d.strokeStyle=(isBuilding||isShop)?'#00b4d8':'#000a10';
@@ -7606,6 +7790,7 @@
               if (ch.class === 'warrior') { ch.maxHp += 10; ch.defense += 0.05; }
               else if (ch.class === 'rogue') { ch.maxHp += 5; ch.attack += 0.10; ch.crit += 0.01; }
               else if (ch.class === 'mage') { ch.maxHp += 3; ch.attack += 0.15; }
+              else if (ch.class === 'archer') { ch.maxHp += 6; ch.attack += 0.12; ch.crit += 0.005; }
             }
             if (typeof saveCharacter === 'function') saveCharacter(ch);
             overworldFloatNums.push({
@@ -8011,6 +8196,22 @@
           _activeDialogNpcId = null;
           try { drawWorldMap(); } catch(e){}
         }
+        const BOSS_ART_SRC = {
+          'cave-spider': { src:'EXP Assests/bosses/cave-spider.png', name:'Cave Spider' },
+          'ruin-wraith': { src:'EXP Assests/bosses/ruin-wraith.png', name:'Ruin Wraith' }
+        };
+        let _bossKillTimer = null;
+        function showBossKillScreen(mobType) {
+          const def = BOSS_ART_SRC[mobType]; if(!def) return;
+          const ov = document.getElementById('bosskill-overlay');
+          const art = document.getElementById('bosskill-art');
+          const nm  = document.getElementById('bosskill-name');
+          if(!ov || !art || !nm) return;
+          art.src = def.src; nm.textContent = def.name;
+          ov.classList.remove('hidden');
+          if(_bossKillTimer) clearTimeout(_bossKillTimer);
+          _bossKillTimer = setTimeout(()=>{ ov.classList.add('hidden'); }, 2800);
+        }
         function renderNpcDialog() {
           const npc = _findNpcById(_activeDialogNpcId);
           if (!npc) { closeNpcDialog(); return; }
@@ -8020,6 +8221,13 @@
           const qInfoEl = document.getElementById('dialog-quest-info');
           if (!nameEl || !textEl || !optsEl) return;
           nameEl.textContent = npc.name || 'Stranger';
+          const portraitEl = document.getElementById('dialog-portrait');
+          if (portraitEl && npc.id) {
+            portraitEl.src = 'EXP Assests/portraits/' + npc.id + '.png';
+            portraitEl.onerror = ()=>{ portraitEl.style.display='none'; };
+            portraitEl.onload  = ()=>{ portraitEl.style.display='block'; };
+            portraitEl.style.display = 'block';
+          }
 
           const dlg = npc.dialog || {};
           const ch = (typeof loadCharacter === 'function') ? loadCharacter() : null;
@@ -8110,6 +8318,7 @@
             if (ch.class === 'warrior') { ch.maxHp += 10; ch.defense += 0.05; }
             else if (ch.class === 'rogue') { ch.maxHp += 5; ch.attack += 0.10; ch.crit += 0.01; }
             else if (ch.class === 'mage') { ch.maxHp += 3; ch.attack += 0.15; }
+            else if (ch.class === 'archer') { ch.maxHp += 6; ch.attack += 0.12; ch.crit += 0.005; }
             leveled = true;
           }
           delete bag.active[npc.quest.id];
@@ -8225,10 +8434,39 @@
           const flavEl = document.getElementById('shopov-flavour');
           const goldEl = document.getElementById('shopov-gold');
           const elc = document.getElementById('shopov-content');
+          const exteriorEl = document.getElementById('shopov-exterior');
           if (!nameEl || !elc) return;
           nameEl.textContent = def.name;
+          const SHOP_BUILDING_SRC = {
+            weapon: 'EXP Assests/buildings/argent-forge.png',
+            armour: 'EXP Assests/buildings/ironcrest-armoury.png',
+            potion: 'EXP Assests/buildings/murmuring-cauldron.png'
+          };
+          if (exteriorEl) {
+            const src = SHOP_BUILDING_SRC[_activeShopKind];
+            if (src) {
+              exteriorEl.src = src;
+              exteriorEl.onload = ()=>{ exteriorEl.style.display = 'block'; };
+              exteriorEl.onerror = ()=>{ exteriorEl.style.display = 'none'; };
+              exteriorEl.style.display = 'block';
+            } else {
+              exteriorEl.style.display = 'none';
+            }
+          }
           if (flavEl) flavEl.textContent = def.flavour || '';
           if (goldEl) goldEl.textContent = (ch.gold || 0) + ' G';
+          const _bldgMap = { weapon:'argent-forge', armour:'ironcrest-armoury', potion:'murmuring-cauldron' };
+          const _extEl = document.getElementById('shopov-exterior');
+          const _bldg  = _bldgMap[_activeShopKind];
+          if (_extEl) {
+            if (_bldg) {
+              _extEl.src = 'EXP Assests/buildings/' + _bldg + '.png';
+              _extEl.style.display = 'block';
+              _extEl.onerror = ()=>{ _extEl.style.display = 'none'; };
+            } else {
+              _extEl.style.display = 'none';
+            }
+          }
           // Mark items as "owned" when they're consumed-stack items at cap, or
           // unique items already in inventory. For weapons/armour we let the
           // player buy multiple copies (Phase 3 will add equip/inventory mgmt).
@@ -8374,14 +8612,14 @@
           });
         }
         function showHub() { const ch=loadCharacter(); if(!ch){ showStartPanel('charcreate'); return; } const mc=document.getElementById('mobile-controls'); if(mc) mc.classList.remove('hidden'); const el=id=>document.getElementById(id); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1); if(el('hub-hero-name')) el('hub-hero-name').textContent=ch.name; if(el('hub-hero-class')) el('hub-hero-class').textContent=cap(ch.class); if(el('hub-hero-level')) el('hub-hero-level').textContent='Lv '+ch.level; if(el('hub-hero-gold')) el('hub-hero-gold').textContent=ch.gold+' G'; const shuffled=[...WORLD_FLAVOUR_LINES].sort(()=>Math.random()-0.5); try { const k='XP_event_log'; let log=JSON.parse(localStorage.getItem(k)||'[]'); log=[shuffled[0],shuffled[1],shuffled[2],...log].slice(0,8); localStorage.setItem(k,JSON.stringify(log)); } catch(e){} renderEventLog(); currentZoneId='hub'; WORLD_MAP=ZONES.hub.map; worldPlayer={x:ZONES.hub.spawn.x,y:ZONES.hub.spawn.y}; resetCamera(); SHRINE_TILES.forEach(s=>{s.revealed=false;s.used=false;}); /* Phase 2C: hub return resets overworld hero HP and stops mob wander loop. */ refreshOverworldHero(); stopMobWanderTimer(); showStartPanel('hub'); setTimeout(()=>{drawWorldMap();startHubAmbience();startHubAnim();renderHubHudIcons();},0); }
-        function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('XP_character'); _selectedClass=null; showStartPanel('charcreate'); }
+        function deleteSave() { if(!confirm('Delete your save? This cannot be undone.')) return; localStorage.removeItem('XP_character'); _selectedBonus=null; _appearance.head=0; _appearance.torso=0; _appearance.legs=0; _appearance.boots=0; showStartPanel('charcreate'); }
         function showRunSummary() { const go=get('game-over'); if(go) go.classList.add('hidden'); if((gameState._isBossDungeon||gameState._isLichDungeon)&&gameState._runWon){ showEndgameScreen(); return; } const rs=get('run-summary'); if(!rs) { finishRunSummary(); return; } const ef=id=>document.getElementById(id); if(ef('rs-floors')) ef('rs-floors').textContent=gameState._runFloorsCleared||0; if(ef('rs-xp')) ef('rs-xp').textContent='+'+(gameState._runXpGained||0); if(ef('rs-gold')) ef('rs-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lu=ef('rs-levelup'); const nl=ef('rs-newlevel'); if(gameState._runNewLevel){ if(lu) lu.classList.remove('hidden'); if(nl) nl.textContent='Now Level '+gameState._runNewLevel+'!'; } else { if(lu) lu.classList.add('hidden'); if(nl) nl.textContent=''; } const drop=gameState._pendingLootDrop; const ld=ef('rs-loot'); if(drop&&ld){ ld.classList.remove('hidden'); const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const rCol=rc[drop.rarity]||'#a8d8c0'; if(ef('rs-loot-name')) ef('rs-loot-name').textContent=drop.name; if(ef('rs-loot-rarity')){ ef('rs-loot-rarity').textContent=drop.rarity+' '+drop.slot; ef('rs-loot-rarity').style.color=rCol; } const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('rs-loot-stats')) ef('rs-loot-stats').textContent=sb.join(' · ')||'—'; } else if(ld) { ld.classList.add('hidden'); } rs.classList.remove('hidden'); }
         function finishRunSummary() { const rs=get('run-summary'); if(rs) rs.classList.add('hidden'); get('start-overlay').classList.remove('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
         function showEndgameScreen() { const eo=document.getElementById('endgame-overlay'); if(!eo){ finishRunSummary(); return; } const ef=id=>document.getElementById(id); const ch=loadCharacter(); const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):''; const _egt=ef('eg-title'); if(_egt){ if(gameState._isLichDungeon){ _egt.textContent='LICH SANCTUM PURGED'; _egt.style.color='#c084fc'; _egt.style.textShadow='0 0 18px rgba(192,132,252,0.5)'; } else { _egt.textContent='REALM CONQUERED'; _egt.style.color='#fde047'; _egt.style.textShadow='0 0 18px rgba(253,224,71,0.5)'; } } if(ef('eg-sub')) ef('eg-sub').textContent=ch?`${ch.name} — ${cap(ch.class)} — Level ${ch.level} — Prestige ${gameState._isLichDungeon?'II':'I'}`:''; if(ef('eg-xp')) ef('eg-xp').textContent='+'+(gameState._runXpGained||0); if(ef('eg-gold')) ef('eg-gold').textContent='+'+(gameState._runGoldGained||0)+' G'; const lur=ef('eg-levelup-row'); const nl=ef('eg-newlevel'); if(gameState._runNewLevel){ if(lur){ lur.style.display='flex'; lur.classList.remove('hidden'); } if(nl) nl.textContent='Level '+gameState._runNewLevel+'!'; } else { if(lur){ lur.style.display='none'; } } const drop=gameState._pendingLootDrop; const eld=ef('eg-loot'); if(drop&&eld){ eld.style.opacity='1'; if(ef('eg-loot-name')) ef('eg-loot-name').textContent=drop.name; if(ef('eg-loot-slot')) ef('eg-loot-slot').textContent=drop.slot; const sb=[]; if(drop.atkBonus) sb.push('+'+drop.atkBonus+' ATK'); if(drop.defBonus) sb.push('+'+drop.defBonus+' DEF'); if(drop.hpBonus) sb.push('+'+drop.hpBonus+' HP'); if(ef('eg-loot-stats')) ef('eg-loot-stats').textContent=sb.join(' · ')||'—'; } get('start-overlay').classList.remove('hidden'); eo.classList.remove('hidden'); }
         function finishEndgame() { const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); const _qch=loadCharacter(); if(_qch&&_qch.quests){ const _active=_qch.quests.filter(q=>!q.completed); const _existTypes=_active.map(q=>q.type); const _needed=3-_active.length; if(_needed>0){ const _newQ=_freshQuests(_needed,_existTypes); _qch.quests=[..._active,..._newQ]; } else { _qch.quests=_active; } saveCharacter(_qch); } showHub(); }
         function newGamePlus() { const ch=loadCharacter(); if(!ch) return; const b=CLASS_BASE[ch.class]; ch.prestige=(ch.prestige||0)+1; ch.level=1; ch.xp=0; ch.maxHp=b.maxHp; ch.attack=b.attack; ch.defense=b.defense; ch.crit=b.crit||0; ch.xpBonus=b.xpBonus||1; ch.gear={weapon:null,armour:null}; ch.quests=_freshQuests(3); saveCharacter(ch); const eo=document.getElementById('endgame-overlay'); if(eo) eo.classList.add('hidden'); gameState._pendingLootDrop=null; _explrLog(`${ch.name} began Prestige ${ch.prestige}!`); showHub(); }
         // ──────────────────────────────────────────────────────────────────────
-        function renderCharSheet() { const ch=loadCharacter(); const el=document.getElementById('charsheet-content'); if(!el||!ch) return; const CC={warrior:'#60a5fa',rogue:'#4ade80',mage:'#c084fc'}; const CI={warrior:'&#9876;',rogue:'&#10022;',mage:'&#9672;'}; const cc=CC[ch.class]||'#90e0ef'; const ci=CI[ch.class]||'?'; const xpNext=ch.level*100; const xpPct=Math.min(100,Math.round(ch.xp/xpNext*100)); const wpn=ch.gear&&ch.gear.weapon; const arm=ch.gear&&ch.gear.armour; const atkB=wpn?(wpn.atkBonus||0):0; const defB=arm?(arm.defBonus||0):0; const hpB=arm?(arm.hpBonus||0):0; const baseAtk=Math.round(18*ch.attack)+atkB; const baseDef=Math.round(Math.max(0,(ch.defense-1.0)*5))+defB; const totalHp=ch.maxHp+hpB; const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const gs=(label,item)=>{ if(!item) return `<div style="display:flex;justify-content:space-between;border:2px solid #000a10;padding:6px 8px"><span style="color:#00b4d8">${label}</span><span style="color:#333;font-size:0.85em">Empty</span></div>`; const rx=rc[item.rarity]||'#a8d8c0'; const bx=[]; if(item.atkBonus) bx.push(`+${item.atkBonus} ATK`); if(item.defBonus) bx.push(`+${item.defBonus} DEF`); if(item.hpBonus) bx.push(`+${item.hpBonus} HP`); return `<div style="display:flex;justify-content:space-between;align-items:center;border:2px solid #000a10;padding:6px 8px;gap:8px"><span style="color:#00b4d8">${label}</span><div style="text-align:right"><div style="color:${rx};font-size:0.9em">${item.name}</div><div style="color:#fff;font-size:0.75em;opacity:0.65">${bx.join(' · ')||'—'}</div></div></div>`; };
+        function renderCharSheet() { const ch=loadCharacter(); const el=document.getElementById('charsheet-content'); if(!el||!ch) return; const CC={warrior:'#60a5fa',rogue:'#4ade80',mage:'#c084fc',archer:'#a8e0a8'}; const CI={warrior:'&#9876;',rogue:'&#10022;',mage:'&#9672;',archer:'&#10148;'}; const cc=CC[ch.class]||'#90e0ef'; const ci=CI[ch.class]||'?'; const xpNext=ch.level*100; const xpPct=Math.min(100,Math.round(ch.xp/xpNext*100)); const wpn=ch.gear&&ch.gear.weapon; const arm=ch.gear&&ch.gear.armour; const atkB=wpn?(wpn.atkBonus||0):0; const defB=arm?(arm.defBonus||0):0; const hpB=arm?(arm.hpBonus||0):0; const baseAtk=Math.round(18*ch.attack)+atkB; const baseDef=Math.round(Math.max(0,(ch.defense-1.0)*5))+defB; const totalHp=ch.maxHp+hpB; const rc={Common:'#a8d8c0',Uncommon:'#60a5fa',Rare:'#c084fc',Legendary:'#fde047'}; const gs=(label,item)=>{ if(!item) return `<div style="display:flex;justify-content:space-between;border:2px solid #000a10;padding:6px 8px"><span style="color:#00b4d8">${label}</span><span style="color:#333;font-size:0.85em">Empty</span></div>`; const rx=rc[item.rarity]||'#a8d8c0'; const bx=[]; if(item.atkBonus) bx.push(`+${item.atkBonus} ATK`); if(item.defBonus) bx.push(`+${item.defBonus} DEF`); if(item.hpBonus) bx.push(`+${item.hpBonus} HP`); return `<div style="display:flex;justify-content:space-between;align-items:center;border:2px solid #000a10;padding:6px 8px;gap:8px"><span style="color:#00b4d8">${label}</span><div style="text-align:right"><div style="color:${rx};font-size:0.9em">${item.name}</div><div style="color:#fff;font-size:0.75em;opacity:0.65">${bx.join(' · ')||'—'}</div></div></div>`; };
         // Phase 2E: inventory listing. Phase 3 added equip/unequip buttons
         // for weapon + armour rows. ch.equippedInvId.{weapon,armour} tracks
         // which inventory item is currently equipped (legacy ch.gear[slot]
@@ -8519,7 +8757,7 @@
             const x = c.getContext('2d'); x.clearRect(0,0,c.width,c.height);
             drawIcon(x, type, 0, 0, c.width);
           };
-          const classIcon = ch.class === 'warrior' ? 'class-warrior' : ch.class === 'rogue' ? 'class-rogue' : 'class-mage';
+          const classIcon = ch.class === 'warrior' ? 'class-warrior' : ch.class === 'rogue' ? 'class-rogue' : ch.class === 'archer' ? 'class-rogue' : 'class-mage';
           _paint('hub-icon-class', classIcon);
           _paint('hub-icon-level', 'star');
           _paint('hub-icon-gold', 'gold');
@@ -8579,7 +8817,7 @@
           saveCharacter(ch); renderHubShop();
           const gEl=document.getElementById('hub-hero-gold'); if(gEl) gEl.textContent=ch.gold+' G';
         }
-        function showStartPanel(name, fromPopstate=false) { if(name!=='hub'){ stopHubAmbience(); stopHubAnim(); } ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(name==='hub') startHubAnim(); if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
+        function showStartPanel(name, fromPopstate=false) { if(name!=='hub'){ stopHubAmbience(); stopHubAnim(); } ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(name==='hub') startHubAnim(); if(name==='charcreate') { _preloadClassPortraits(); selectClass(_selectedClass); setTimeout(_renderApPreview, 0); } if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
         history.replaceState({panel:'main'},'');
         window.addEventListener('popstate', function(e){ const ov=document.getElementById('start-overlay'); if(!ov) return; const _goHome=()=>{ if(loadCharacter()) showHub(); else showStartPanel('charcreate',true); }; if(!ov.classList.contains('hidden')){ _goHome(); } else if(gameState.gameStarted&&!gameState.isGameOver){ stopDungeonMusic(); cancelAnimationFrame(_rafId); gameState.gameStarted=false; gameState.menuOpen=false; get('menu-overlay').classList.add('hidden'); get('mobile-controls').classList.add('hidden'); ov.classList.remove('hidden'); _goHome(); } });
 
@@ -8655,7 +8893,7 @@
         let lastT=0, _rafId=0; function loop() { _rafId=requestAnimationFrame(loop); if(!gameState.isGameOver&&!gameState.menuOpen){ if(gameState.gameStarted){ const now=performance.now(); if(now-lastT>=1000){ gameState.timeLeft--; lastT=now; if(gameState.timeLeft===60&&!gameState.timeWarnPlayed){ gameState.timeWarnPlayed=true; playSynth(440,'square',0.15,0.08); setTimeout(()=>playSynth(330,'square',0.10,0.12),120); } if(gameState.timeLeft<=0){get('game-over-msg').innerText="TIME EXPIRED"; endGame(false,true);} } } draw(); } }
 
         window.onload = () => {
-            generateLevel(); initStartBackground();
+            generateLevel(); initStartBackground(); preloadWorldTileSprites();
             if(loadCharacter()) showHub(); else showStartPanel('charcreate');
         };
     </script>

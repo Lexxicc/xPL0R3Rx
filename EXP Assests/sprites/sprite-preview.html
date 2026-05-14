@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { background: #00111a; display: flex; flex-wrap: wrap; gap: 32px; padding: 32px; font-family: monospace; }
+    .sprite-card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .sprite-card span { color: #48cae4; font-size: 11px; }
+    .bg-dark { background: #001828; border: 1px solid #00243a; padding: 8px; display: inline-flex; }
+  </style>
+</head>
+<body>
+
+<!-- RUNE SHARD 64x64 -->
+<div class="sprite-card">
+  <div class="bg-dark">
+  <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow1" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="16" cy="30" rx="7" ry="1.5" fill="#000" opacity="0.35"/>
+    <!-- crystal body -->
+    <polygon points="16,2 23,9 25,20 19,29 13,29 7,20 9,9" fill="#5010a0"/>
+    <!-- facets -->
+    <polygon points="16,2 23,9 16,13" fill="#8040c8"/>
+    <polygon points="23,9 25,20 16,13" fill="#4808a0"/>
+    <polygon points="25,20 19,29 16,13" fill="#6828b8"/>
+    <polygon points="16,13 19,29 13,29" fill="#3808a0"/>
+    <polygon points="7,20 13,29 16,13" fill="#5818b0"/>
+    <polygon points="9,9 16,13 7,20" fill="#6838c0"/>
+    <polygon points="16,2 9,9 16,13" fill="#9050d8"/>
+    <!-- highlight facet -->
+    <polygon points="16,2 20,7 17,11" fill="#c890ff" opacity="0.7"/>
+    <!-- glow outline -->
+    <polygon points="16,2 23,9 25,20 19,29 13,29 7,20 9,9" fill="none" stroke="#00b4d8" stroke-width="0.7" opacity="0.9" filter="url(#glow1)"/>
+    <!-- inner glow -->
+    <circle cx="16" cy="15" r="4" fill="#c084fc" opacity="0.18"/>
+    <circle cx="16" cy="15" r="2" fill="#90e0ef" opacity="0.25"/>
+  </svg>
+  </div>
+  <span>rune-shard</span>
+</div>
+
+<!-- MYSTERY BOX 64x64 -->
+<div class="sprite-card">
+  <div class="bg-dark">
+  <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow2" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="1.2" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="16" cy="30.5" rx="10" ry="1.5" fill="#000" opacity="0.3"/>
+    <!-- box body -->
+    <rect x="4" y="15" width="24" height="15" fill="#221408" rx="1.5"/>
+    <rect x="4" y="15" width="24" height="5" fill="#321c0c" rx="1.5"/>
+    <!-- wood planks -->
+    <rect x="4" y="21" width="24" height="1" fill="#180e04" opacity="0.5"/>
+    <rect x="4" y="25" width="24" height="1" fill="#180e04" opacity="0.5"/>
+    <!-- lid -->
+    <rect x="3" y="10" width="26" height="6" fill="#3a2010" rx="1.5"/>
+    <rect x="3" y="10" width="26" height="2" fill="#5a3018" rx="1.5"/>
+    <!-- glowing seam -->
+    <rect x="3" y="15.5" width="26" height="1.5" fill="#00b4d8" opacity="0.9" filter="url(#glow2)"/>
+    <!-- hinges -->
+    <rect x="6" y="9" width="4" height="4" fill="#586070" rx="0.8"/>
+    <circle cx="8" cy="11" r="1" fill="#7080a0"/>
+    <rect x="22" y="9" width="4" height="4" fill="#586070" rx="0.8"/>
+    <circle cx="24" cy="11" r="1" fill="#7080a0"/>
+    <!-- lock plate -->
+    <rect x="12" y="13" width="8" height="8" fill="#404858" rx="1.2"/>
+    <!-- lock shackle -->
+    <path d="M14,13 Q14,10 16,10 Q18,10 18,13" fill="none" stroke="#505868" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- keyhole -->
+    <circle cx="16" cy="18" r="1.8" fill="#202830"/>
+    <rect x="15.2" y="18" width="1.6" height="2.5" fill="#202830"/>
+    <!-- corner studs -->
+    <circle cx="6" cy="17" r="1.8" fill="#404858"/>
+    <circle cx="26" cy="17" r="1.8" fill="#404858"/>
+    <circle cx="6" cy="28" r="1.8" fill="#404858"/>
+    <circle cx="26" cy="28" r="1.8" fill="#404858"/>
+    <!-- question marks on sides -->
+    <text x="9" y="25" font-family="monospace" font-size="7" fill="#00b4d8" opacity="0.7" font-weight="bold">?</text>
+    <text x="20" y="25" font-family="monospace" font-size="7" fill="#00b4d8" opacity="0.7" font-weight="bold">?</text>
+  </svg>
+  </div>
+  <span>mystery-box</span>
+</div>
+
+<!-- SILVERED KEY 64x64 -->
+<div class="sprite-card">
+  <div class="bg-dark">
+  <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow3" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="1.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="16" cy="31" rx="10" ry="1" fill="#000" opacity="0.25"/>
+    <!-- key bow outline glow -->
+    <circle cx="10" cy="11" r="8" fill="#48cae4" opacity="0.15" filter="url(#glow3)"/>
+    <!-- key bow -->
+    <circle cx="10" cy="11" r="8" fill="none" stroke="#a8bcd0" stroke-width="3.5"/>
+    <circle cx="10" cy="11" r="5" fill="none" stroke="#788a9a" stroke-width="1.5"/>
+    <!-- gem -->
+    <circle cx="10" cy="11" r="3.5" fill="#0858a0"/>
+    <circle cx="10" cy="11" r="2" fill="#2888d0"/>
+    <circle cx="9" cy="10" r="0.8" fill="#80c8f0" opacity="0.8"/>
+    <!-- shaft -->
+    <rect x="16" y="9" width="15" height="4" fill="#b8ccd8" rx="1.5"/>
+    <rect x="16" y="9" width="15" height="1.5" fill="#e0eaf4" opacity="0.9"/>
+    <!-- teeth -->
+    <rect x="26" y="13" width="3.5" height="5" fill="#b8ccd8" rx="0.8"/>
+    <rect x="21.5" y="13" width="3" height="4" fill="#b8ccd8" rx="0.8"/>
+    <!-- tooth highlights -->
+    <rect x="26" y="13" width="3.5" height="1.5" fill="#e0eaf4" opacity="0.7"/>
+    <rect x="21.5" y="13" width="3" height="1.5" fill="#e0eaf4" opacity="0.7"/>
+    <!-- shaft shadow edge -->
+    <rect x="16" y="12" width="15" height="1" fill="#687888" opacity="0.5"/>
+  </svg>
+  </div>
+  <span>silvered-key</span>
+</div>
+
+<!-- DUNGEON PORTAL 128x128 -->
+<div class="sprite-card">
+  <div class="bg-dark">
+  <svg width="128" height="128" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="voidglow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <radialGradient id="voidgrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#0a0020"/>
+        <stop offset="60%" stop-color="#080018"/>
+        <stop offset="100%" stop-color="#000008"/>
+      </radialGradient>
+    </defs>
+    <!-- ground shadow -->
+    <ellipse cx="32" cy="62" rx="20" ry="3" fill="#000" opacity="0.4"/>
+    <!-- outer stone arch -->
+    <path d="M8,62 L8,30 Q8,10 32,8 Q56,10 56,30 L56,62 Z" fill="#2a2a2a"/>
+    <!-- stone blocks texture -->
+    <rect x="8" y="38" width="8" height="12" fill="#323232" opacity="0.5"/>
+    <rect x="8" y="50" width="8" height="12" fill="#282828" opacity="0.5"/>
+    <rect x="9" y="30" width="6" height="8" fill="#303030" opacity="0.5"/>
+    <rect x="48" y="38" width="8" height="12" fill="#323232" opacity="0.5"/>
+    <rect x="48" y="50" width="8" height="12" fill="#282828" opacity="0.5"/>
+    <rect x="49" y="30" width="6" height="8" fill="#303030" opacity="0.5"/>
+    <!-- inner arch (slightly lighter) -->
+    <path d="M12,62 L12,31 Q12,14 32,12 Q52,14 52,31 L52,62 Z" fill="#1a1a1a"/>
+    <!-- void inside -->
+    <path d="M14,62 L14,32 Q14,16 32,14 Q50,16 50,32 L50,62 Z" fill="url(#voidgrad)"/>
+    <!-- swirl particles -->
+    <circle cx="32" cy="38" r="12" fill="none" stroke="#1a0060" stroke-width="2" opacity="0.6"/>
+    <circle cx="32" cy="38" r="8" fill="none" stroke="#2a0090" stroke-width="1.5" opacity="0.5"/>
+    <circle cx="32" cy="38" r="4" fill="#3000c0" opacity="0.4"/>
+    <!-- portal glow rings -->
+    <circle cx="32" cy="38" r="14" fill="none" stroke="#00b4d8" stroke-width="0.7" opacity="0.5" filter="url(#voidglow)"/>
+    <circle cx="32" cy="38" r="9" fill="none" stroke="#48cae4" stroke-width="0.5" opacity="0.4" filter="url(#voidglow)"/>
+    <!-- floating rune glyphs inside portal -->
+    <text x="26" y="34" font-family="monospace" font-size="5" fill="#c084fc" opacity="0.7">⬡</text>
+    <text x="33" y="42" font-family="monospace" font-size="4" fill="#90e0ef" opacity="0.5">✦</text>
+    <text x="22" y="44" font-family="monospace" font-size="4" fill="#c084fc" opacity="0.4">✧</text>
+    <!-- arch keystone -->
+    <polygon points="32,8 28,14 36,14" fill="#383838"/>
+    <polygon points="32,8 29,12 35,12" fill="#484848"/>
+    <!-- arch edge glow -->
+    <path d="M12,62 L12,31 Q12,14 32,12 Q52,14 52,31 L52,62" fill="none" stroke="#00b4d8" stroke-width="0.8" opacity="0.6"/>
+    <!-- stone edge cracks detail -->
+    <line x1="10" y1="42" x2="14" y2="46" stroke="#3a3a3a" stroke-width="0.7"/>
+    <line x1="10" y1="52" x2="12" y2="55" stroke="#3a3a3a" stroke-width="0.7"/>
+    <line x1="52" y1="40" x2="56" y2="44" stroke="#3a3a3a" stroke-width="0.7"/>
+    <!-- moss at base -->
+    <ellipse cx="10" cy="61" rx="4" ry="1.5" fill="#1a3a1a"/>
+    <ellipse cx="54" cy="61" rx="4" ry="1.5" fill="#1a3a1a"/>
+  </svg>
+  </div>
+  <span>dungeon-portal (128px)</span>
+</div>
+
+<!-- CLASS PORTRAIT FRAME 128x128 -->
+<div class="sprite-card">
+  <div class="bg-dark">
+  <svg width="128" height="128" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="frameglow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="1" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- inner bg (transparent slot for character portrait) -->
+    <rect x="6" y="6" width="52" height="52" fill="#001018"/>
+    <!-- outer frame -->
+    <rect x="2" y="2" width="60" height="60" fill="none" stroke="#00b4d8" stroke-width="3" filter="url(#frameglow)"/>
+    <rect x="4" y="4" width="56" height="56" fill="none" stroke="#000a10" stroke-width="1.5"/>
+    <!-- corner ornaments -->
+    <!-- top-left -->
+    <polygon points="2,2 14,2 2,14" fill="#00243a"/>
+    <polygon points="2,2 12,2 2,12" fill="#00b4d8" opacity="0.6"/>
+    <circle cx="5" cy="5" r="2" fill="#48cae4"/>
+    <!-- top-right -->
+    <polygon points="62,2 50,2 62,14" fill="#00243a"/>
+    <polygon points="62,2 52,2 62,12" fill="#00b4d8" opacity="0.6"/>
+    <circle cx="59" cy="5" r="2" fill="#48cae4"/>
+    <!-- bottom-left -->
+    <polygon points="2,62 14,62 2,50" fill="#00243a"/>
+    <polygon points="2,62 12,62 2,52" fill="#00b4d8" opacity="0.6"/>
+    <circle cx="5" cy="59" r="2" fill="#48cae4"/>
+    <!-- bottom-right -->
+    <polygon points="62,62 50,62 62,50" fill="#00243a"/>
+    <polygon points="62,62 52,62 62,52" fill="#00b4d8" opacity="0.6"/>
+    <circle cx="59" cy="59" r="2" fill="#48cae4"/>
+    <!-- top center ornament -->
+    <polygon points="32,2 27,8 37,8" fill="#00b4d8" opacity="0.5"/>
+    <circle cx="32" cy="4" r="1.5" fill="#90e0ef"/>
+    <!-- bottom center -->
+    <polygon points="32,62 27,56 37,56" fill="#00b4d8" opacity="0.5"/>
+    <circle cx="32" cy="60" r="1.5" fill="#90e0ef"/>
+    <!-- side ticks -->
+    <rect x="2" y="29" width="4" height="6" fill="#00b4d8" opacity="0.4"/>
+    <rect x="58" y="29" width="4" height="6" fill="#00b4d8" opacity="0.4"/>
+    <rect x="29" y="2" width="6" height="4" fill="#00b4d8" opacity="0.4"/>
+    <rect x="29" y="58" width="6" height="4" fill="#00b4d8" opacity="0.4"/>
+    <!-- inner scan lines (UI effect) -->
+    <rect x="6" y="6" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="10" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="14" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="18" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="22" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="26" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="30" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="34" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="38" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="42" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="46" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="50" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+    <rect x="6" y="54" width="52" height="1" fill="#00b4d8" opacity="0.08"/>
+  </svg>
+  </div>
+  <span>class-portrait-frame (128px)</span>
+</div>
+
+</body>
+</html>
