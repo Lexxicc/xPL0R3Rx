@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="author" content="lexxicc">
-    <title>XPL0R3R v0.0.23</title>
+    <title>XPL0R3R v0.0.24</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-bg-dark: #00111a;
-            --color-panel: #00243a;
-            --color-primary: #00b4d8;
-            --color-accent: #48cae4;
-            --color-glow: #90e0ef;
-            --color-shadow: #000a10;
+            --color-bg-dark: #010810;
+            --color-panel: #061A2E;
+            --color-primary: #00BFFF;
+            --color-accent: #00E5FF;
+            --color-glow: #EAFAFF;
+            --color-shadow: #000508;
         }
 
         body {
@@ -170,11 +170,13 @@
             width: 100%;
             padding: 6px 10px;
             flex-shrink: 0;
-            box-sizing: border-box;
-            touch-action: none;
+            /* Extend the game-viewport's L+R+B borders down through the controls
+               so the outer frame closes cleanly instead of stopping above this row. */
             border-left: 4px solid var(--color-primary);
             border-right: 4px solid var(--color-primary);
             border-bottom: 4px solid var(--color-primary);
+            box-sizing: border-box;
+            touch-action: none;
             border-top: 4px solid var(--color-primary);
         }
         #mobile-dpad {
@@ -191,8 +193,8 @@
         }
         .dpad-btn {
             background: rgba(0, 36, 58, 0.80);
-            border: 2px solid #00b4d8;
-            color: #90e0ef;
+            border: 2px solid #00BFFF;
+            color: #EAFAFF;
             font-size: 22px;
             display: flex;
             align-items: center;
@@ -203,7 +205,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         .dpad-btn:active { background: rgba(0, 180, 216, 0.45); }
-        .dpad-center-btn { background: rgba(0, 36, 58, 0.4); border: 2px solid #00b4d8; display: flex; align-items: center; justify-content: center; }
+        .dpad-center-btn { background: rgba(0, 36, 58, 0.4); border: 2px solid #00BFFF; display: flex; align-items: center; justify-content: center; }
         .dpad-center-btn svg { width: min(82%, 80px); height: min(82%, 80px); }
 
         #mobile-actions {
@@ -220,8 +222,8 @@
         .mob-act-btn {
             width: 46px; height: 46px;
             background: rgba(0, 36, 58, 0.82);
-            border: 2px solid #00b4d8;
-            color: #90e0ef;
+            border: 2px solid #00BFFF;
+            color: #EAFAFF;
             font-size: 26px;
             display: flex; align-items: center; justify-content: center;
             position: relative;
@@ -233,7 +235,7 @@
         .mob-act-btn:active { background: rgba(0, 180, 216, 0.4); }
         .mob-count {
             position: absolute; top: -5px; right: -5px;
-            background: #90e0ef; color: #00111a;
+            background: #EAFAFF; color: #010810;
             font-size: 11px; padding: 1px 3px; font-weight: bold;
             font-family: 'VT323', monospace; line-height: 1;
         }
@@ -246,8 +248,8 @@
             background: var(--color-panel); padding: 6px; flex: 1;
         }
         .mob-bar-row { display: flex; align-items: center; gap: 5px; }
-        .mob-bar-label { font-family:'VT323',monospace; font-size:9px; text-transform:uppercase; color:#00b4d8; letter-spacing:0.05em; width:22px; text-align:right; flex-shrink:0; }
-        .mob-bar-track { flex:1; height:8px; background:#000a10; overflow:hidden; }
+        .mob-bar-label { font-family:'VT323',monospace; font-size:9px; text-transform:uppercase; color:#00BFFF; letter-spacing:0.05em; width:22px; text-align:right; flex-shrink:0; }
+        .mob-bar-track { flex:1; height:8px; background:#000508; overflow:hidden; }
         .mob-bar-fill { height:100%; width:0%; transition:width 0.3s; }
         .mob-bar-val { font-family:'VT323',monospace; font-size:9px; color:#a8d8c0; width:28px; flex-shrink:0; }
 
@@ -276,24 +278,19 @@
                 display: block;
                 width: 100%;
                 height: auto;
-                aspect-ratio: 704 / 576;
+                aspect-ratio: 800 / 704;
                 max-height: 100%;
             }
             #menu-overlay .mmo-panel, #confirm-overlay .mmo-panel { width: 92vw; max-height: 88dvh; overflow-y: auto; }
             #game-log { display: block !important; flex-grow: 0; flex-shrink: 0; height: 80px; min-height: 0; overflow-y: auto; }
             #game-log .opacity-40 { opacity: 0.5; color: #a8d8c0; }
-
-            /* SHAPE-TEST OVERRIDES - hide hub overlay + force black canvas + force mobile-controls visible */
-            #start-overlay { display: none !important; }
-            canvas#gameCanvas { background: #000 !important; }
-            #mobile-controls.hidden { display: flex !important; }
         }
         #mobile-controls.left-handed { flex-direction: row-reverse; }
         #mobile-controls.left-handed #mobile-actions { flex-direction: row-reverse; }
 
         .panel-content { padding: 8px 10px; }
 
-        /* Desktop panels — shown at ≥768px, independent of Tailwind */
+        /* Desktop panels - shown at ≥768px, independent of Tailwind */
         @media (min-width: 768px) {
             #desk-left-aside, #desk-right-aside, #desk-hotbar { display: none !important; }
             #desk-bottom-hud { display: flex !important; }
@@ -303,11 +300,13 @@
         @media (max-width: 767px) {
             #desk-left-aside, #desk-right-aside, #desk-hotbar, #desk-bottom-hud { display: none !important; }
         }
-
-        /* SHAPE-TEST GLOBAL OVERRIDES - hide hub overlay everywhere + black canvas */
-        #start-overlay { display: none !important; }
-        canvas#gameCanvas { background: #000 !important; }
         #canvas-wrap { position: relative; width: 100%; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center; }
+        /* Hub-in-frame: when the active start panel is the hub, the overlay is
+           confined to the gameport (not fixed/full-screen) so the DS header
+           sits above it and the dpad / flail / potions / HP-ARM HUD sit below
+           it, exactly like DS. Menus/charcreate keep the full-screen overlay. */
+        #start-overlay.hub-inframe { position: absolute !important; inset: 0; z-index: 5; background: transparent !important; align-items: stretch; justify-content: stretch; padding: 0; }
+        #start-overlay.hub-inframe > #start-hub { width: 100%; max-width: none; height: 100%; max-height: none; min-height: 0; margin: 0; border: none; box-shadow: none; border-radius: 0; background: transparent; padding: 0; gap: 0; }
         #desk-bottom-hud {
             display: none;
             height: 155px;
@@ -334,9 +333,42 @@
             overflow: hidden;
         }
 
-        .menu-scroll { background: linear-gradient(180deg, #001825 0%, #00243a 45%, #00243a 55%, #001825 100%); border: 6px solid var(--color-primary); box-shadow: 0 0 6px 2px rgba(0, 180, 216,0.55), 0 0 28px 4px rgba(0, 180, 216,0.28), 0 0 70px rgba(0, 180, 216,0.12), inset 0 0 40px rgba(0,0,0,0.45); width: 640px; max-width: 92vw; max-height: 92dvh; overflow-y: auto; scrollbar-width: none; }
+        .menu-scroll {
+            background: linear-gradient(180deg, #001825 0%, #061A2E 45%, #061A2E 55%, #001825 100%);
+            border: 6px solid var(--color-primary);
+            box-shadow: 0 0 6px 2px rgba(0, 180, 216,0.55), 0 0 28px 4px rgba(0, 180, 216,0.28), 0 0 70px rgba(0, 180, 216,0.12), inset 0 0 40px rgba(0,0,0,0.45);
+            width: min(640px, calc(100vw - 3.2vw)); height: calc(100dvh - 3.2vw); max-height: calc(100dvh - 3.2vw);
+            margin: 1.6vw 0;
+            overflow: hidden auto; scrollbar-width: none;
+            display: flex; flex-direction: column;
+            padding: 1.5vw; gap: 1.5vw; box-sizing: border-box;
+        }
         .menu-scroll::-webkit-scrollbar { display: none; }
-        .start-menu-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 24px; font-family: 'VT323', monospace; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-glow); background: transparent; border: none; border-bottom: 2px solid var(--color-shadow); cursor: pointer; text-shadow: 2px 2px 0 var(--color-shadow); text-align: left; transition: background 0.12s, padding-left 0.12s; }
+
+        /* Unified menu spec - zone classes
+           Logo container is the FLEX/STRETCH component: it grows to fill leftover
+           panel height; min-height keeps it from collapsing on short viewports.
+           All 5 inter-container gaps are uniform at 1.5vw (panel gap + padding). */
+        .logo-container { flex: 1 1 auto; min-height: calc(240px - 1.5vw); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-container svg, .logo-container img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .tagline-container { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 8px 16px; }
+        .tagline-line { flex: 1; height: 1px; }
+        .tagline-line.left  { background: linear-gradient(to right, transparent, var(--color-primary)); }
+        .tagline-line.right { background: linear-gradient(to left,  transparent, var(--color-primary)); }
+        .tagline-text { font-family: 'VT323', monospace; font-size: 0.95rem; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.35em; white-space: nowrap; }
+        .menu-buttons { flex: 0 0 auto; display: flex; flex-direction: column; }
+        .challenge-container { flex: 0 0 auto; padding: 0.75vw 16px 8px; border-top: 2px solid var(--color-shadow); }
+        .challenge-label { font-family: 'VT323', monospace; font-size: 0.75rem; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.15em; margin: 0 0 0.75vw 0; }
+        .challenge-row { display: flex; gap: 8px; align-items: center; }
+        .challenge-input { flex: 1; padding: 8px 10px; background: var(--color-panel); border: 2px solid var(--color-primary); color: var(--color-glow); font-family: 'VT323', monospace; font-size: 0.9rem; outline: none; min-width: 0; box-sizing: border-box; }
+        .challenge-go { padding: 8px 14px; font-family: 'VT323', monospace; font-size: 1rem; text-transform: uppercase; background: var(--color-primary); color: var(--color-bg-dark); border: none; cursor: pointer; white-space: nowrap; }
+        .menu-footer { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0.75vw 16px; opacity: 0.6; }
+        .footer-line { flex: 1; height: 1px; }
+        .footer-line.left  { background: linear-gradient(to right, transparent, var(--color-glow)); }
+        .footer-line.right { background: linear-gradient(to left,  transparent, var(--color-glow)); }
+        .footer-text { font-family: 'VT323', monospace; font-size: 13px; color: var(--color-glow); text-transform: uppercase; letter-spacing: 0.3em; white-space: nowrap; }
+
+        .start-menu-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 3vw 24px; font-family: 'VT323', monospace; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-glow); background: transparent; border: none; border-bottom: 2px solid var(--color-shadow); cursor: pointer; text-shadow: 2px 2px 0 var(--color-shadow); text-align: left; transition: background 0.12s, padding-left 0.12s; }
         .start-menu-btn:hover { background: rgba(0, 180, 216,0.1); color: #fff; padding-left: 28px; }
         .start-menu-btn:last-child { border-bottom: none; }
         .start-back-btn { font-family: 'VT323', monospace; font-size: 1.1rem; text-transform: uppercase; padding: 6px 14px; color: var(--color-primary); background: transparent; border: 4px solid var(--color-primary); cursor: pointer; letter-spacing: 0.05em; }
@@ -358,16 +390,16 @@
         <div style="font-size:1.1rem;color:#00b4d8;letter-spacing:0.06em">XPL0R3R is portrait only</div>
     </div>
 
-    <header class="w-full bg-[#00243a] border-4 border-b-0 border-[#00b4d8] px-3 py-2 flex justify-between items-center z-10 box-border shrink-0">
-        <h1 class="text-2xl text-[#90e0ef] uppercase tracking-tighter font-black italic pixel-text-shadow leading-none">XPL0<span class="text-white">R3R</span></h1>
+    <header class="w-full bg-[#061A2E] border-4 border-b-0 border-[#00BFFF] px-3 py-2 flex justify-between items-center z-10 box-border shrink-0">
+        <h1 class="text-2xl text-[#EAFAFF] uppercase tracking-tighter font-black italic pixel-text-shadow leading-none">XPL0<span class="text-white">R3R</span></h1>
 
         <div class="flex items-center gap-4 ml-auto">
             <div class="text-center">
-                <div class="text-[10px] text-[#00b4d8] uppercase font-bold">Floor</div>
-                <div class="text-xl text-[#90e0ef] font-bold" id="floor-display">1 / 3</div>
+                <div class="text-[10px] text-[#00BFFF] uppercase font-bold">Floor</div>
+                <div class="text-xl text-[#EAFAFF] font-bold" id="floor-display">1 / 3</div>
             </div>
             <div class="text-center">
-                <div class="text-[10px] text-[#00b4d8] uppercase font-bold">Timer</div>
+                <div class="text-[10px] text-[#00BFFF] uppercase font-bold">Timer</div>
                 <div class="text-xl text-red-400 font-bold" id="timer">05:00</div>
             </div>
             <!-- SILVER DISABLED: mobile silver counter hidden -->
@@ -1016,42 +1048,9 @@
 
                     <!-- ── Hub / Town ────────────────────────────────────────── -->
                     <div id="start-hub" class="menu-scroll relative z-10 hidden">
-                        <!-- Server status bar -->
-                        <div class="flex items-center justify-between px-4 py-1 border-b-2 border-[#000a10]" style="background:#001218">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#00b4d8;letter-spacing:0.12em">&#9632; TACTICON REALM &nbsp;·&nbsp; SERVER: ONLINE</span>
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#00b4d8">1 hero online</span>
-                        </div>
-                        <!-- Hero HUD -->
-                        <div class="flex items-center gap-3 px-5 py-3 border-b-4 border-[#000a10]" style="background:linear-gradient(180deg,#001825 0%,#001c2b 100%)">
-                            <div>
-                                <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Hero</div>
-                                <div id="hub-hero-name" style="font-family:'VT323',monospace;font-size:1.7rem;color:#90e0ef;text-transform:uppercase;line-height:1.1">HERO</div>
-                            </div>
-                            <div class="border-l-2 border-[#000a10] pl-3 flex items-center gap-2">
-                                <canvas id="hub-icon-class" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
-                                <div>
-                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Class</div>
-                                    <div id="hub-hero-class" style="font-family:'VT323',monospace;font-size:1.4rem;color:#e2e8f0;text-transform:uppercase;line-height:1.1">—</div>
-                                </div>
-                            </div>
-                            <div class="border-l-2 border-[#000a10] pl-3 flex items-center gap-2">
-                                <canvas id="hub-icon-level" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
-                                <div>
-                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Level</div>
-                                    <div id="hub-hero-level" style="font-family:'VT323',monospace;font-size:1.4rem;color:#fde047;line-height:1.1">1</div>
-                                </div>
-                            </div>
-                            <div class="border-l-2 border-[#000a10] pl-3 ml-auto flex items-center gap-2">
-                                <canvas id="hub-icon-gold" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px;flex-shrink:0"></canvas>
-                                <div>
-                                    <div style="font-family:'VT323',monospace;font-size:10px;color:#00b4d8;letter-spacing:0.18em;text-transform:uppercase">Gold</div>
-                                    <div id="hub-hero-gold" style="font-family:'VT323',monospace;font-size:1.4rem;color:#eab308;line-height:1.1">0g</div>
-                                </div>
-                            </div>
-                        </div>
                         <!-- World map scene -->
-                        <div id="hub-scene-wrap" style="position:relative;width:100%;overflow:hidden">
-                          <svg id="hub-scene-svg" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+                        <div id="hub-scene-wrap" style="position:relative;width:100%;flex:1 1 0;min-height:0;overflow:hidden">
+                          <svg id="hub-scene-svg" viewBox="0 0 220 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="display:block;position:absolute;top:0;left:0;width:100%;height:100%">
                             <!-- defs -->
                             <defs><radialGradient id="clearing-glow" cx="50%" cy="76%" r="45%"><stop offset="0%" stop-color="#fbbf24" stop-opacity="0.07"/><stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/></radialGradient></defs>
                             <rect width="220" height="300" fill="#0d1a08"/>
@@ -1241,16 +1240,6 @@
                         </div>
                         <!-- Interaction prompt -->
                         <div id="hub-interact-prompt" style="display:none;font-family:'VT323',monospace;font-size:1.3rem;color:#90e0ef;text-align:center;padding:5px 10px;background:#001218;border-top:2px solid #000a10;letter-spacing:0.06em"></div>
-                        <!-- Event log strip -->
-                        <div id="hub-event-log" style="background:#000d18;border-top:2px solid #000a10;max-height:48px;overflow-y:auto;padding:4px 10px;font-family:'VT323',monospace;font-size:0.85rem;color:#00b4d8;line-height:1.4"></div>
-                        <!-- Footer / delete save -->
-                        <div class="px-5 pb-5 flex items-center justify-between border-t-2 border-[#000a10] pt-4 mt-1">
-                            <span style="font-family:'VT323',monospace;font-size:11px;color:#334155;letter-spacing:0.1em">XPL0R3R v0.0.23</span>
-                            <button onclick="deleteSave()"
-                                style="font-family:'VT323',monospace;font-size:1rem;color:#b91c1c;background:transparent;border:2px solid #7f1d1d;padding:4px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">
-                                Delete Save
-                            </button>
-                        </div>
                     </div>
 
                     <!-- ── Character Sheet (Task 4) ───────────────────────── -->
@@ -1439,6 +1428,7 @@
 
                         <button onclick="toggleMenu()" class="btn-pixel">Close Menu</button>
                         <button id="quit-btn-menu" onclick="showQuitConfirm()" class="btn-pixel border-red-800 text-red-500">Surface Exit</button>
+                        <button onclick="deleteSave()" class="btn-pixel border-red-800 text-red-500">Delete Save</button>
                     </div>
                 </div>
                 <div id="confirm-overlay" class="modal-overlay hidden">
@@ -1553,8 +1543,8 @@
                 </div>
                 </div><!-- /canvas-wrap -->
                 <div id="game-log" class="md:hidden w-full px-2 py-1 text-[11px] leading-snug" style="font-family:'VT323',monospace;background:var(--color-panel);border-top:4px solid var(--color-primary);overflow-y:auto;min-height:0;color:#a8d8c0"></div>
-                <div id="quest-tracker" style="display:none;background:#000d18;border-bottom:2px solid #000a10;padding:3px 8px;font-family:'VT323',monospace;font-size:0.8rem;color:#00b4d8;width:100%;box-sizing:border-box"></div>
-                <div id="mobile-controls" class="hidden">
+                                <div id="quest-tracker" style="display:none;background:#000d18;border-bottom:2px solid #000a10;padding:3px 8px;font-family:'VT323',monospace;font-size:0.8rem;color:#00b4d8;width:100%;box-sizing:border-box"></div>
+                <div id="mobile-controls">
                     <div id="mob-left-col">
                     <div id="mob-bars">
                         <div class="mob-bar-row">
@@ -1567,20 +1557,20 @@
                             <div class="mob-bar-track"><div id="mob-arm-fill" class="mob-bar-fill" style="background:#30a8e8;width:0%"></div></div>
                             <span class="mob-bar-val" id="mob-arm-val">0</span>
                         </div>
-                        <div id="mob-dmg-row" style="display:none;margin-top:3px;border:2px solid #00b4d8;padding:2px 6px;font-family:'VT323',monospace;font-size:12px;color:#c040f8;letter-spacing:0.03em;text-align:center;width:100%;box-sizing:border-box">Active Damage Boost: <span id="mob-dmg-val">+0%</span></div>
-                        <div id="mob-floor-row" style="margin-top:3px;font-family:'VT323',monospace;font-size:12px;color:#90e0ef;text-align:center;letter-spacing:0.05em">Floor 1 / 3</div>
+                        <div id="mob-dmg-row" style="display:none;margin-top:3px;border:2px solid #00BFFF;padding:2px 6px;font-family:'VT323',monospace;font-size:12px;color:#c040f8;letter-spacing:0.03em;text-align:center;width:100%;box-sizing:border-box">Active Damage Boost: <span id="mob-dmg-val">+0%</span></div>
+                        <div id="mob-floor-row" style="margin-top:3px;font-family:'VT323',monospace;font-size:12px;color:#EAFAFF;text-align:center;letter-spacing:0.05em">Floor 1 / 3</div>
                     </div>
                     <div id="mobile-actions">
                         <div class="flex flex-col items-center gap-0.5">
-                            <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Armour</span>
+                            <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Armour</span>
                             <div class="mob-act-btn" ontouchstart="useArmourPotion();return false;" onclick="useArmourPotion()"><svg viewBox="0 0 32 32" width="26" height="26" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#1878b0"/><rect x="14" y="5" width="4" height="3" fill="#2898d0"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#1888c8"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#30a8e8"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#80d0f8" opacity="0.65"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#c0eeff" opacity="0.55"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#0a5888"/><rect x="12.5" y="9.5" width="7" height="1" fill="#1878b0"/></svg><span class="mob-count" id="m-armour-count">0</span></div>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
-                            <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Health</span>
+                            <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Health</span>
                             <div class="mob-act-btn" ontouchstart="usePotion();return false;" onclick="usePotion()"><svg viewBox="0 0 32 32" width="26" height="26" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#700818"/><rect x="14" y="5" width="4" height="3" fill="#9a1020"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#c01828"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#e02838"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#ff6070" opacity="0.55"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#ffb0b0" opacity="0.45"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#580010"/><rect x="12.5" y="9.5" width="7" height="1" fill="#880018"/></svg><span class="mob-count" id="m-pot-count2">3</span></div>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
-                            <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Damage</span>
+                            <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:9px;text-transform:uppercase;letter-spacing:0.05em">Damage</span>
                             <div class="mob-act-btn" ontouchstart="useDamagePot();return false;" onclick="useDamagePot()"><svg viewBox="0 0 32 32" width="26" height="26" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#3a0870"/><rect x="14" y="5" width="4" height="3" fill="#5a1890"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#6020a0"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#8840c0"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#b060e0" opacity="0.6"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#d090ff" opacity="0.5"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#280860"/><rect x="12.5" y="9.5" width="7" height="1" fill="#4a1080"/></svg><span class="mob-count" id="m-dmg-count">0</span></div>
                         </div>
                     </div>
@@ -1590,7 +1580,7 @@
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(0,-1);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(0,-1)">▲</button>
                         <div></div>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(-1,0);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(-1,0)">◀</button>
-                        <button class="dpad-btn dpad-center-btn" ontouchstart="centerBtnAction();return false;" onclick="centerBtnAction()"><svg viewBox="0 0 40 40" width="48" height="48" fill="none"><line x1="6" y1="35" x2="16" y2="25" stroke="#1e1008" stroke-width="5.5" stroke-linecap="round"/><line x1="6" y1="35" x2="16" y2="25" stroke="#3a1e0c" stroke-width="3.5" stroke-linecap="round"/><line x1="8" y1="32" x2="10.5" y2="29.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="29" x2="13.5" y2="26.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="19.5" cy="22.5" rx="3" ry="1.8" transform="rotate(-45 19.5 22.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="23.5" cy="18.5" rx="3" ry="1.8" transform="rotate(-45 23.5 18.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="27.5" cy="14.5" rx="3" ry="1.8" transform="rotate(-45 27.5 14.5)" fill="none" stroke="#5a6878" stroke-width="2"/><circle cx="32" cy="10" r="15" fill="#00b4d8" opacity="0.14"/><circle cx="32" cy="10" r="11" fill="#90e0ef" opacity="0.09"/><circle cx="32" cy="10" r="8" fill="#0a2018"/><circle cx="32" cy="10" r="7" fill="#226644"/><circle cx="32" cy="10" r="6" fill="#2e9060"/><circle cx="32" cy="10" r="5" fill="#38a870"/><ellipse cx="29.5" cy="7.5" rx="2.8" ry="1.8" fill="#7ae8b8" opacity="0.78"/><polygon points="32,2 33.5,5 30.5,5" fill="#111"/><polygon points="32,18 33.5,15 30.5,15" fill="#111"/><polygon points="24,10 27,8.5 27,11.5" fill="#111"/><polygon points="40,10 37,8.5 37,11.5" fill="#111"/><polygon points="32,2 32.5,3.5 31.5,3.5" fill="#333" opacity="0.85"/></svg></button>
+                        <button class="dpad-btn dpad-center-btn" ontouchstart="centerBtnAction();return false;" onclick="centerBtnAction()"><span class="flail-icon"><svg viewBox="0 0 40 40" width="48" height="48" fill="none"><line x1="6" y1="35" x2="16" y2="25" stroke="#1e1008" stroke-width="5.5" stroke-linecap="round"/><line x1="6" y1="35" x2="16" y2="25" stroke="#3a1e0c" stroke-width="3.5" stroke-linecap="round"/><line x1="8" y1="32" x2="10.5" y2="29.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="29" x2="13.5" y2="26.5" stroke="#5a2e14" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="19.5" cy="22.5" rx="3" ry="1.8" transform="rotate(-45 19.5 22.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="23.5" cy="18.5" rx="3" ry="1.8" transform="rotate(-45 23.5 18.5)" fill="none" stroke="#5a6878" stroke-width="2"/><ellipse cx="27.5" cy="14.5" rx="3" ry="1.8" transform="rotate(-45 27.5 14.5)" fill="none" stroke="#5a6878" stroke-width="2"/><circle cx="32" cy="10" r="15" fill="#00BFFF" opacity="0.14"/><circle cx="32" cy="10" r="11" fill="#EAFAFF" opacity="0.09"/><circle cx="32" cy="10" r="8" fill="#0a2018"/><circle cx="32" cy="10" r="7" fill="#226644"/><circle cx="32" cy="10" r="6" fill="#2e9060"/><circle cx="32" cy="10" r="5" fill="#38a870"/><ellipse cx="29.5" cy="7.5" rx="2.8" ry="1.8" fill="#7ae8b8" opacity="0.78"/><polygon points="32,2 33.5,5 30.5,5" fill="#111"/><polygon points="32,18 33.5,15 30.5,15" fill="#111"/><polygon points="24,10 27,8.5 27,11.5" fill="#111"/><polygon points="40,10 37,8.5 37,11.5" fill="#111"/><polygon points="32,2 32.5,3.5 31.5,3.5" fill="#333" opacity="0.85"/></svg></span></button>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(1,0);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(1,0)">▶</button>
                         <div></div>
                         <button class="dpad-btn" style="font-size:22px" ontouchstart="mobileHoldStart(0,1);return false;" ontouchend="mobileHoldEnd()" ontouchcancel="mobileHoldEnd()" onclick="mobileMove(0,1)">▼</button>
@@ -1605,7 +1595,7 @@
         <div id="desk-bottom-hud">
             <!-- LEFT: Activity Log -->
             <div id="desk-log-panel">
-                <div style="font-family:'VT323',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#48cae4;padding-bottom:3px;margin-bottom:4px;border-bottom:1px solid #000a10;flex-shrink:0">Activity Log</div>
+                <div style="font-family:'VT323',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#00E5FF;padding-bottom:3px;margin-bottom:4px;border-bottom:1px solid #000508;flex-shrink:0">Activity Log</div>
                 <div id="game-log-desk" style="flex:1;overflow-y:auto;font-family:'VT323',monospace;font-size:11px;color:#a8d8c0;min-height:0;line-height:1.35;scrollbar-width:none"></div>
             </div>
             <!-- RIGHT: Vitals + Quest + Hotbar -->
@@ -1613,41 +1603,41 @@
                 <!-- Vitals -->
                 <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
                     <div style="display:flex;align-items:center;gap:8px">
-                        <span style="font-family:'VT323',monospace;font-size:15px;color:#00b4d8;width:34px;text-align:right;flex-shrink:0">HP</span>
-                        <div style="flex:1;background:#1a0010;height:12px;border:1px solid #00b4d8;overflow:hidden"><div id="desk-hp-fill" style="height:100%;background:#e02838;width:100%;transition:width 0.15s"></div></div>
-                        <span id="desk-hp-val" style="font-family:'VT323',monospace;font-size:15px;color:#00b4d8;width:44px;text-align:right">100</span>
+                        <span style="font-family:'VT323',monospace;font-size:15px;color:#00BFFF;width:34px;text-align:right;flex-shrink:0">HP</span>
+                        <div style="flex:1;background:#1a0010;height:12px;border:1px solid #00BFFF;overflow:hidden"><div id="desk-hp-fill" style="height:100%;background:#e02838;width:100%;transition:width 0.15s"></div></div>
+                        <span id="desk-hp-val" style="font-family:'VT323',monospace;font-size:15px;color:#00BFFF;width:44px;text-align:right">100</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px">
-                        <span style="font-family:'VT323',monospace;font-size:15px;color:#00b4d8;width:34px;text-align:right;flex-shrink:0">ARM</span>
-                        <div style="flex:1;background:#001830;height:12px;border:1px solid #00b4d8;overflow:hidden"><div id="desk-arm-fill" style="height:100%;background:#30a8e8;width:0%;transition:width 0.15s"></div></div>
-                        <span id="desk-arm-val" style="font-family:'VT323',monospace;font-size:15px;color:#00b4d8;width:44px;text-align:right">0</span>
+                        <span style="font-family:'VT323',monospace;font-size:15px;color:#00BFFF;width:34px;text-align:right;flex-shrink:0">ARM</span>
+                        <div style="flex:1;background:#001830;height:12px;border:1px solid #00BFFF;overflow:hidden"><div id="desk-arm-fill" style="height:100%;background:#30a8e8;width:0%;transition:width 0.15s"></div></div>
+                        <span id="desk-arm-val" style="font-family:'VT323',monospace;font-size:15px;color:#00BFFF;width:44px;text-align:right">0</span>
                     </div>
                     <div id="desk-dmg-row" style="display:none;font-family:'VT323',monospace;font-size:14px;color:#c040f8;letter-spacing:0.03em;padding-left:42px">Dmg Boost: <span id="desk-dmg-val">+0%</span></div>
                 </div>
                 <!-- Hotbar -->
                 <div style="display:flex;align-items:flex-start;justify-content:center;gap:16px;flex-shrink:0">
                     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-                        <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Flail</span>
+                        <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Flail</span>
                         <div style="display:flex;align-items:center;gap:5px">
                             <div class="item-slot active" id="slot-1" onclick="swingFlail()" title="Swing Flail [1/Z]">
-                                <svg viewBox="0 0 40 40" width="40" height="40" fill="none"><path d="M8 32 L18 22" stroke="#5c3a21" stroke-width="5"/><path d="M18 22 Q 22 26, 26 18" stroke="#94a3b8" stroke-width="2"/><circle cx="30" cy="12" r="14" fill="#00b4d8" opacity="0.14"/><circle cx="30" cy="12" r="10" fill="#90e0ef" opacity="0.09"/><circle cx="30" cy="12" r="8" fill="#0a2018"/><circle cx="30" cy="12" r="7" fill="#226644"/><circle cx="30" cy="12" r="6" fill="#2e9060"/><circle cx="30" cy="12" r="5" fill="#38a870"/><ellipse cx="27.5" cy="9.5" rx="2.5" ry="1.6" fill="#7ae8b8" opacity="0.78"/><path d="M30 3 L30 6 M39 12 L36 12 M30 21 L30 18" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></svg>
-                                <span class="absolute -top-1 -right-1 bg-[#90e0ef] text-[#00111a] text-[10px] px-1 font-bold">1</span>
+                                <svg viewBox="0 0 40 40" width="40" height="40" fill="none"><path d="M8 32 L18 22" stroke="#5c3a21" stroke-width="5"/><path d="M18 22 Q 22 26, 26 18" stroke="#94a3b8" stroke-width="2"/><circle cx="30" cy="12" r="14" fill="#00BFFF" opacity="0.14"/><circle cx="30" cy="12" r="10" fill="#EAFAFF" opacity="0.09"/><circle cx="30" cy="12" r="8" fill="#0a2018"/><circle cx="30" cy="12" r="7" fill="#226644"/><circle cx="30" cy="12" r="6" fill="#2e9060"/><circle cx="30" cy="12" r="5" fill="#38a870"/><ellipse cx="27.5" cy="9.5" rx="2.5" ry="1.6" fill="#7ae8b8" opacity="0.78"/><path d="M30 3 L30 6 M39 12 L36 12 M30 21 L30 18" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></svg>
+                                <span class="absolute -top-1 -right-1 bg-[#EAFAFF] text-[#010810] text-[10px] px-1 font-bold">1</span>
                             </div>
                             <span style="display:inline-block;width:28px"></span>
                         </div>
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-                        <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Health</span>
+                        <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Health</span>
                         <div style="display:flex;align-items:center;gap:5px">
                             <div class="item-slot" id="slot-2" onclick="usePotion()" title="Health Potion [2/X]">
                                 <svg viewBox="0 0 32 32" width="36" height="36" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#700818"/><rect x="14" y="5" width="4" height="3" fill="#9a1020"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#c01828"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#e02838"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#ff6070" opacity="0.55"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#ffb0b0" opacity="0.45"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#580010"/><rect x="12.5" y="9.5" width="7" height="1" fill="#880018"/></svg>
-                                <span class="absolute -top-1 -right-1 bg-[#90e0ef] text-[#00111a] text-[10px] px-1 font-bold">2</span>
+                                <span class="absolute -top-1 -right-1 bg-[#EAFAFF] text-[#010810] text-[10px] px-1 font-bold">2</span>
                             </div>
-                            <span style="color:#90e0ef;font-weight:bold;font-size:1.5rem;line-height:1;font-family:'VT323',monospace;width:28px">×<span id="pot-count">0</span></span>
+                            <span style="color:#EAFAFF;font-weight:bold;font-size:1.5rem;line-height:1;font-family:'VT323',monospace;width:28px">×<span id="pot-count">0</span></span>
                         </div>
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-                        <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Armour</span>
+                        <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Armour</span>
                         <div style="display:flex;align-items:center;gap:5px">
                             <div class="item-slot" id="slot-3" onclick="useArmourPotion()" title="Armour Potion [3/C]">
                                 <svg viewBox="0 0 32 32" width="36" height="36" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#1878b0"/><rect x="14" y="5" width="4" height="3" fill="#2898d0"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#1888c8"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#30a8e8"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#80d0f8" opacity="0.65"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#c0eeff" opacity="0.55"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#0a5888"/><rect x="12.5" y="9.5" width="7" height="1" fill="#1878b0"/></svg>
@@ -1657,7 +1647,7 @@
                         </div>
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-                        <span style="font-family:'VT323',monospace;color:#00b4d8;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Damage</span>
+                        <span style="font-family:'VT323',monospace;color:#00BFFF;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;align-self:center">Damage</span>
                         <div style="display:flex;align-items:center;gap:5px">
                             <div class="item-slot" id="slot-4" onclick="useDamagePot()" title="Damage Potion [4/V]">
                                 <svg viewBox="0 0 32 32" width="36" height="36" fill="none"><rect x="12" y="1" width="8" height="3" rx="1" fill="#7a3818"/><rect x="13" y="2" width="6" height="1.5" fill="#9a4828"/><rect x="13" y="4" width="6" height="4" rx="1" fill="#3a0870"/><rect x="14" y="5" width="4" height="3" fill="#5a1890"/><path d="M9 10 Q6 12 6 18 Q6 27 16 27 Q26 27 26 18 Q26 12 23 10 Z" fill="#6020a0"/><path d="M10 11 Q8 13 8 18 Q8 25 16 25 Q24 25 24 18 Q24 13 22 11 Z" fill="#8840c0"/><ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#b060e0" opacity="0.6"/><ellipse cx="11.5" cy="14.5" rx="1.2" ry="2" fill="#d090ff" opacity="0.5"/><rect x="12" y="9" width="8" height="2" rx="0.5" fill="#280860"/><rect x="12.5" y="9.5" width="7" height="1" fill="#4a1080"/></svg>
@@ -2245,10 +2235,9 @@
           // world-canvas dims when we have them; otherwise fall back to zone
           // dims so tiny zones never produce negative clamps.
           const wc = document.getElementById('world-canvas');
-          const tw = wc && zone.cols ? wc.width / zone.cols : 0;
-          const th = wc && zone.rows ? wc.height / zone.rows : 0;
-          const viewW = tw > 0 ? Math.max(1, Math.floor(wc.width / tw)) : zone.cols;
-          const viewH = th > 0 ? Math.max(1, Math.floor(wc.height / th)) : zone.rows;
+          const _tile = (wc && zone.cols && zone.rows) ? Math.max(wc.width / zone.cols, wc.height / zone.rows) : 0;
+          const viewW = _tile > 0 ? Math.max(1, Math.floor(wc.width / _tile)) : zone.cols;
+          const viewH = _tile > 0 ? Math.max(1, Math.floor(wc.height / _tile)) : zone.rows;
           camera.x = Math.max(0, Math.min(Math.max(0, zone.cols - viewW), worldPlayer.x - Math.floor(viewW / 2)));
           camera.y = Math.max(0, Math.min(Math.max(0, zone.rows - viewH), worldPlayer.y - Math.floor(viewH / 2)));
         }
@@ -4590,6 +4579,7 @@
         }
 
         const PATCH_NOTES = [
+            { version: 'v0.0.24', title: 'In-game UI rebuilt to match Dungeon Swingers', date: '2026-05-17', sections: [{ heading: 'UI', items: ['In-game UI rebuilt as Dungeon Swingers chrome: header bar, minimap, mobile dpad/flail/potion buttons, HP/ARM HUD, desktop bottom HUD and full stylesheet ported from DS (DS palette). Only the gameport viewport content differs between the two games. Removed leftover SHAPE-TEST debug CSS that had blacked out the gameport.', 'Hub decluttered: removed TACTICON REALM banner, HERO/CLASS/LEVEL/GOLD card, flavour event-log strip and on-screen version string. Delete Save relocated from the hub into the in-game MENU overlay.', 'Hub gameport now fills the frame with square cover-fit tiles and a player-following camera (no more dead space below the world); canvas scaling matched to DS tile-for-tile.', 'Hub-in-frame: the hub renders inside the DS gameport with the header above and the dpad/flail/potions/HP-ARM below it, exactly like DS. Menus and character creation keep their full-screen overlay.'] }] },
             { version: 'v0.0.23', title: 'Mobile controls + class picker grid', date: '2026-05-14', sections: [{ heading: 'Updates', items: ['Mobile controls pinned to bottom: 0 with safe-area insets (env(safe-area-inset-left/right)).', 'Game canvas bordered on all 4 sides with primary colour.', 'Class picker redesigned as 2x2 button grid. Character appearance panel added with canvas preview + per-slot customisation.'] }] },
             { version: 'v0.0.22', title: 'Visual Atmosphere (Phase 5 — full roadmap complete)', date: '2026-05-09', sections: [{ heading: 'Polish', items: ['Overworld weather: clear/rain/leaves/mist cycle every 30-60s. Rain = slanted blue-grey lines + canvas wash. Leaves = green/brown drift with sine bob. Mist = stacked translucent grey puffs. Hub limited to mist only.', 'Day-night cycle: 5-minute full cycle, 7 keyframes (dawn warm orange → day clear → dusk purple → dusk-fade → night peak deep blue). Multiply-blend overlay; hub stays at day.', 'Ambient details: hub chimney smoke at tavern + merchant; deterministic water sparkles on pond tiles; subtle tree sway; gate banner flap; fireflies that spawn on night-time grass tiles (pool of 6).', 'Lore shrines glow stronger purple at night.', 'Performance: ~50-particle peak count on overworld at night, throttled at 15fps tick.', 'PHASE 5 COMPLETE — entire EXP 5-phase roadmap shipped (Hub completion → Above-world expansion → Player polish → Dungeon biomes → Atmosphere).'] }] },
             { version: 'v0.0.20', title: 'Dungeon Biome Variation (Phase 4)', date: '2026-05-09', sections: [{ heading: 'Visual', items: ['DUNGEON_BIOMES registry: standard / frost / ash / rune palettes (wall/mortar/edgeGlow/floor/accent/particle).', 'drawTile() WALL branches: frost (ice blocks + shimmer), ash (scorched + ember-cracks), rune (glowing glyphs with pulse). FLOOR branches: frost (ice + reflective specular), ash (cracked earth + ember spots), rune (arcane circles + pulse). Standard preserved byte-identical.', 'Ambient particle layer (40-particle pool): snow drifts down (frost), embers float up (ash), violet sparks scatter (rune). Standard biome has no particles.', 'BIOME selector row added to dungeon-select panel — 4 buttons with selected-state highlight. Flag persists across runs.', 'BFS wallDepth fade preserved across all biomes. Mob types reused (no biome-themed enemies in this phase — flagged for future).'] }] },
@@ -7310,11 +7300,16 @@
           // For the hub (11×15) this matches today's behaviour; for bigger
           // zones in 2B+ this still produces a fixed-aspect viewport that the
           // camera scrolls within.
-          const cw = wc.parentElement ? wc.parentElement.clientWidth : 400;
+          const _p = wc.parentElement;
+          const cw = _p ? _p.clientWidth : 400;
+          const chh = _p ? _p.clientHeight : Math.round(cw * H / W);
           wc.width = cw;
-          wc.height = Math.round(cw * H / W);
+          wc.height = chh;
           const ctx2d = wc.getContext('2d');
-          const tw = cw / W, th = wc.height / H;
+          // Fill the gameport like DS: square tiles that "cover" the frame,
+          // camera scrolls within the grid (updateCamera uses the same tile).
+          const _tile = Math.max(cw / W, chh / H);
+          const tw = _tile, th = _tile;
           // Recompute camera against the now-known canvas dims, then derive
           // the visible window and cull tiles outside it. For the hub the
           // viewport equals the whole grid, so the loop bounds come out 0..W
@@ -8801,7 +8796,7 @@
           saveCharacter(ch); renderHubShop();
           const gEl=document.getElementById('hub-hero-gold'); if(gEl) gEl.textContent=ch.gold+' G';
         }
-        function showStartPanel(name, fromPopstate=false) { if(name!=='hub'){ stopHubAmbience(); stopHubAnim(); } ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(name==='hub') startHubAnim(); if(name==='charcreate') { _preloadClassPortraits(); selectClass(_selectedClass); setTimeout(_renderApPreview, 0); } if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
+        function showStartPanel(name, fromPopstate=false) { if(name!=='hub'){ stopHubAmbience(); stopHubAnim(); } ['main','howtoplay','settings','highscores','patchnotes','journey','charcreate','hub','charsheet','shop','quests','dungeonselect'].forEach(p=>{ const el=document.getElementById('start-'+p); if(el) el.classList.toggle('hidden', p!==name); }); const _ov=document.getElementById('start-overlay'); if(_ov) _ov.classList.toggle('hub-inframe', name==='hub'); if(name==='highscores') renderHighScores(); if(name==='patchnotes') renderPatchNotes(); if(name==='charsheet') renderCharSheet(); if(name==='shop') renderHubShop(); if(name==='quests') renderQuests(); if(name==='dungeonselect') renderDungeonSelect(); if(name==='hub') startHubAnim(); if(name==='charcreate') { _preloadClassPortraits(); selectClass(_selectedClass); setTimeout(_renderApPreview, 0); } if(!fromPopstate && name!=='main' && name!=='hub') history.pushState({panel:name},''); }
         history.replaceState({panel:'main'},'');
         window.addEventListener('popstate', function(e){ const ov=document.getElementById('start-overlay'); if(!ov) return; const _goHome=()=>{ if(loadCharacter()) showHub(); else showStartPanel('charcreate',true); }; if(!ov.classList.contains('hidden')){ _goHome(); } else if(gameState.gameStarted&&!gameState.isGameOver){ stopDungeonMusic(); cancelAnimationFrame(_rafId); gameState.gameStarted=false; gameState.menuOpen=false; get('menu-overlay').classList.add('hidden'); get('mobile-controls').classList.add('hidden'); ov.classList.remove('hidden'); _goHome(); } });
 
