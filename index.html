@@ -17,29 +17,20 @@
             --color-shadow: #000a10;
         }
 
-        html {
-            height: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
-
         body {
             background-color: var(--color-bg-dark);
             color: #e2e8f0;
             font-family: 'VT323', monospace;
             overflow: hidden;
-            overscroll-behavior: none;
             touch-action: none;
             image-rendering: pixelated;
             height: 100dvh;
             max-height: 100dvh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            padding-top: max(3vw, env(safe-area-inset-top));
-            padding-bottom: 3vw;
-            padding-left: max(1.6vw, env(safe-area-inset-left));
-            padding-right: max(1.6vw, env(safe-area-inset-right));
+            overscroll-behavior: none;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
         }
 
         #landscape-warn {
@@ -261,25 +252,8 @@
         .mob-bar-val { font-family:'VT323',monospace; font-size:9px; color:#a8d8c0; width:28px; flex-shrink:0; }
 
         @media (pointer: coarse) {
-            body { padding-top: max(10vw, env(safe-area-inset-top, 24px)); }
-            main { min-height: 0; padding-bottom: 204px !important; }
-            #mobile-controls {
-                position: fixed;
-                bottom: 0;
-                left: max(1.6vw, env(safe-area-inset-left, 0px));
-                right: max(1.6vw, env(safe-area-inset-right, 0px));
-                z-index: 210;
-                display: flex;
-                flex-shrink: 0;
-                background: #001828;
-                padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
-            }
-            #start-overlay {
-                align-items: flex-start !important;
-                padding-top: max(10vw, 36px);
-                padding-bottom: calc(204px + 4vw);
-            }
-            .menu-scroll { max-height: calc(100dvh - 270px); }
+            main { min-height: 0; }
+            #mobile-controls { display: flex; }
             .game-viewport {
                 flex: 1 1 0 !important;
                 min-height: 0 !important;
@@ -296,17 +270,23 @@
                 align-items: flex-start;
                 justify-content: center;
             }
+            #mobile-controls { flex-shrink: 0; background: #001828; padding-bottom: max(8px, env(safe-area-inset-bottom, 8px)); }
             #minimap-container { width: 90px; height: 90px; }
             canvas#gameCanvas {
                 display: block;
                 width: 100%;
                 height: auto;
-                aspect-ratio: 800 / 704;
+                aspect-ratio: 704 / 576;
                 max-height: 100%;
             }
             #menu-overlay .mmo-panel, #confirm-overlay .mmo-panel { width: 92vw; max-height: 88dvh; overflow-y: auto; }
             #game-log { display: block !important; flex-grow: 0; flex-shrink: 0; height: 80px; min-height: 0; overflow-y: auto; }
             #game-log .opacity-40 { opacity: 0.5; color: #a8d8c0; }
+
+            /* SHAPE-TEST OVERRIDES - hide hub overlay + force black canvas + force mobile-controls visible */
+            #start-overlay { display: none !important; }
+            canvas#gameCanvas { background: #000 !important; }
+            #mobile-controls.hidden { display: flex !important; }
         }
         #mobile-controls.left-handed { flex-direction: row-reverse; }
         #mobile-controls.left-handed #mobile-actions { flex-direction: row-reverse; }
@@ -323,6 +303,10 @@
         @media (max-width: 767px) {
             #desk-left-aside, #desk-right-aside, #desk-hotbar, #desk-bottom-hud { display: none !important; }
         }
+
+        /* SHAPE-TEST GLOBAL OVERRIDES - hide hub overlay everywhere + black canvas */
+        #start-overlay { display: none !important; }
+        canvas#gameCanvas { background: #000 !important; }
         #canvas-wrap { position: relative; width: 100%; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center; }
         #desk-bottom-hud {
             display: none;
@@ -1692,7 +1676,7 @@
         const canvas = get('gameCanvas');
         const ctx = canvas.getContext('2d');
         const mctx = get('minimapCanvas').getContext('2d');
-        const TILE_SIZE = 32, VIEW_WIDTH = 25, VIEW_HEIGHT = 22;
+        const TILE_SIZE = 32, VIEW_WIDTH = 22, VIEW_HEIGHT = 18;
         canvas.width = VIEW_WIDTH * TILE_SIZE; canvas.height = VIEW_HEIGHT * TILE_SIZE;
         const TILES = { FLOOR: 0, WALL: 1, WATER: 2, LAVA: 3, PLANT: 4, CRACKED: 5 };
         const SPRITES = { SLIME: 'S', SKELETON: 'K', GHOST: 'G', GOLEM: 'O', LICH: 'L', GOLD: 'G', POTION: 'P', SHIELD: 'S', CHALICE: 'C', STAIRS: 'H', BOSS: '', KEY: 'K', CHEST: 'C', DAMAGEBUFF: 'D', MERCHANT: 'M' };
@@ -1729,9 +1713,9 @@
               [0,4,4,4,5,5,5,6,6,6,0],
               [0,4,4,4,5,5,5,6,6,6,0],
               [0,4,4,4,5,5,5,6,6,6,0],
-              [1,1,1,1,1,1,1,1,1,1,1],
-              [1,1,1,1,1,1,1,1,1,1,1],
-              [1,1,1,1,1,1,1,1,1,1,1],
+              [0,0,0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,3,3,3,0,0,0,0]
             ],
             cols: 11,
